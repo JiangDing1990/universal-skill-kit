@@ -30,10 +30,13 @@
 ### 安装
 
 ```bash
-npm install -g @usk/cli
+npm install -g @jiangding/usk-cli
 
 # 或使用 pnpm
-pnpm add -g @usk/cli
+pnpm add -g @jiangding/usk-cli
+
+# 或使用 yarn
+yarn global add @jiangding/usk-cli
 ```
 
 ### 基本使用
@@ -243,7 +246,7 @@ Converter:   83.36%
 ### 使用核心API
 
 ```typescript
-import { SkillConverter, SkillValidator, SkillAnalyzer } from '@usk/core'
+import { SkillConverter, SkillValidator, SkillAnalyzer } from '@jiangding/usk-core'
 
 // 1. 验证Skill
 const validator = new SkillValidator()

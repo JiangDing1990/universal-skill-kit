@@ -30,10 +30,13 @@
 ### Installation
 
 ```bash
-npm install -g @usk/cli
+npm install -g @jiangding/usk-cli
 
 # Or using pnpm
-pnpm add -g @usk/cli
+pnpm add -g @jiangding/usk-cli
+
+# Or using yarn
+yarn global add @jiangding/usk-cli
 ```
 
 ### Basic Usage
@@ -243,7 +246,7 @@ Tests Passing: 199/199 ✅
 ### Using Core APIs
 
 ```typescript
-import { SkillConverter, SkillValidator, SkillAnalyzer } from '@usk/core'
+import { SkillConverter, SkillValidator, SkillAnalyzer } from '@jiangding/usk-core'
 
 // 1. Validate Skill
 const validator = new SkillValidator()
