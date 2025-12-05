@@ -1,0 +1,30 @@
+{
+  "name": "build-test-skill",
+  "version": "1.0.0",
+  "author": "Test Author",
+  "description": {
+    "common": "A test skill for build system",
+    "claude": "Detailed test skill for Claude platform",
+    "codex": "Short test skill for Codex"
+  },
+  "tags": ["test", "build"],
+  "platforms": {
+    "claude": {
+      "enabled": true,
+      "output": "dist/claude"
+    },
+    "codex": {
+      "enabled": true,
+      "output": "dist/codex"
+    }
+  },
+  "source": {
+    "entry": "src/SKILL.md",
+    "templates": "templates/**/*.md",
+    "scripts": "scripts/**/*",
+    "resources": "resources/**/*"
+  },
+  "build": {
+    "clean": true
+  }
+}
