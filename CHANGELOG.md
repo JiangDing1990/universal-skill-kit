@@ -24,6 +24,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copies all referenced files maintaining relative paths
 - Handles nested folder structures (templates/, scripts/, resources/)
 
+**Skill Validator** (`@usk/core/src/validator/`)
+
+- Complete validation system for skill definitions
+- Metadata validation (name, version, description, author, tags)
+- Description length validation with platform-specific checks
+- Body content validation (structure, examples, documentation quality)
+- Resource file existence verification
+- Common issue detection (broken links, TODO markers, placeholder text)
+- Platform-specific validation for Codex (500 char description limit)
+
+**Validation Features**:
+- Error detection for critical issues (missing name, empty body, missing resources)
+- Warning system for quality improvements (short descriptions, missing author, etc.)
+- Severity levels: low, medium, high
+- Detailed error messages with field identification
+- Async validation for resource file checking
+
 **CLI Commands** (`@usk/cli/src/`)
 
 - Command-line interface with Commander.js

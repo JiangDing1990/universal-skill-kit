@@ -15,8 +15,8 @@ export * from './optimizer'
 // Export converter
 export * from './converter'
 
-// Export validator (will be implemented)
-// export * from './validator'
+// Export validator
+export * from './validator'
 
 // Export analyzer
 export * from './analyzer'
