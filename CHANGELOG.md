@@ -41,6 +41,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Detailed error messages with field identification
 - Async validation for resource file checking
 
+**Validator CLI Integration** (`@usk/cli/src/commands/`)
+
+- Automatic validation before conversion
+- Beautiful colored output with icons (✓, ⚠, ✗)
+- Three-level validation display:
+  - Errors (red ❌): Block conversion unless --interactive override
+  - Warnings (yellow/gray ⚠): Quality suggestions with severity indicators
+  - Platform-specific notes (cyan ℹ️): Codex compression warnings
+- Interactive mode: Allow users to continue despite errors
+- Non-interactive mode: Require --interactive flag to override
+- Validation steps clearly shown in spinner progress
+
 **CLI Commands** (`@usk/cli/src/`)
 
 - Command-line interface with Commander.js

@@ -7,7 +7,7 @@ import * as fs from 'node:fs/promises'
 import chalk from 'chalk'
 import ora from 'ora'
 import inquirer from 'inquirer'
-import { SkillConverter } from '@usk/core'
+import { SkillConverter, SkillParser, SkillValidator } from '@usk/core'
 import type { Platform, ConvertOptions } from '@usk/core'
 
 interface ConvertCommandOptions {
@@ -66,7 +66,70 @@ export async function convertCommand(
       throw new Error(`Invalid target platform: ${options.target}`)
     }
 
-    // Create converter
+    // Step 1: Parse skill
+    spinner.start('Parsing skill...')
+    const parser = new SkillParser()
+    const skill = await parser.parse(input)
+    spinner.succeed('Skill parsed')
+
+    // Step 2: Validate skill
+    spinner.start('Validating skill...')
+    const validator = new SkillValidator()
+    const validation = await validator.validate(skill, input)
+
+    if (!validation.valid) {
+      spinner.fail('Validation failed')
+      console.log('\n' + chalk.bold.red('❌ Validation Errors:'))
+      validation.errors.forEach((error) => {
+        console.log(chalk.red(`  • [${error.field}] ${error.message}`))
+      })
+
+      // Ask if user wants to continue anyway
+      if (options.interactive) {
+        const { continueAnyway } = await inquirer.prompt([
+          {
+            type: 'confirm',
+            name: 'continueAnyway',
+            message: 'Skill has validation errors. Continue anyway?',
+            default: false
+          }
+        ])
+
+        if (!continueAnyway) {
+          console.log(chalk.yellow('\nConversion cancelled.'))
+          process.exit(1)
+        }
+      } else {
+        console.log(chalk.red('\nUse --interactive to override validation errors.'))
+        process.exit(1)
+      }
+    } else {
+      spinner.succeed('Validation passed')
+    }
+
+    // Display warnings if any
+    if (validation.warnings.length > 0) {
+      console.log('\n' + chalk.bold.yellow('⚠️  Validation Warnings:'))
+      validation.warnings.forEach((warning) => {
+        const icon = warning.severity === 'high'
+          ? chalk.red('⚠')
+          : warning.severity === 'medium'
+            ? chalk.yellow('⚠')
+            : chalk.gray('ℹ')
+        console.log(`  ${icon} [${warning.field}] ${warning.message}`)
+      })
+    }
+
+    // Step 3: Check platform-specific requirements
+    const conversionValidation = validator.validateForConversion(skill, targetPlatform)
+    if (conversionValidation.warnings.length > 0) {
+      console.log('\n' + chalk.bold.cyan('ℹ️  Platform-Specific Notes:'))
+      conversionValidation.warnings.forEach((warning) => {
+        console.log(chalk.cyan(`  • [${warning.field}] ${warning.message}`))
+      })
+    }
+
+    // Step 4: Create converter
     const converter = new SkillConverter()
 
     // Prepare conversion options
@@ -76,7 +139,7 @@ export async function convertCommand(
       compressionStrategy: options.strategy
     }
 
-    // Perform conversion
+    // Step 5: Perform conversion
     spinner.start('Converting skill...')
     const result = await converter.convert(input, convertOptions)
     spinner.succeed('Conversion completed!')
