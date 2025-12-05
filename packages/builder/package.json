@@ -1,5 +1,5 @@
 {
-  "name": "@usk/builder",
+  "name": "@jiangding/usk-builder",
   "version": "0.1.0",
   "description": "Build system for Universal Skill Kit",
   "type": "module",

@@ -1,5 +1,5 @@
 /**
- * @usk/utils
+ * @jiangding/usk-utils
  * Utility functions for Universal Skill Kit
  */
 

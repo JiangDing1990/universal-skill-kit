@@ -1,5 +1,5 @@
 /**
- * @usk/template
+ * @jiangding/usk-template
  * Template engine for Universal Skill Kit
  */
 

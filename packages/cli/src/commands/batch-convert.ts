@@ -6,8 +6,8 @@
 import { glob } from 'glob'
 import chalk from 'chalk'
 import ora from 'ora'
-import { SkillConverter } from '@usk/core'
-import type { Platform, ConvertOptions } from '@usk/core'
+import { SkillConverter } from '@jiangding/usk-core'
+import type { Platform, ConvertOptions } from '@jiangding/usk-core'
 
 interface BatchConvertCommandOptions {
   target: string

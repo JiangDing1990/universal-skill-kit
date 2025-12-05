@@ -14,9 +14,9 @@ import {
   formatErrorMessage,
   getErrorSuggestions,
   isUSKError
-} from '@usk/core'
-import { getLogger } from '@usk/utils'
-import type { Platform, ConvertOptions } from '@usk/core'
+} from '@jiangding/usk-core'
+import { getLogger } from '@jiangding/usk-utils'
+import type { Platform, ConvertOptions } from '@jiangding/usk-core'
 
 interface ConvertCommandOptions {
   target: string

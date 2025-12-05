@@ -6,7 +6,7 @@
 import * as fs from 'node:fs/promises'
 import chalk from 'chalk'
 import ora from 'ora'
-import { SkillParser, SkillAnalyzer } from '@usk/core'
+import { SkillParser, SkillAnalyzer } from '@jiangding/usk-core'
 
 interface AnalyzeCommandOptions {
   verbose: boolean

@@ -1,6 +1,6 @@
 {
   "name": "@jiangding/usk-cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Command-line interface for Universal Skill Kit",
   "type": "module",
   "main": "./dist/index.js",

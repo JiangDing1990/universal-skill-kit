@@ -8,7 +8,7 @@ import * as path from 'node:path'
 import { SkillParser } from '../parser/skill-parser'
 import { DescriptionCompressor } from '../optimizer/description-compressor'
 import { SkillAnalyzer } from '../analyzer/skill-analyzer'
-import { PathMapper, getLogger } from '@usk/utils'
+import { PathMapper, getLogger } from '@jiangding/usk-utils'
 import {
   SkillNotFoundError,
   ConversionError

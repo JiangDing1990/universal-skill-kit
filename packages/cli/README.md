@@ -1,11 +1,11 @@
-# @usk/cli
+# @jiangding/usk-cli
 
 Command-line interface for Universal Skill Kit.
 
 ## Installation
 
 ```bash
-npm install -g @usk/cli
+npm install -g @jiangding/usk-cli
 ```
 
 ## Usage

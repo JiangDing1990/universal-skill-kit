@@ -1,17 +1,17 @@
-# @usk/utils
+# @jiangding/usk-utils
 
 Utility functions for Universal Skill Kit.
 
 ## Installation
 
 ```bash
-npm install @usk/utils
+npm install @jiangding/usk-utils
 ```
 
 ## Usage
 
 ```typescript
-import { PathMapper, getLogger } from '@usk/utils'
+import { PathMapper, getLogger } from '@jiangding/usk-utils'
 
 // Path mapping
 const mapper = new PathMapper()

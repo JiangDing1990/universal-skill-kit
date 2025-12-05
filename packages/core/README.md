@@ -1,17 +1,17 @@
-# @usk/core
+# @jiangding/usk-core
 
 Core conversion engine for Universal Skill Kit.
 
 ## Installation
 
 ```bash
-npm install @usk/core
+npm install @jiangding/usk-core
 ```
 
 ## Usage
 
 ```typescript
-import { SkillConverter, SkillValidator, SkillAnalyzer } from '@usk/core'
+import { SkillConverter, SkillValidator, SkillAnalyzer } from '@jiangding/usk-core'
 
 // Validate Skill
 const validator = new SkillValidator()

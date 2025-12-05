@@ -1,5 +1,5 @@
 /**
- * @usk/core/validator
+ * @jiangding/usk-core/validator
  * Skill validation module
  */
 
