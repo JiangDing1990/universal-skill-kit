@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+**Bilingual User Interface** (`@usk/core/src/errors.ts`, `@usk/cli/src/commands/`)
+
+- Chinese-English bilingual output for all user-facing messages
+- Bilingual error messages (SkillNotFoundError, ConversionError, etc.)
+- Bilingual error suggestions for better user experience
+- Bilingual CLI prompts (interactive mode, spinners, status messages)
+- Bilingual statistics display (compression rate, duration, etc.)
+- Supports both English and Chinese-speaking users without configuration
+- Improves accessibility for international users
+
 **Performance Optimization** (`@usk/core/src/converter/`)
 
 - Parallel batch conversion with configurable concurrency (default: 5 files at a time)

@@ -34,15 +34,15 @@ export async function convertCommand(
   const logger = getLogger()
   if (options.verbose) {
     logger.setVerbose(true)
-    console.log(chalk.gray('🔍 Verbose mode enabled\n'))
+    console.log(chalk.gray('🔍 Verbose mode enabled / 详细模式已启用\n'))
   }
 
-  const spinner = ora('Initializing conversion...').start()
+  const spinner = ora('Initializing conversion / 初始化转换...').start()
 
   try {
     // Validate input file exists
     await fs.access(input)
-    spinner.succeed('Input file found')
+    spinner.succeed('Input file found / 输入文件已找到')
 
     // Interactive mode
     if (options.interactive) {
@@ -50,21 +50,21 @@ export async function convertCommand(
         {
           type: 'list',
           name: 'target',
-          message: 'Target platform:',
+          message: 'Target platform / 目标平台:',
           choices: ['claude', 'codex'],
           default: options.target
         },
         {
           type: 'list',
           name: 'strategy',
-          message: 'Compression strategy:',
+          message: 'Compression strategy / 压缩策略:',
           choices: ['conservative', 'balanced', 'aggressive'],
           default: options.strategy || 'balanced'
         },
         {
           type: 'input',
           name: 'output',
-          message: 'Output directory (leave empty for default):',
+          message: 'Output directory (leave empty for default) / 输出目录（留空使用默认）:',
           default: options.output || ''
         }
       ])
@@ -79,22 +79,22 @@ export async function convertCommand(
     // Validate target platform
     const targetPlatform = options.target as Platform
     if (!['claude', 'codex'].includes(targetPlatform)) {
-      throw new Error(`Invalid target platform: ${options.target}`)
+      throw new Error(`Invalid target platform / 无效的目标平台: ${options.target}`)
     }
 
     // Step 1: Parse skill
-    spinner.start('Parsing skill...')
+    spinner.start('Parsing skill / 解析 Skill...')
     const parser = new SkillParser()
     const skill = await parser.parse(input)
-    spinner.succeed('Skill parsed')
+    spinner.succeed('Skill parsed / Skill 已解析')
 
     // Step 2: Validate skill
-    spinner.start('Validating skill...')
+    spinner.start('Validating skill / 验证 Skill...')
     const validator = new SkillValidator()
     const validation = await validator.validate(skill, input)
 
     if (!validation.valid) {
-      spinner.fail('Validation failed')
+      spinner.fail('Validation failed / 验证失败')
       console.log('\n' + chalk.bold.red('❌ Validation Errors:'))
       validation.errors.forEach((error) => {
         console.log(chalk.red(`  • [${error.field}] ${error.message}`))
@@ -106,21 +106,21 @@ export async function convertCommand(
           {
             type: 'confirm',
             name: 'continueAnyway',
-            message: 'Skill has validation errors. Continue anyway?',
+            message: 'Skill has validation errors. Continue anyway? / Skill 存在验证错误，是否继续？',
             default: false
           }
         ])
 
         if (!continueAnyway) {
-          console.log(chalk.yellow('\nConversion cancelled.'))
+          console.log(chalk.yellow('\nConversion cancelled / 转换已取消。'))
           process.exit(1)
         }
       } else {
-        console.log(chalk.red('\nUse --interactive to override validation errors.'))
+        console.log(chalk.red('\nUse --interactive to override validation errors / 使用 --interactive 覆盖验证错误。'))
         process.exit(1)
       }
     } else {
-      spinner.succeed('Validation passed')
+      spinner.succeed('Validation passed / 验证通过')
     }
 
     // Display warnings if any
@@ -157,36 +157,36 @@ export async function convertCommand(
     }
 
     // Step 5: Perform conversion
-    spinner.start('Converting skill...')
+    spinner.start('Converting skill / 转换 Skill...')
     const result = await converter.convert(input, convertOptions)
-    spinner.succeed('Conversion completed!')
+    spinner.succeed('Conversion completed / 转换完成!')
 
     // Display results
-    console.log('\n' + chalk.bold.green('✓ Conversion Successful'))
+    console.log('\n' + chalk.bold.green('✓ Conversion Successful / 转换成功'))
     console.log(chalk.gray('─'.repeat(50)))
-    console.log(chalk.cyan('Platform:'), result.platform)
-    console.log(chalk.cyan('Output:'), result.outputPath)
-    console.log(chalk.cyan('Quality Score:'), `${result.quality}/100`)
+    console.log(chalk.cyan('Platform / 平台:'), result.platform)
+    console.log(chalk.cyan('Output / 输出:'), result.outputPath)
+    console.log(chalk.cyan('Quality Score / 质量分数:'), `${result.quality}/100`)
     console.log(chalk.gray('─'.repeat(50)))
 
     // Statistics
-    console.log('\n' + chalk.bold('Statistics:'))
+    console.log('\n' + chalk.bold('Statistics / 统计信息:'))
     console.log(
-      chalk.cyan('  Original Length:'),
+      chalk.cyan('  Original Length / 原始长度:'),
       result.statistics.originalLength,
       'chars'
     )
     console.log(
-      chalk.cyan('  Final Length:'),
+      chalk.cyan('  Final Length / 最终长度:'),
       result.statistics.finalLength,
       'chars'
     )
     console.log(
-      chalk.cyan('  Compression:'),
+      chalk.cyan('  Compression / 压缩率:'),
       `${result.statistics.compressionRate.toFixed(1)}%`
     )
     console.log(
-      chalk.cyan('  Duration:'),
+      chalk.cyan('  Duration / 耗时:'),
       `${result.statistics.duration}ms`
     )
 
@@ -194,13 +194,13 @@ export async function convertCommand(
     if (result.statistics.preservedKeywords.length > 0) {
       console.log(
         '\n' +
-          chalk.green('✓ Preserved Keywords:'),
+          chalk.green('✓ Preserved Keywords / 保留的关键词:'),
         result.statistics.preservedKeywords.slice(0, 10).join(', ')
       )
       if (result.statistics.preservedKeywords.length > 10) {
         console.log(
           chalk.gray(
-            `  ... and ${result.statistics.preservedKeywords.length - 10} more`
+            `  ... and ${result.statistics.preservedKeywords.length - 10} more / 还有 ${result.statistics.preservedKeywords.length - 10} 个`
           )
         )
       }
@@ -209,31 +209,31 @@ export async function convertCommand(
     // Lost information warning
     if (result.statistics.lostInformation.length > 0) {
       console.log(
-        '\n' + chalk.yellow('⚠ Lost Keywords:'),
+        '\n' + chalk.yellow('⚠ Lost Keywords / 丢失的关键词:'),
         result.statistics.lostInformation.slice(0, 5).join(', ')
       )
       if (result.statistics.lostInformation.length > 5) {
         console.log(
           chalk.gray(
-            `  ... and ${result.statistics.lostInformation.length - 5} more`
+            `  ... and ${result.statistics.lostInformation.length - 5} more / 还有 ${result.statistics.lostInformation.length - 5} 个`
           )
         )
       }
     }
 
-    console.log('\n' + chalk.green('Done! ✨'))
+    console.log('\n' + chalk.green('Done! / 完成! ✨'))
   } catch (error) {
-    spinner.fail('Conversion failed')
+    spinner.fail('Conversion failed / 转换失败')
 
     // Display formatted error message
-    console.log('\n' + chalk.bold.red('❌ Error:'))
+    console.log('\n' + chalk.bold.red('❌ Error / 错误:'))
     console.log(chalk.red('  ' + formatErrorMessage(error)))
 
     // Display suggestions if available
     if (isUSKError(error)) {
       const suggestions = getErrorSuggestions(error)
       if (suggestions.length > 0) {
-        console.log('\n' + chalk.bold.yellow('💡 Suggestions:'))
+        console.log('\n' + chalk.bold.yellow('💡 Suggestions / 建议:'))
         suggestions.forEach((suggestion) => {
           console.log(chalk.yellow('  • ' + suggestion))
         })
