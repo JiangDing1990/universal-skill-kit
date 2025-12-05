@@ -20,10 +20,12 @@ export async function analyzeCommand(
   const spinner = ora('Analyzing skill...').start()
 
   try {
-    // Read and parse skill
-    const content = await fs.readFile(input, 'utf-8')
+    // Verify input exists
+    await fs.access(input)
+
+    // Parse skill
     const parser = new SkillParser()
-    const skill = await parser.parse(content)
+    const skill = await parser.parse(input)
 
     // Analyze skill
     const analyzer = new SkillAnalyzer()
