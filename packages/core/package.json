@@ -1,6 +1,6 @@
 {
   "name": "@jiangding/usk-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Core conversion engine for Universal Skill Kit",
   "type": "module",
   "main": "./dist/index.js",
@@ -34,7 +34,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@jiangding/usk-utils": "workspace:*",
+    "@jiangding/usk-utils": "^0.1.0",
     "gray-matter": "^4.0.3",
     "yaml": "^2.3.4",
     "zod": "^3.22.4"
