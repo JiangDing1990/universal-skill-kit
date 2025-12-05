@@ -1,0 +1,37 @@
+{
+  "name": "{{SKILL_NAME}}",
+  "version": "1.0.0",
+  "author": "{{AUTHOR_NAME}}",
+  "platforms": {
+    "claude": {
+      "enabled": true,
+      "output": ".claude/skills"
+    },
+    "codex": {
+      "enabled": true,
+      "output": ".codex/skills"
+    }
+  },
+  "description": {
+    "full": "{{FULL_DESCRIPTION}}",
+    "short": "{{SHORT_DESCRIPTION}}",
+    "keywords": ["{{KEYWORD_1}}", "{{KEYWORD_2}}", "{{KEYWORD_3}}"]
+  },
+  "body": {
+    "source": "SKILL.md",
+    "sections": {
+      "claude": ["all"],
+      "codex": ["核心使用指南", "常见场景", "技术栈限制"]
+    }
+  },
+  "resources": {
+    "templates": ["assets/templates/**/*.tsx", "assets/templates/**/*.ts"],
+    "references": ["references/**/*.md"],
+    "scripts": ["scripts/**/*.sh", "scripts/**/*.js"]
+  },
+  "build": {
+    "validate": true,
+    "minify": false,
+    "sourcemap": false
+  }
+}

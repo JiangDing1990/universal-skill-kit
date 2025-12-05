@@ -1,0 +1,94 @@
+{
+  "name": "universal-skill-kit",
+  "version": "0.1.0",
+  "description": "A unified toolkit for developing and converting AI CLI Skills across platforms",
+  "keywords": [
+    "ai",
+    "cli",
+    "claude",
+    "codex",
+    "skill",
+    "converter",
+    "developer-tools"
+  ],
+  "homepage": "https://github.com/jiangding1990/universal-skill-kit#readme",
+  "bugs": {
+    "url": "https://github.com/jiangding1990/universal-skill-kit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jiangding1990/universal-skill-kit.git"
+  },
+  "license": "MIT",
+  "author": "USK Team",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "usk": "./bin/usk.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "templates",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "pnpm --filter \"@usk/*\" run dev",
+    "build": "pnpm --filter \"@usk/*\" run build",
+    "build:core": "pnpm --filter @usk/core run build",
+    "build:utils": "pnpm --filter @usk/utils run build",
+    "build:template": "pnpm --filter @usk/template run build",
+    "build:builder": "pnpm --filter @usk/builder run build",
+    "build:cli": "pnpm --filter @usk/cli run build",
+    "test": "pnpm --filter \"@usk/*\" run test",
+    "test:watch": "pnpm --filter \"@usk/*\" run test:watch",
+    "test:coverage": "vitest run --coverage",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "lint": "eslint packages --ext .ts,.tsx",
+    "lint:fix": "eslint packages --ext .ts,.tsx --fix",
+    "type-check": "tsc --build",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\"",
+    "clean": "rimraf packages/*/dist && rimraf dist",
+    "prepublishOnly": "pnpm run clean && pnpm run build",
+    "release": "pnpm run test && pnpm run build && pnpm publish -r"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "diff": "^5.1.0",
+    "glob": "^10.3.10",
+    "gray-matter": "^4.0.3",
+    "inquirer": "^9.2.12",
+    "ora": "^7.0.1",
+    "yaml": "^2.3.4",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/diff": "^5.0.9",
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.10.5",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "@vitest/coverage-v8": "^1.0.4",
+    "chokidar": "^3.5.3",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.1.1",
+    "rimraf": "^5.0.5",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "name": "universal-example",
+  "version": "1.0.0",
+  "author": "USK Team",
+  "platforms": {
+    "claude": {
+      "enabled": true,
+      "output": ".claude/skills"
+    },
+    "codex": {
+      "enabled": true,
+      "output": ".codex/skills"
+    }
+  },
+  "description": {
+    "full": "An example of universal Skill using template engine for multi-platform support. This demonstrates how to write platform-agnostic content that adapts to Claude Code's detailed format and Codex's concise requirements. Includes conditional compilation examples, variable substitution, and resource management patterns.",
+    "short": "Universal Skill example with template engine for multi-platform support. Shows conditional compilation, variables, and resource management.",
+    "keywords": ["universal", "template", "multi-platform", "example"]
+  },
+  "body": {
+    "source": "SKILL.md",
+    "sections": {
+      "claude": ["all"],
+      "codex": [
+        "Platform Information",
+        "Common Features",
+        "Platform-Specific Content",
+        "Conclusion"
+      ]
+    }
+  },
+  "resources": {
+    "templates": [],
+    "references": [],
+    "scripts": []
+  },
+  "build": {
+    "validate": true,
+    "minify": false,
+    "sourcemap": false
+  }
+}
