@@ -37,6 +37,9 @@ export class SkillConverter {
   /**
    * Convert a skill to target platform
    * 转换Skill到目标平台
+   *
+   * @param skillPath - Path to skill file or directory
+   * @param options - Conversion options
    */
   async convert(
     skillPath: string,
@@ -45,17 +48,42 @@ export class SkillConverter {
     const startTime = Date.now()
 
     try {
-      // 1. Read and parse skill
-      const content = await fs.readFile(skillPath, 'utf-8')
-      const skill = await this.parser.parse(content)
+      // 1. Detect input type (file or directory)
+      const stats = await fs.stat(skillPath)
+      const isDirectory = stats.isDirectory()
 
-      // 2. Analyze skill
+      // 2. Determine work directory and main file
+      let workDir: string
+      let mainFile: string
+
+      if (isDirectory) {
+        workDir = skillPath
+        mainFile = path.join(skillPath, 'SKILL.md')
+
+        // Verify main file exists
+        try {
+          await fs.access(mainFile)
+        } catch {
+          throw new Error(`SKILL.md not found in directory: ${skillPath}`)
+        }
+      } else {
+        workDir = path.dirname(skillPath)
+        mainFile = skillPath
+      }
+
+      // 3. Parse skill
+      const skill = await this.parser.parse(mainFile)
+
+      // 4. Analyze skill
       const analysis = this.analyzer.analyze(skill)
 
-      // 3. Determine source platform
-      const sourcePlatform = this.detectSourcePlatform(skillPath)
+      // 5. Determine source platform
+      const sourcePlatform = this.detectSourcePlatform(mainFile)
 
-      // 4. Convert to target platform
+      // 6. Collect all skill files (main file + resources)
+      const allFiles = await this.collectSkillFiles(workDir, skill)
+
+      // 7. Convert skill definition
       const convertedSkill = await this.convertSkill(
         skill,
         sourcePlatform,
@@ -63,17 +91,29 @@ export class SkillConverter {
         options.compressionStrategy || analysis.recommendedStrategy
       )
 
-      // 5. Determine output path
+      // 8. Determine output paths
       const outputPath = this.determineOutputPath(
-        skillPath,
+        skillPath,  // Use original skillPath instead of mainFile
         options.targetPlatform,
-        options.outputDir
+        options.outputDir,
+        isDirectory
       )
+      const outputDir = isDirectory
+        ? outputPath
+        : path.dirname(outputPath)
+      const outputFilePath = isDirectory
+        ? path.join(outputPath, 'SKILL.md')
+        : outputPath
 
-      // 6. Write converted skill
-      await this.writeSkill(convertedSkill, outputPath)
+      // 9. Write converted skill
+      await this.writeSkill(convertedSkill, outputFilePath)
 
-      // 7. Calculate statistics
+      // 10. Copy resource files
+      if (allFiles.length > 0) {
+        await this.copyResources(allFiles, workDir, outputDir, options.targetPlatform)
+      }
+
+      // 11. Calculate statistics
       const duration = Date.now() - startTime
       const statistics = this.calculateStatistics(
         skill,
@@ -84,7 +124,7 @@ export class SkillConverter {
       return {
         success: true,
         platform: options.targetPlatform,
-        outputPath,
+        outputPath: outputFilePath,
         metadata: convertedSkill.metadata,
         quality: analysis.estimatedQuality,
         statistics
@@ -175,18 +215,114 @@ export class SkillConverter {
   }
 
   /**
+   * Collect all files associated with a skill
+   * 收集Skill相关的所有文件
+   *
+   * @param skillDir - Skill directory
+   * @param skill - Parsed skill definition
+   * @returns List of resource file paths
+   */
+  private async collectSkillFiles(
+    skillDir: string,
+    skill: SkillDefinition
+  ): Promise<string[]> {
+    const files: string[] = []
+
+    // Collect all resource paths from skill definition
+    const resourcePaths = [
+      ...(skill.resources.templates || []),
+      ...(skill.resources.scripts || []),
+      ...(skill.resources.references || [])
+    ]
+
+    for (const resourcePath of resourcePaths) {
+      // Resolve to absolute path
+      const fullPath = path.isAbsolute(resourcePath)
+        ? resourcePath
+        : path.join(skillDir, resourcePath)
+
+      // Check if file exists
+      try {
+        await fs.access(fullPath)
+        files.push(fullPath)
+      } catch {
+        console.warn(`Warning: Referenced file not found: ${resourcePath}`)
+      }
+    }
+
+    return files
+  }
+
+  /**
+   * Copy resource files to target directory
+   * 复制资源文件到目标目录
+   *
+   * @param files - List of source file paths
+   * @param sourceDir - Source directory
+   * @param targetDir - Target directory
+   * @param _targetPlatform - Target platform for path mapping (reserved for future use)
+   */
+  private async copyResources(
+    files: string[],
+    sourceDir: string,
+    targetDir: string,
+    _targetPlatform: Platform
+  ): Promise<void> {
+    for (const file of files) {
+      try {
+        // Calculate relative path from source directory
+        const relativePath = path.relative(sourceDir, file)
+
+        // Map to target platform path structure
+        const targetPath = path.join(targetDir, relativePath)
+
+        // Ensure target directory exists
+        await fs.mkdir(path.dirname(targetPath), { recursive: true })
+
+        // Copy file
+        await fs.copyFile(file, targetPath)
+
+        // If it's a script file, preserve executable permissions
+        if (file.match(/\.(sh|bash|py|js|ts)$/)) {
+          try {
+            await fs.chmod(targetPath, 0o755)
+          } catch {
+            // Ignore chmod errors (e.g., on Windows)
+          }
+        }
+      } catch (error) {
+        console.warn(
+          `Warning: Failed to copy resource file ${file}: ${error instanceof Error ? error.message : String(error)}`
+        )
+      }
+    }
+  }
+
+  /**
    * Determine output path for converted skill
    * 确定转换后的输出路径
+   *
+   * @param sourcePath - Source file or directory path
+   * @param targetPlatform - Target platform
+   * @param outputDir - Optional output directory
+   * @param isDirectory - Whether source is a directory
    */
   private determineOutputPath(
     sourcePath: string,
     targetPlatform: Platform,
-    outputDir?: string
+    outputDir?: string,
+    isDirectory?: boolean
   ): string {
     if (outputDir) {
       // Use provided output directory
-      const basename = path.basename(sourcePath)
-      return path.join(outputDir, basename)
+      if (isDirectory) {
+        // Keep directory name
+        const dirName = path.basename(sourcePath)
+        return path.join(outputDir, dirName)
+      } else {
+        const basename = path.basename(sourcePath)
+        return path.join(outputDir, basename)
+      }
     }
 
     // Convert path to target platform's default location
@@ -197,14 +333,35 @@ export class SkillConverter {
   /**
    * Write converted skill to file
    * 写入转换后的Skill
+   *
+   * @param skill - Skill definition to write
+   * @param outputPath - Output path (file or directory)
    */
   private async writeSkill(
     skill: SkillDefinition,
     outputPath: string
   ): Promise<void> {
+    // Determine actual file path
+    let filePath: string
+    try {
+      const stats = await fs.stat(outputPath).catch(() => null)
+      if (stats?.isDirectory()) {
+        filePath = path.join(outputPath, 'SKILL.md')
+      } else {
+        filePath = outputPath
+      }
+    } catch {
+      // If path doesn't exist yet, check if it has an extension
+      if (path.extname(outputPath)) {
+        filePath = outputPath
+      } else {
+        // Assume it's a directory
+        filePath = path.join(outputPath, 'SKILL.md')
+      }
+    }
+
     // Ensure output directory exists
-    const dir = path.dirname(outputPath)
-    await fs.mkdir(dir, { recursive: true })
+    await fs.mkdir(path.dirname(filePath), { recursive: true })
 
     // Generate YAML frontmatter
     const frontmatter = this.generateFrontmatter(skill.metadata)
@@ -213,7 +370,7 @@ export class SkillConverter {
     const content = `---\n${frontmatter}---\n\n${skill.body}`
 
     // Write to file
-    await fs.writeFile(outputPath, content, 'utf-8')
+    await fs.writeFile(filePath, content, 'utf-8')
   }
 
   /**

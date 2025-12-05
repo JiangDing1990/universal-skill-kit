@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+**Multi-File Skill Support** (`@usk/core/src/converter/`)
+
+- Full support for directory-based skills with multiple files
+- Automatic collection of resource files (templates, scripts, references)
+- Recursive file copying with structure preservation
+- Executable permission preservation for script files (.sh, .bash, .py, .js, .ts)
+- Smart output path determination for both files and directories
+- Warning messages for missing resource files
+
+**Key Features**:
+- Input can be either a file path or directory path
+- Automatically searches for SKILL.md in directories
+- Copies all referenced files maintaining relative paths
+- Handles nested folder structures (templates/, scripts/, resources/)
+
 **CLI Commands** (`@usk/cli/src/`)
 
 - Command-line interface with Commander.js
