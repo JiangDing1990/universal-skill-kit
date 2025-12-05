@@ -14,8 +14,18 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JiangDing1990/universal-skill-kit.git",
+    "directory": "packages/utils"
+  },
+  "homepage": "https://github.com/JiangDing1990/universal-skill-kit#readme",
+  "bugs": {
+    "url": "https://github.com/JiangDing1990/universal-skill-kit/issues"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -35,7 +45,11 @@
   },
   "keywords": [
     "utils",
-    "helpers"
+    "helpers",
+    "skill",
+    "path-mapper",
+    "logger",
+    "utilities"
   ],
   "author": "USK Team",
   "license": "MIT"

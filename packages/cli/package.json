@@ -17,8 +17,18 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JiangDing1990/universal-skill-kit.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/JiangDing1990/universal-skill-kit#readme",
+  "bugs": {
+    "url": "https://github.com/JiangDing1990/universal-skill-kit/issues"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -46,7 +56,13 @@
   "keywords": [
     "cli",
     "command",
-    "skill"
+    "skill",
+    "usk",
+    "claude-code",
+    "codex",
+    "converter",
+    "developer-tools",
+    "terminal"
   ],
   "author": "USK Team",
   "license": "MIT"
