@@ -5,8 +5,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
-[![Test Coverage](https://img.shields.io/badge/coverage-90.59%25-brightgreen.svg)](https://github.com/JiangDing1990/universal-skill-kit)
-[![Tests](https://img.shields.io/badge/tests-199%20passing-brightgreen.svg)](https://github.com/JiangDing1990/universal-skill-kit)
+[![Test Coverage](https://img.shields.io/badge/coverage-92.11%25-brightgreen.svg)](https://github.com/JiangDing1990/universal-skill-kit)
+[![Tests](https://img.shields.io/badge/tests-281%20passing-brightgreen.svg)](https://github.com/JiangDing1990/universal-skill-kit)
 
 **Cross-platform AI CLI Skills Development and Conversion Toolkit**
 
@@ -230,15 +230,18 @@ universal-skill-kit/
 ## 📊 Test Coverage
 
 ```
-Overall Coverage: 90.59%
+Overall Coverage: 92.11%
 ─────────────────────────────
-Validator:   97.75% ⭐
-Analyzer:    96.01%
-Optimizer:   94.79%
-Parser:      84.61%
-Converter:   83.36%
+Utils (Logger):  100% ⭐⭐⭐
+Utils (PathMapper): 100% ⭐⭐⭐
+Optimizer Strategies: 99.67% ⭐⭐
+Validator:       97.75% ⭐⭐
+Analyzer:        96.01% ⭐
+Optimizer:       94.79% ⭐
+Parser:          84.61%
+Converter:       84.00%
 ─────────────────────────────
-Tests Passing: 199/199 ✅
+Tests Passing: 281/281 ✅
 ```
 
 ## 🔧 API Usage
