@@ -12,8 +12,8 @@ export * from './parser'
 // Export optimizer
 export * from './optimizer'
 
-// Export converter (will be implemented)
-// export * from './converter'
+// Export converter
+export * from './converter'
 
 // Export validator (will be implemented)
 // export * from './validator'

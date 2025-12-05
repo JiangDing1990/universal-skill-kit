@@ -7,14 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+**Skill Converter** (`@usk/core/src/converter/`)
+
+- Bidirectional conversion: Claude ↔ Codex
+- Automatic source platform detection from file paths
+- Smart description compression for Codex (500 char limit)
+- Path mapping integration (.claude → .codex)
+- Batch conversion support for multiple skills
+- Conversion statistics:
+  - Compression rate calculation
+  - Preserved/lost keywords tracking
+  - Duration measurement
+  - Quality score reporting
+- YAML frontmatter generation
+- File I/O operations with error handling
+- Integration of all core modules:
+  - SkillParser for file parsing
+  - DescriptionCompressor for text optimization
+  - SkillAnalyzer for strategy recommendation
+  - PathMapper for path transformation
+
+### Changed
+
+- Updated `@usk/core` package dependencies: added `@usk/utils` workspace dependency
+- Fixed `@usk/utils` package.json exports configuration
+- Updated core module exports to include converter
+
 ### Planned for v0.3.0
 
-- Skill Converter (Claude ↔ Codex)
 - Skill Validator with schema validation
 - CLI commands implementation
 - Interactive Optimizer
-- Batch conversion tools
-- Integration tests
+- Integration tests and documentation
 
 ## [0.2.0] - 2024-12-05
 
