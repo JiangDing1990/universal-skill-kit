@@ -25,6 +25,7 @@ program
   .option('-o, --output <dir>', 'Output directory')
   .option('-s, --strategy <strategy>', 'Compression strategy (conservative|balanced|aggressive)')
   .option('-i, --interactive', 'Interactive mode with prompts', false)
+  .option('--verbose', 'Show detailed logs', false)
   .action(convertCommand)
 
 // Analyze command

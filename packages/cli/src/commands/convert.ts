@@ -7,7 +7,15 @@ import * as fs from 'node:fs/promises'
 import chalk from 'chalk'
 import ora from 'ora'
 import inquirer from 'inquirer'
-import { SkillConverter, SkillParser, SkillValidator } from '@usk/core'
+import {
+  SkillConverter,
+  SkillParser,
+  SkillValidator,
+  formatErrorMessage,
+  getErrorSuggestions,
+  isUSKError
+} from '@usk/core'
+import { getLogger } from '@usk/utils'
 import type { Platform, ConvertOptions } from '@usk/core'
 
 interface ConvertCommandOptions {
@@ -15,12 +23,20 @@ interface ConvertCommandOptions {
   output?: string
   strategy?: 'conservative' | 'balanced' | 'aggressive'
   interactive: boolean
+  verbose: boolean
 }
 
 export async function convertCommand(
   input: string,
   options: ConvertCommandOptions
 ): Promise<void> {
+  // Set verbose mode if requested
+  const logger = getLogger()
+  if (options.verbose) {
+    logger.setVerbose(true)
+    console.log(chalk.gray('🔍 Verbose mode enabled\n'))
+  }
+
   const spinner = ora('Initializing conversion...').start()
 
   try {
@@ -136,7 +152,8 @@ export async function convertCommand(
     const convertOptions: ConvertOptions = {
       targetPlatform,
       outputDir: options.output,
-      compressionStrategy: options.strategy
+      compressionStrategy: options.strategy,
+      verbose: options.verbose
     }
 
     // Step 5: Perform conversion
@@ -207,6 +224,27 @@ export async function convertCommand(
     console.log('\n' + chalk.green('Done! ✨'))
   } catch (error) {
     spinner.fail('Conversion failed')
-    throw error
+
+    // Display formatted error message
+    console.log('\n' + chalk.bold.red('❌ Error:'))
+    console.log(chalk.red('  ' + formatErrorMessage(error)))
+
+    // Display suggestions if available
+    if (isUSKError(error)) {
+      const suggestions = getErrorSuggestions(error)
+      if (suggestions.length > 0) {
+        console.log('\n' + chalk.bold.yellow('💡 Suggestions:'))
+        suggestions.forEach((suggestion) => {
+          console.log(chalk.yellow('  • ' + suggestion))
+        })
+      }
+    }
+
+    // Display stack trace in verbose mode
+    if (error instanceof Error && error.stack) {
+      console.log('\n' + chalk.gray(error.stack))
+    }
+
+    process.exit(1)
   }
 }

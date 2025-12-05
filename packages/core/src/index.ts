@@ -21,5 +21,11 @@ export * from './validator'
 // Export analyzer
 export * from './analyzer'
 
+// Export errors
+export * from './errors'
+
+// Export constants
+export * from './constants'
+
 // Export quality checker (will be implemented)
 // export * from './quality'

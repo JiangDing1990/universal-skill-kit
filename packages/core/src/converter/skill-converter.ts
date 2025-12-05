@@ -8,7 +8,12 @@ import * as path from 'node:path'
 import { SkillParser } from '../parser/skill-parser'
 import { DescriptionCompressor } from '../optimizer/description-compressor'
 import { SkillAnalyzer } from '../analyzer/skill-analyzer'
-import { PathMapper } from '@usk/utils'
+import { PathMapper, getLogger } from '@usk/utils'
+import {
+  SkillNotFoundError,
+  ConversionError
+} from '../errors'
+import { LIMITS, SKILL_FILES, SCRIPT_EXTENSIONS } from '../constants'
 import type {
   Platform,
   SkillDefinition,
@@ -26,6 +31,7 @@ export class SkillConverter {
   private compressor: DescriptionCompressor
   private analyzer: SkillAnalyzer
   private pathMapper: PathMapper
+  private logger = getLogger()
 
   constructor() {
     this.parser = new SkillParser()
@@ -48,9 +54,13 @@ export class SkillConverter {
     const startTime = Date.now()
 
     try {
+      this.logger.debug(`开始转换: ${skillPath}`)
+      this.logger.debug(`目标平台: ${options.targetPlatform}`)
+
       // 1. Detect input type (file or directory)
       const stats = await fs.stat(skillPath)
       const isDirectory = stats.isDirectory()
+      this.logger.debug(`输入类型: ${isDirectory ? '目录' : '文件'}`)
 
       // 2. Determine work directory and main file
       let workDir: string
@@ -58,13 +68,13 @@ export class SkillConverter {
 
       if (isDirectory) {
         workDir = skillPath
-        mainFile = path.join(skillPath, 'SKILL.md')
+        mainFile = path.join(skillPath, SKILL_FILES.MAIN)
 
         // Verify main file exists
         try {
           await fs.access(mainFile)
         } catch {
-          throw new Error(`SKILL.md not found in directory: ${skillPath}`)
+          throw new SkillNotFoundError(mainFile)
         }
       } else {
         workDir = path.dirname(skillPath)
@@ -72,16 +82,24 @@ export class SkillConverter {
       }
 
       // 3. Parse skill
+      this.logger.debug(`解析 Skill: ${mainFile}`)
       const skill = await this.parser.parse(mainFile)
+      this.logger.debug(`Skill 名称: ${skill.metadata.name}`)
 
       // 4. Analyze skill
+      this.logger.debug('分析 Skill 质量')
       const analysis = this.analyzer.analyze(skill)
+      this.logger.debug(`质量分数: ${analysis.estimatedQuality}/100`)
+      this.logger.debug(`推荐策略: ${analysis.recommendedStrategy}`)
 
       // 5. Determine source platform
       const sourcePlatform = this.detectSourcePlatform(mainFile)
+      this.logger.debug(`源平台: ${sourcePlatform}`)
 
       // 6. Collect all skill files (main file + resources)
+      this.logger.debug('收集资源文件')
       const allFiles = await this.collectSkillFiles(workDir, skill)
+      this.logger.debug(`找到 ${allFiles.length} 个资源文件`)
 
       // 7. Convert skill definition
       const convertedSkill = await this.convertSkill(
@@ -110,6 +128,7 @@ export class SkillConverter {
 
       // 10. Copy resource files
       if (allFiles.length > 0) {
+        this.logger.debug(`复制 ${allFiles.length} 个资源文件`)
         await this.copyResources(allFiles, workDir, outputDir, options.targetPlatform)
       }
 
@@ -121,6 +140,10 @@ export class SkillConverter {
         duration
       )
 
+      this.logger.debug(`转换完成，耗时: ${duration}ms`)
+      this.logger.debug(`压缩率: ${statistics.compressionRate.toFixed(1)}%`)
+      this.logger.debug(`保留关键词: ${statistics.preservedKeywords.length} 个`)
+
       return {
         success: true,
         platform: options.targetPlatform,
@@ -130,9 +153,15 @@ export class SkillConverter {
         statistics
       }
     } catch (error) {
-      throw new Error(
-        `Conversion failed: ${error instanceof Error ? error.message : String(error)}`
-      )
+      // Re-throw USK errors as-is
+      if (error instanceof SkillNotFoundError || error instanceof ConversionError) {
+        throw error
+      }
+
+      // Wrap other errors in ConversionError
+      const errorMessage =
+        error instanceof Error ? error.message : String(error)
+      throw new ConversionError(skillPath, errorMessage, error as Error)
     }
   }
 
@@ -195,7 +224,7 @@ export class SkillConverter {
     strategy: 'conservative' | 'balanced' | 'aggressive'
   ): string {
     const options: CompressionOptions = {
-      maxLength: 500,
+      maxLength: LIMITS.CODEX_DESCRIPTION_MAX_LENGTH,
       preserveKeywords: true,
       removeExamples: true,
       strategy
@@ -283,7 +312,8 @@ export class SkillConverter {
         await fs.copyFile(file, targetPath)
 
         // If it's a script file, preserve executable permissions
-        if (file.match(/\.(sh|bash|py|js|ts)$/)) {
+        const isScript = SCRIPT_EXTENSIONS.some(ext => file.endsWith(ext))
+        if (isScript) {
           try {
             await fs.chmod(targetPath, 0o755)
           } catch {
@@ -472,41 +502,76 @@ export class SkillConverter {
   /**
    * Batch convert multiple skills
    * 批量转换多个Skills
+   *
+   * @param skillPaths - Array of skill paths to convert
+   * @param options - Conversion options
+   * @param onProgress - Optional progress callback (currentIndex, total, skillPath)
    */
   async convertBatch(
     skillPaths: string[],
-    options: ConvertOptions
+    options: ConvertOptions,
+    onProgress?: (current: number, total: number, skillPath: string) => void
   ): Promise<ConversionResult[]> {
+    // Use parallel processing with concurrency limit
+    const concurrency = options.parallel !== false ? LIMITS.BATCH_CONCURRENCY : 1
     const results: ConversionResult[] = []
 
-    for (const skillPath of skillPaths) {
-      try {
-        const result = await this.convert(skillPath, options)
-        results.push(result)
-      } catch (error) {
-        // Continue with other files even if one fails
-        console.error(
-          `Failed to convert ${skillPath}: ${error instanceof Error ? error.message : String(error)}`
-        )
-        results.push({
-          success: false,
-          platform: options.targetPlatform,
-          outputPath: '',
-          metadata: {
-            name: path.basename(skillPath),
-            version: '0.0.0',
-            description: ''
-          },
-          quality: 0,
-          statistics: {
-            originalLength: 0,
-            finalLength: 0,
-            compressionRate: 0,
-            preservedKeywords: [],
-            lostInformation: [],
-            duration: 0
+    // Process in batches to avoid overwhelming the system
+    for (let i = 0; i < skillPaths.length; i += concurrency) {
+      const batch = skillPaths.slice(i, i + concurrency)
+
+      const batchResults = await Promise.allSettled(
+        batch.map(async (skillPath, batchIndex) => {
+          const currentIndex = i + batchIndex
+
+          // Call progress callback if provided
+          if (onProgress) {
+            onProgress(currentIndex + 1, skillPaths.length, skillPath)
+          }
+
+          try {
+            return await this.convert(skillPath, options)
+          } catch (error) {
+            // Return error result for failed conversion
+            throw new Error(
+              `Conversion failed: ${error instanceof Error ? error.message : String(error)}`
+            )
           }
         })
+      )
+
+      // Process batch results
+      for (const result of batchResults) {
+        if (result.status === 'fulfilled') {
+          results.push(result.value)
+        } else {
+          // Handle failed conversion
+          const errorMessage =
+            result.reason instanceof Error
+              ? result.reason.message
+              : String(result.reason)
+
+          results.push({
+            success: false,
+            platform: options.targetPlatform,
+            outputPath: '',
+            metadata: {
+              name: 'unknown',
+              version: '0.0.0',
+              description: ''
+            },
+            quality: 0,
+            statistics: {
+              originalLength: 0,
+              finalLength: 0,
+              compressionRate: 0,
+              preservedKeywords: [],
+              lostInformation: [],
+              duration: 0
+            },
+            error: errorMessage
+          })
+        }
       }
     }
 

@@ -53,12 +53,18 @@ export async function batchConvertCommand(
       compressionStrategy: options.strategy
     }
 
-    // Convert files
-    const progressSpinner = ora(
-      `Converting 0/${files.length} skills...`
-    ).start()
+    // Convert files with progress tracking
+    const progressSpinner = ora(`Converting 0/${files.length} skills...`).start()
 
-    const results = await converter.convertBatch(files, convertOptions)
+    const results = await converter.convertBatch(
+      files,
+      convertOptions,
+      (current, total, skillPath) => {
+        // Update spinner with current progress
+        const filename = skillPath.split('/').pop() || skillPath
+        progressSpinner.text = `Converting ${current}/${total}: ${chalk.cyan(filename)}`
+      }
+    )
 
     const successCount = results.filter((r) => r.success).length
     const failCount = results.length - successCount
@@ -115,10 +121,14 @@ export async function batchConvertCommand(
 
     // Failed files details
     if (failCount > 0) {
-      console.log('\n' + chalk.bold.yellow('⚠️  Failed Conversions:'))
+      console.log('\n' + chalk.bold.red('❌ Failed Conversions:'))
       results.forEach((result, index) => {
         if (!result.success) {
-          console.log(chalk.yellow('  •'), files[index])
+          const filename = files[index]
+          console.log(chalk.red('  ✗'), filename)
+          if (result.error) {
+            console.log(chalk.gray(`    ${result.error}`))
+          }
         }
       })
     }

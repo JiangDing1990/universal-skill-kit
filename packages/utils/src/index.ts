@@ -4,3 +4,4 @@
  */
 
 export * from './path-mapper'
+export * from './logger'

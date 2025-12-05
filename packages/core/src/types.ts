@@ -87,6 +87,8 @@ export interface ConvertOptions {
   compressionStrategy?: CompressionStrategy
   interactive?: boolean
   aiOptimize?: boolean
+  parallel?: boolean // Enable parallel batch processing (default: true)
+  verbose?: boolean // Enable verbose logging (default: false)
 }
 
 /**
@@ -100,6 +102,7 @@ export interface ConversionResult {
   metadata: SkillMetadata
   quality: number
   statistics: ConversionStatistics
+  error?: string // Error message if conversion failed
 }
 
 /**

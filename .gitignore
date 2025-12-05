@@ -59,11 +59,3 @@ pnpm-lock.yaml
 # Development documentation (keep local, don't commit)
 CLAUDE.md
 DEVELOPMENT.md
-
-# Temporary summary files (will be deleted)
-PROJECT_SUMMARY.md
-PROJECT_OVERVIEW.md
-PROJECT_SETUP_REPORT.md
-PROJECT_STATUS.md
-UPDATE_SUMMARY.md
-ENHANCEMENTS.md
