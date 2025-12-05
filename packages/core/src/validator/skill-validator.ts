@@ -268,8 +268,8 @@ export class SkillValidator {
     skill: SkillDefinition,
     warnings: ValidationWarning[]
   ): void {
-    // Check for broken links
-    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g
+    // Check for broken links (allow empty URLs to detect them)
+    const linkRegex = /\[([^\]]+)\]\(([^)]*)\)/g
     let match: RegExpExecArray | null
 
     while ((match = linkRegex.exec(skill.body)) !== null) {
