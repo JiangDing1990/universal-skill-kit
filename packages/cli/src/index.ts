@@ -3,4 +3,6 @@
  * Command-line interface for Universal Skill Kit
  */
 
-// TODO: Implement package exports
+export * from './commands/convert.js'
+export * from './commands/analyze.js'
+export * from './commands/batch-convert.js'

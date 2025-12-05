@@ -9,6 +9,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+**CLI Commands** (`@usk/cli/src/`)
+
+- Command-line interface with Commander.js
+- Three core commands:
+  - `usk convert <input>` - Convert single skill
+  - `usk analyze <input>` - Analyze skill and show recommendations
+  - `usk batch <pattern>` - Batch convert multiple skills
+- Interactive mode with inquirer prompts
+- Beautiful output with chalk colors
+- Progress indicators with ora spinners
+- Conversion statistics display
+- Quality score reporting
+- Keyword preservation tracking
+- Error handling and user-friendly messages
+
+**Convert Command**
+
+- Platform selection (claude|codex)
+- Compression strategy selection
+- Output directory specification
+- Interactive mode with prompts
+- Detailed conversion statistics
+- Success/failure indicators
+
+**Analyze Command**
+
+- Complexity analysis display
+- Technical keywords extraction
+- Strategy recommendations
+- Quality score with color coding
+- Warnings and suggestions
+- Verbose mode for detailed info
+- JSON output support
+
+**Batch Convert Command**
+
+- Glob pattern matching for multiple files
+- Batch processing with progress tracking
+- Overall statistics aggregation
+- Individual result reporting
+- Continue on error
+- Success/failure summary
+
 **Skill Converter** (`@usk/core/src/converter/`)
 
 - Bidirectional conversion: Claude ↔ Codex
