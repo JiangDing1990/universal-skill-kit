@@ -319,10 +319,8 @@ class CLI {
 
 - ✅ **技术文档**
   - ✅ TECHNICAL_DESIGN.md（15000+ 字）
-  - ✅ FEATURES.md（功能规格）
   - ✅ CHANGELOG.md（变更日志）
   - ✅ CONTRIBUTING.md（贡献指南）
-  - ✅ BILINGUAL_UI_DEMO.md（双语界面演示）⭐
 
 - ✅ **背景文档** (`docs/background/`)
   - ✅ Claude Skills 开发指南（580 行）
