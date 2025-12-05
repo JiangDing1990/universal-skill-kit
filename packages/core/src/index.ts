@@ -9,17 +9,17 @@ export * from './types'
 // Export parser
 export * from './parser'
 
+// Export optimizer
+export * from './optimizer'
+
 // Export converter (will be implemented)
 // export * from './converter'
 
 // Export validator (will be implemented)
 // export * from './validator'
 
-// Export optimizer (will be implemented)
-// export * from './optimizer'
-
-// Export analyzer (will be implemented)
-// export * from './analyzer'
+// Export analyzer
+export * from './analyzer'
 
 // Export quality checker (will be implemented)
 // export * from './quality'

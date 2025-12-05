@@ -74,6 +74,7 @@ export interface CompressionOptions {
   preserveKeywords: boolean
   removeExamples: boolean
   strategy?: CompressionStrategy
+  customKeywords?: string[]
 }
 
 /**

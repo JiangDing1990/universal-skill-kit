@@ -375,20 +375,6 @@ if (result.valid) {
 
 USK uses intelligent algorithms to compress descriptions:
 
-```typescript
-// Original (800 characters)
-"专用于构建基于 React 16.14 + DVA 2.x + @lianjia/antd-life 技术栈的前端应用。
-当用户需要创建列表页（CRUD）、详情页、表单弹窗或编写 DVA Model 时应使用此技能。
-提供完整的代码模板、最佳实践指南和质量检查清单。
-不适用于 React 18 或 Ant Design 5 项目..."
-
-// Compressed (480 characters)
-"专用于 React 16.14 + DVA 2.x + @lianjia/antd-life 技术栈。
-创建列表页（CRUD）、详情页、表单弹窗或编写 DVA Model 时使用。
-不适用于 React 18 或 Ant Design 5 项目。
-提供完整模板、代码示例和质量检查清单。"
-```
-
 **Compression strategies**:
 
 - Remove redundant examples
