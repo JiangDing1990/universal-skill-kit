@@ -1,5 +1,5 @@
 {
-  "name": "@usk/template",
+  "name": "@jiangding/usk-template",
   "version": "0.1.0",
   "description": "Template engine for Universal Skill Kit",
   "type": "module",

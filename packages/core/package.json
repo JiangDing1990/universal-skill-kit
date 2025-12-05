@@ -1,5 +1,5 @@
 {
-  "name": "@usk/core",
+  "name": "@jiangding/usk-core",
   "version": "0.1.0",
   "description": "Core conversion engine for Universal Skill Kit",
   "type": "module",
@@ -34,7 +34,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@usk/utils": "workspace:*",
+    "@jiangding/usk-utils": "workspace:*",
     "gray-matter": "^4.0.3",
     "yaml": "^2.3.4",
     "zod": "^3.22.4"
