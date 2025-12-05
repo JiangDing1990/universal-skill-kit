@@ -5,6 +5,10 @@
 
 // Types
 export * from './types/config'
+export * from './types/template'
 
 // Configuration
 export * from './config'
+
+// Template
+export * from './template'
