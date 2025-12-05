@@ -2,561 +2,317 @@
 
 <div align="center">
 
-[![npm version](https://img.shields.io/npm/v/universal-skill-kit.svg)](https://www.npmjs.com/package/universal-skill-kit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![Test Coverage](https://img.shields.io/badge/coverage-90.59%25-brightgreen.svg)](https://github.com/JiangDing1990/universal-skill-kit)
+[![Tests](https://img.shields.io/badge/tests-199%20passing-brightgreen.svg)](https://github.com/JiangDing1990/universal-skill-kit)
 
-**A unified toolkit for developing and converting AI CLI Skills across platforms**
+**跨平台AI CLI Skills开发和转换工具集**
 
-[English](README.md) | [简体中文](README_CN.md)
+[English](#) | [简体中文](README_CN.md)
 
 </div>
 
-## Overview
+## ✨ 功能特性
 
-Universal Skill Kit (USK) is a comprehensive toolset for developing, converting, and managing AI CLI Skills across different platforms including Claude Code and Codex. It solves the challenge of maintaining Skills for multiple AI CLI platforms by providing smart conversion tools and a unified development framework.
+- 🔄 **智能转换** - Claude ↔ Codex双向转换，保留关键信息
+- 📁 **多文件支持** - 完整支持目录结构、模板、脚本和资源文件
+- ✅ **自动验证** - 转换前检查Skill质量和完整性
+- 📦 **智能压缩** - 4种压缩策略，自动适配Codex 500字符限制
+- 🎯 **批量处理** - 一次性转换多个Skills
+- 💡 **质量分析** - 提供详细的质量评分和改进建议
+- 🎨 **美观输出** - 彩色进度提示和清晰的错误信息
 
-### Key Features
+## 📖 快速开始
 
-- 🔄 **One-Click Conversion** - Convert Skills between Claude and Codex formats instantly
-- 🛠️ **Unified Development** - Write once, deploy to multiple platforms
-- 📦 **Smart Optimization** - Automatic description compression and structure optimization
-- ✅ **Syntax Validation** - Built-in TypeScript/TSX validation for templates
-- 🎯 **Template Engine** - Conditional compilation for platform-specific content
-- 🚀 **Batch Processing** - Convert multiple Skills in parallel
-- 🔌 **Extensible** - Plugin system for custom transformations
-
-## Why Universal Skill Kit?
-
-**Problem**: AI CLI platforms like Claude Code and Codex have different Skill formats:
-
-- **Claude**: Allows detailed documentation (no length limit), stores in `~/.claude/skills/`
-- **Codex**: Requires concise descriptions (500 char max), stores in `~/.codex/skills/`
-
-**Solution**: USK bridges these differences by:
-
-1. Intelligently compressing descriptions while preserving key information
-2. Adapting directory structures and paths automatically
-3. Providing a unified configuration format for cross-platform development
-
-## Quick Start
-
-### Installation
+### 安装
 
 ```bash
-npm install -g universal-skill-kit
+npm install -g @usk/cli
 
-# Or use with npx
-npx universal-skill-kit --help
+# 或使用 pnpm
+pnpm add -g @usk/cli
 ```
 
-### Convert Existing Skill
+### 基本使用
+
+#### 1. 转换单个Skill
 
 ```bash
-# Convert Claude Skill to Codex
-usk convert ~/.claude/skills/my-skill --to codex --output ~/.codex/skills
+# 转换到Codex平台
+usk convert my-skill/ -t codex -o ./output
 
-# Convert Codex Skill to Claude
-usk convert ~/.codex/skills/my-skill --to claude --output ~/.claude/skills
+# 转换到Claude平台
+usk convert my-skill.md -t claude -o ./output
 
-# Batch convert all Skills
-usk batch-convert ~/.claude/skills --from claude --to codex
+# 使用交互模式
+usk convert my-skill/ -t codex --interactive
 ```
 
-### Create Cross-Platform Skill
+#### 2. 分析Skill质量
 
 ```bash
-# 1. Initialize project
-usk init my-awesome-skill --template universal
+# 分析Skill并获取建议
+usk analyze my-skill/
 
-# 2. Edit configuration
-cd my-awesome-skill
-# Edit skill.config.json and SKILL.md
-
-# 3. Build for all platforms
-usk build --platform all
-
-# Output:
-# ✓ .claude/skills/my-awesome-skill/
-# ✓ .codex/skills/my-awesome-skill/
+# 输出JSON格式
+usk analyze my-skill/ --json
 ```
 
-### Validate Skill
+#### 3. 批量转换
 
 ```bash
-# Validate Claude Skill
-usk validate ~/.claude/skills/my-skill --platform claude
+# 转换目录下所有Skills
+usk batch "skills/**/*.md" -t codex -o ./output
 
-# Validate Codex Skill
-usk validate ~/.codex/skills/my-skill --platform codex
+# 使用特定压缩策略
+usk batch "skills/*/" -t codex -s aggressive
 ```
 
-## CLI Commands
+## 🎯 核心功能
 
-### `convert`
+### 1. 智能验证系统
 
-Convert a Skill from one platform to another.
+转换前自动检查Skill质量：
 
 ```bash
-usk convert <source> --to <platform> [options]
+$ usk convert my-skill/ -t codex
 
-Options:
-  -t, --to <platform>    Target platform (claude|codex)
-  -o, --output <dir>     Output directory
+✔ Skill parsed
+✔ Validation passed
+
+⚠️  Validation Warnings:
+  ⚠ [description] Description is 888 chars (Codex limit: 500)
+  ℹ [body] Consider adding code examples
+
+ℹ️  Platform-Specific Notes:
+  • [description] Will be compressed to 409 chars (53.9% compression)
+
+✔ Conversion completed!
 ```
 
-### `build`
+**验证检查**：
+- ❌ **Errors（错误）**：必填字段、资源文件存在性
+- ⚠️ **Warnings（警告）**：质量建议、格式问题
+- ℹ️ **Platform Notes（平台提示）**：Codex限制、压缩需求
 
-Build Skills from unified configuration.
+### 2. 多文件Skills支持
+
+完整支持复杂的Skill结构：
+
+```
+my-skill/
+├── SKILL.md              # 主文件
+├── templates/            # 模板文件
+│   └── example.template.md
+├── scripts/              # 脚本文件
+│   ├── setup.sh
+│   └── helper.ts
+└── resources/            # 资源文件
+    └── config.yaml
+```
+
+转换后保持完整的目录结构和文件权限。
+
+### 3. 智能描述压缩
+
+4种压缩策略自动适配Codex 500字符限制：
+
+- **Conservative（保守）**：最小化修改，保留大部分内容
+- **Balanced（平衡）**：适度压缩，移除示例代码（推荐）
+- **Aggressive（激进）**：最大化压缩，提取关键词
 
 ```bash
-usk build [options]
-
-Options:
-  -p, --platform <platform>  Target platform (claude|codex|all) [default: all]
-  -c, --config <file>        Config file path [default: skill.config.json]
+# 指定压缩策略
+usk convert my-skill/ -t codex -s aggressive
 ```
 
-### `validate`
+### 4. 质量分析
 
-Validate Skill format and syntax.
+获取详细的质量评分和改进建议：
 
 ```bash
-usk validate <dir> [options]
+$ usk analyze my-skill/
 
-Options:
-  -p, --platform <platform>  Platform to validate against (claude|codex)
+📊 Skill Analysis Report
+═══════════════════════════════════════════════
+
+Basic Information:
+  Name: my-skill
+  Version: 1.0.0
+  Author: Author Name
+  Tags: react, typescript
+
+Complexity Analysis:
+  Level: MEDIUM
+  Description Length: 450 chars
+  Has Code Examples: ✓
+
+Technical Keywords:
+  React, TypeScript, API, GraphQL
+
+Compression Strategy:
+  Recommended: balanced
+
+Quality Assessment:
+  Score: 85/100
+
+💡 Suggestions:
+  ⚡ Add author information for better attribution
+  ℹ Consider adding more code examples
 ```
 
-### `init`
-
-Initialize a new Skill project.
-
-```bash
-usk init <name> [options]
-
-Options:
-  -t, --template <name>  Template name (basic|universal|react) [default: basic]
-```
-
-### `batch-convert`
-
-Convert multiple Skills in batch.
-
-```bash
-usk batch-convert <dir> [options]
-
-Options:
-  --from <platform>  Source platform [default: claude]
-  --to <platform>    Target platform [default: codex]
-```
-
-## Configuration
-
-### skill.config.json
-
-A unified configuration file for cross-platform Skill development:
-
-```json
-{
-  "name": "my-skill",
-  "version": "1.0.0",
-  "author": "Your Name",
-  "platforms": {
-    "claude": {
-      "enabled": true,
-      "output": ".claude/skills"
-    },
-    "codex": {
-      "enabled": true,
-      "output": ".codex/skills"
-    }
-  },
-  "description": {
-    "full": "Complete detailed description for Claude...",
-    "short": "Concise description for Codex (max 500 chars)",
-    "keywords": ["React", "TypeScript", "DVA"]
-  },
-  "body": {
-    "source": "SKILL.md",
-    "sections": {
-      "claude": ["all"],
-      "codex": ["Core Guide", "Common Scenarios", "Tech Stack"]
-    }
-  },
-  "resources": {
-    "templates": ["assets/templates/**/*.tsx"],
-    "references": ["references/**/*.md"],
-    "scripts": ["scripts/**/*.sh"]
-  },
-  "build": {
-    "validate": true,
-    "minify": false
-  }
-}
-```
-
-## Template Engine
-
-Use conditional compilation to write platform-specific content:
-
-```markdown
----
-name: my-skill
-version: 1.0.0
----
-
-# {{name}}
-
-<!-- @if platform=claude -->
-
-This detailed content only appears in Claude Skills.
-Can include extensive documentation, examples, and references.
-
-<!-- @endif -->
-
-<!-- @if platform=codex -->
-
-This concise content appears in Codex Skills.
-Optimized for the 500-character description limit.
-
-<!-- @endif -->
-
-<!-- @if platform=claude,codex -->
-
-This content appears on both platforms.
-
-<!-- @endif -->
-
-## Common Usage
-
-<!-- @unless platform=codex -->
-
-Extended examples and detailed explanations...
-
-<!-- @endunless -->
-```
-
-## Architecture
+## 🏗️ 项目结构
 
 ```
 universal-skill-kit/
 ├── packages/
-│   ├── core/                    # Core conversion engine
-│   │   ├── converter/           # Platform converters
-│   │   ├── parser/              # Skill parsers
-│   │   ├── validator/           # Syntax validators
-│   │   └── optimizer/           # Smart optimizers
-│   ├── cli/                     # CLI tool
-│   ├── builder/                 # Unified build tool
-│   └── utils/                   # Common utilities
-├── templates/                   # Skill templates
-│   ├── claude/
-│   ├── codex/
-│   └── universal/
-└── docs/                        # Documentation
-    ├── en/
-    └── zh-CN/
+│   ├── core/        # @usk/core - 核心转换引擎
+│   │   ├── parser/      # Skill解析器
+│   │   ├── optimizer/   # 智能压缩器
+│   │   ├── analyzer/    # 质量分析器
+│   │   ├── validator/   # 验证器 ✨ 新增
+│   │   └── converter/   # 转换器（支持多文件）
+│   ├── cli/         # @usk/cli - 命令行工具
+│   └── utils/       # @usk/utils - 工具函数
+├── docs/            # 文档
+└── examples/        # 示例
 ```
 
-## Examples
+## 📊 测试覆盖率
 
-### Example 1: Quick Migration
-
-Migrate an existing Claude Skill to Codex:
-
-```bash
-# Before: Skill in ~/.claude/skills/react-helper/
-usk convert ~/.claude/skills/react-helper --to codex
-
-# After: Skill in ~/.codex/skills/react-helper/
-# ✓ Description compressed to 480 characters
-# ✓ Paths updated (.claude → .codex)
-# ✓ Body optimized for Codex format
+```
+总体覆盖率: 90.59%
+─────────────────────────────
+Validator:   97.75% ⭐
+Analyzer:    96.01%
+Optimizer:   94.79%
+Parser:      84.61%
+Converter:   83.36%
+─────────────────────────────
+测试通过: 199/199 ✅
 ```
 
-### Example 2: Universal Skill Development
+## 🔧 API使用
 
-Develop a Skill that works on both platforms:
-
-```bash
-# 1. Initialize
-usk init frontend-helper --template universal
-
-# 2. Structure created
-frontend-helper/
-├── SKILL.md              # Source with conditional blocks
-├── skill.config.json     # Unified config
-├── assets/
-│   └── templates/
-└── references/
-
-# 3. Build for both platforms
-cd frontend-helper
-usk build --platform all
-
-# 4. Output
-.claude/skills/frontend-helper/   # Full version
-.codex/skills/frontend-helper/    # Optimized version
-```
-
-### Example 3: Batch Migration
-
-Migrate all your Claude Skills to Codex:
-
-```bash
-# Convert all Skills in directory
-usk batch-convert ~/.claude/skills --from claude --to codex
-
-# Output
-✓ Converting react-helper... Done
-✓ Converting vue-assistant... Done
-✓ Converting api-generator... Done
-
-✓ Successfully converted 3 Skills
-✗ Failed: 0
-```
-
-## API Reference
-
-### Converter API
+### 使用核心API
 
 ```typescript
-import { SkillConverter } from 'universal-skill-kit'
+import { SkillConverter, SkillValidator, SkillAnalyzer } from '@usk/core'
 
+// 1. 验证Skill
+const validator = new SkillValidator()
+const validation = await validator.validate(skill, skillPath)
+
+if (!validation.valid) {
+  console.log('Errors:', validation.errors)
+}
+
+// 2. 分析Skill
+const analyzer = new SkillAnalyzer()
+const report = analyzer.analyze(skill)
+console.log('Quality Score:', report.estimatedQuality)
+console.log('Recommended Strategy:', report.recommendedStrategy)
+
+// 3. 转换Skill
 const converter = new SkillConverter()
-
-// Convert a Skill
-const result = await converter.convert('/path/to/skill', {
+const result = await converter.convert(skillPath, {
   targetPlatform: 'codex',
-  outputDir: '/output/path'
+  outputDir: './output',
+  compressionStrategy: 'balanced'
 })
 
-console.log(result.outputPath) // Converted Skill location
-console.log(result.metadata) // Skill metadata
+console.log('Conversion successful:', result.success)
+console.log('Output:', result.outputPath)
+console.log('Compression rate:', result.statistics.compressionRate)
 ```
 
-### Builder API
+## 🎨 CLI选项
 
-```typescript
-import { SkillBuilder } from 'universal-skill-kit'
-
-const builder = new SkillBuilder()
-
-// Build from config
-const result = await builder.build('skill.config.json', 'codex')
-
-console.log(result.success) // true
-console.log(result.outputPath) // Output directory
-```
-
-### Validator API
-
-```typescript
-import { SkillValidator } from 'universal-skill-kit'
-
-const validator = new SkillValidator()
-
-// Validate a Skill
-const result = await validator.validate('/path/to/skill', 'claude')
-
-if (result.valid) {
-  console.log('✓ Validation passed')
-} else {
-  console.error('Errors:', result.errors)
-  console.warn('Warnings:', result.warnings)
-}
-```
-
-## Advanced Features
-
-### Description Compression
-
-USK uses intelligent algorithms to compress descriptions:
-
-**Compression strategies**:
-
-- Remove redundant examples
-- Simplify sentence structure
-- Preserve technical keywords
-- Maintain essential information
-
-### Path Mapping
-
-Automatically updates paths when converting:
-
-```typescript
-// Claude paths
-~/.claude/skills/my-skill/
-.claude/skills/my-skill/
-
-// Codex paths (auto-mapped)
-~/.codex/skills/my-skill/
-.codex/skills/my-skill/
-```
-
-### Plugin System
-
-Extend functionality with plugins:
-
-```typescript
-import { Plugin } from 'universal-skill-kit'
-
-const customPlugin: Plugin = {
-  name: 'my-plugin',
-  version: '1.0.0',
-  hooks: {
-    beforeConvert: skill => {
-      // Modify skill before conversion
-      return skill
-    },
-    afterConvert: skill => {
-      // Modify skill after conversion
-      return skill
-    }
-  }
-}
-
-const converter = new SkillConverter()
-converter.use(customPlugin)
-```
-
-## Testing
+### convert命令
 
 ```bash
-# Run all tests
-npm test
+usk convert <input> [options]
 
-# Run specific tests
-npm test -- converter
-npm test -- validator
-
-# Run with coverage
-npm run test:coverage
-
-# Integration tests
-npm run test:integration
+选项:
+  -t, --target <platform>      目标平台 (claude|codex) [默认: codex]
+  -o, --output <dir>           输出目录
+  -s, --strategy <strategy>    压缩策略 (conservative|balanced|aggressive)
+  -i, --interactive            交互模式
 ```
 
-## Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
-### Development Setup
+### analyze命令
 
 ```bash
-# Clone repository
-git clone https://github.com/yourusername/universal-skill-kit.git
-cd universal-skill-kit
+usk analyze <input> [options]
 
-# Install dependencies
-npm install
-
-# Run in development mode
-npm run dev
-
-# Build
-npm run build
-
-# Run tests
-npm test
+选项:
+  -v, --verbose               显示详细分析
+  --json                      JSON格式输出
 ```
 
-### Code Style
+### batch命令
 
-- **Language**: TypeScript 5.3+
-- **Format**: Prettier
-- **Lint**: ESLint
-- **Commit**: Conventional Commits
+```bash
+usk batch <pattern> [options]
 
-## Roadmap
-
-See [ROADMAP.md](docs/ROADMAP.md) for detailed development plans.
-
-**Phase 1 (MVP)** - Q1 2024
-
-- ✅ Core conversion engine
-- ✅ CLI tool with basic commands
-- ✅ Description compression
-- ✅ Path mapping
-
-**Phase 2** - Q2 2024
-
-- 🔄 Template engine with conditional compilation
-- 🔄 Unified build system
-- 🔄 Syntax validation
-- 🔄 Batch processing
-
-**Phase 3** - Q3 2024
-
-- 📋 Plugin system
-- 📋 Support for more platforms
-- 📋 Web UI
-- 📋 VS Code extension
-
-## FAQ
-
-### Q: What's the difference between conversion and building?
-
-**Conversion** takes an existing Skill and transforms it to another platform format. It's for migrating existing Skills.
-
-**Building** uses a unified configuration to generate Skills for multiple platforms simultaneously. It's for developing new cross-platform Skills.
-
-### Q: Will conversion lose information?
-
-USK uses intelligent compression that preserves essential information:
-
-- Technical keywords are always preserved
-- Key usage instructions remain intact
-- Only redundant examples and verbose text are simplified
-
-### Q: Can I customize the conversion process?
-
-Yes! Use the plugin system to add custom transformation logic:
-
-```typescript
-const myPlugin = {
-  name: 'custom-transformer',
-  hooks: {
-    beforeConvert: skill => {
-      // Your custom logic
-      return modifiedSkill
-    }
-  }
-}
-
-converter.use(myPlugin)
+选项:
+  -t, --target <platform>     目标平台 [默认: codex]
+  -o, --output <dir>          输出目录
+  -s, --strategy <strategy>   压缩策略
+  --parallel                  并行处理
 ```
 
-### Q: Does it support other AI CLI platforms?
+## 🌟 亮点功能
 
-Currently supports Claude Code and Codex. The architecture is designed to be extensible - adding support for new platforms requires implementing a platform adapter.
+### 自动验证
 
-## License
+转换前自动检查Skill质量：
+- 检查必填字段（name, description, body）
+- 验证资源文件存在性
+- 检测常见问题（空链接、TODO标记等）
+- 平台特定要求检查（Codex 500字符限制）
 
-[MIT License](LICENSE) © 2024
+### 智能压缩
 
-## Acknowledgments
+保留关键技术信息的同时压缩描述：
+- 提取技术关键词（版本号、框架名称等）
+- 移除冗余示例代码
+- 简化冗长表述
+- 自动截断保持句子完整性
 
-- Claude Code team for the excellent AI CLI
-- Codex team for Skill support
-- All contributors to this project
+### 多文件支持
 
-## Links
+完整支持复杂Skill结构：
+- 递归复制所有资源文件
+- 保持目录结构和相对路径
+- 脚本文件权限保留（755）
+- 缺失文件警告提示
 
-- [Documentation](docs/)
-- [Technical Design](docs/TECHNICAL_DESIGN.md)
-- [Contributing Guide](CONTRIBUTING.md)
-- [Issue Tracker](https://github.com/yourusername/universal-skill-kit/issues)
-- [Changelog](CHANGELOG.md)
+## 📝 贡献
+
+欢迎贡献！请查看 [CONTRIBUTING.md](CONTRIBUTING.md) 了解详情。
+
+## 📄 许可证
+
+[MIT](LICENSE)
+
+## 🔗 相关链接
+
+- [技术设计文档](docs/TECHNICAL_DESIGN.md)
+- [开发路线图](docs/ROADMAP.md)
+- [更新日志](CHANGELOG.md)
+- [贡献指南](CONTRIBUTING.md)
+
+## 💬 反馈
+
+遇到问题或有建议？请提交 [Issue](https://github.com/JiangDing1990/universal-skill-kit/issues)
 
 ---
 
 <div align="center">
 
-**Made with ❤️ for the AI CLI community**
-
-[⭐ Star us on GitHub](https://github.com/yourusername/universal-skill-kit)
+Made with ❤️ by [JiangDing1990](https://github.com/JiangDing1990)
 
 </div>

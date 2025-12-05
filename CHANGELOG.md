@@ -120,7 +120,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated `@usk/core` package dependencies: added `@usk/utils` workspace dependency
 - Fixed `@usk/utils` package.json exports configuration
-- Updated core module exports to include converter
+- Updated core module exports to include converter and validator
+- Enhanced README with comprehensive feature documentation
+- Fixed Validator regex to properly detect empty links
+
+### Tests
+
+**New Tests** (25 new tests):
+- Validator module: 25 comprehensive test cases
+  - Metadata validation: 7 tests
+  - Description length: 3 tests
+  - Body content: 4 tests
+  - Resource files: 3 tests
+  - Common issues: 3 tests
+  - Platform-specific: 3 tests
+  - Severity levels: 2 tests
+
+**Test Statistics**:
+- Total tests: 199 passing ✅
+- Overall coverage: 90.59%
+- Validator coverage: 97.75% ⭐
+
+### Documentation
+
+**New Documentation**:
+- USER_GUIDE.md - Comprehensive user guide (580+ lines)
+  - Quick start tutorials
+  - Advanced usage examples
+  - FAQ section
+  - Best practices
+  - Troubleshooting guide
+
+**Updated Documentation**:
+- README.md - Complete rewrite with actual features
+  - Feature showcase
+  - Installation guide
+  - Usage examples
+  - API documentation
 
 ### Planned for v0.3.0
 
