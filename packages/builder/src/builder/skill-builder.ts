@@ -10,6 +10,8 @@ import type { ResolvedConfig, Platform } from '../types/config'
 import type { BuildOptions, BuildResult, PlatformBuildResult, BuildStatistics } from '../types/builder'
 import { ConfigLoader } from '../config'
 import { TemplateEngine, TemplateContextManager } from '../template'
+import { CacheManager } from '../cache'
+import type { CacheConfig } from '../types/cache'
 
 /**
  * 构建错误
@@ -32,12 +34,14 @@ export class SkillBuilder {
   private config: ResolvedConfig
   private templateEngine: TemplateEngine
   private contextManager: TemplateContextManager
+  private cacheManager: CacheManager
   private statistics: BuildStatistics
 
-  constructor(config: ResolvedConfig) {
+  constructor(config: ResolvedConfig, cacheConfig?: CacheConfig) {
     this.config = config
     this.templateEngine = new TemplateEngine()
     this.contextManager = new TemplateContextManager()
+    this.cacheManager = new CacheManager(cacheConfig)
     this.statistics = {
       templatesRendered: 0,
       filesCopied: 0,
@@ -49,10 +53,12 @@ export class SkillBuilder {
   /**
    * 从配置文件创建Builder
    */
-  static async fromConfig(configPath?: string): Promise<SkillBuilder> {
+  static async fromConfig(configPath?: string, cacheConfig?: CacheConfig): Promise<SkillBuilder> {
     const loader = new ConfigLoader()
     const config = await loader.load(configPath)
-    return new SkillBuilder(config)
+    const builder = new SkillBuilder(config, cacheConfig)
+    await builder.cacheManager.initialize()
+    return builder
   }
 
   /**
@@ -163,15 +169,34 @@ export class SkillBuilder {
    */
   private async renderTemplate(platform: Platform, options: BuildOptions): Promise<string> {
     try {
-      // 创建模板上下文
-      const context = this.contextManager.createContext(this.config, platform)
-
       // 读取入口模板
       const entryPath = resolve(this.config.root, this.config.source.entry)
 
       if (!existsSync(entryPath)) {
         throw new Error(`入口文件不存在: ${this.config.source.entry}`)
       }
+
+      // 生成缓存键
+      const templateHash = await this.cacheManager.generateFileHash(entryPath)
+      const cacheKey = await this.cacheManager.generateCacheKey(entryPath, {
+        include: this.getTemplateDependencies()
+      })
+      // 将平台信息添加到缓存键中
+      const platformCacheKey = `${cacheKey}:${platform}`
+
+      // 尝试从缓存获取
+      if (!options.force) {
+        const cached = await this.cacheManager.get<string>(platformCacheKey)
+        if (cached) {
+          if (options.verbose) {
+            console.log(`  ✨ Using cached template for ${platform}`)
+          }
+          return cached
+        }
+      }
+
+      // 创建模板上下文
+      const context = this.contextManager.createContext(this.config, platform)
 
       if (options.verbose) {
         console.log(`  📝 Rendering template: ${this.config.source.entry}`)
@@ -184,10 +209,47 @@ export class SkillBuilder {
         console.log(`  📦 Used partials: ${result.usedPartials.join(', ')}`)
       }
 
+      // 缓存渲染结果
+      await this.cacheManager.set(platformCacheKey, result.content, {
+        hash: templateHash,
+        dependencies: this.getTemplateDependencies(),
+        tags: [platform, 'template']
+      })
+
       return result.content
     } catch (error) {
       throw new BuildError(`模板渲染失败: ${(error as Error).message}`, platform, error as Error)
     }
+  }
+
+  /**
+   * 获取模板依赖文件列表
+   */
+  private getTemplateDependencies(): string[] {
+    const dependencies: string[] = []
+
+    // 添加配置文件
+    if (this.config.configPath) {
+      dependencies.push(this.config.configPath)
+    }
+
+    // 添加入口模板
+    const entryPath = resolve(this.config.root, this.config.source.entry)
+    dependencies.push(entryPath)
+
+    // 添加模板目录下的所有文件（如果有）
+    if (this.config.source.templates) {
+      const templates = Array.isArray(this.config.source.templates)
+        ? this.config.source.templates
+        : [this.config.source.templates]
+
+      for (const template of templates) {
+        const templatePath = resolve(this.config.root, template)
+        dependencies.push(templatePath)
+      }
+    }
+
+    return dependencies
   }
 
   /**
@@ -305,5 +367,12 @@ export class SkillBuilder {
    */
   getStatistics(): BuildStatistics {
     return { ...this.statistics }
+  }
+
+  /**
+   * 获取缓存管理器
+   */
+  getCacheManager(): CacheManager {
+    return this.cacheManager
   }
 }
