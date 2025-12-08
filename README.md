@@ -16,14 +16,24 @@
 
 ## ✨ Features
 
+### Phase 1: Conversion Tools
 - 🔄 **Smart Conversion** - Bidirectional Claude ↔ Codex conversion with key information preservation
 - 📁 **Multi-File Support** - Full support for directory structures, templates, scripts, and resource files
 - ✅ **Automatic Validation** - Pre-conversion quality and completeness checks
 - 📦 **Intelligent Compression** - 4 compression strategies, auto-adapting to Codex 500-character limit
 - 🎯 **Batch Processing** - Convert multiple Skills at once with parallel processing
 - 💡 **Quality Analysis** - Detailed quality scoring and improvement suggestions
+
+### Phase 2: Unified Development (New! 🎉)
+- 🚀 **Project Initialization** - `usk init` with 3 project templates
+- 🏗️ **Unified Build System** - Build for multiple platforms from single source
+- 📝 **Template Engine** - Handlebars-based with platform conditionals
+- 💾 **Smart Caching** - File-level caching with 60-80% speed boost
+- 🔌 **Plugin System** - Extensible with lifecycle hooks
+- 🔍 **Project Diagnostics** - `usk doctor` for health checks
+- ✅ **Config Validation** - `usk validate` with detailed error reporting
 - 🎨 **Beautiful Output** - Colorful progress indicators and clear error messages
-- ⚡ **High Performance** - 80% faster with parallel batch conversion
+- ⚡ **High Performance** - Parallel builds with concurrency control
 
 ## 📖 Quick Start
 
@@ -41,7 +51,9 @@ yarn global add @jiangding/usk-cli
 
 ### Basic Usage
 
-#### 1. Convert a Single Skill
+#### Phase 1: Conversion Tools
+
+**1. Convert a Single Skill**
 
 ```bash
 # Convert to Codex platform
@@ -52,12 +64,9 @@ usk convert my-skill.md -t claude -o ./output
 
 # Use interactive mode
 usk convert my-skill/ -t codex --interactive
-
-# With verbose logging
-usk convert my-skill/ -t codex --verbose
 ```
 
-#### 2. Analyze Skill Quality
+**2. Analyze Skill Quality**
 
 ```bash
 # Analyze skill and get recommendations
@@ -67,17 +76,81 @@ usk analyze my-skill/
 usk analyze my-skill/ --json
 ```
 
-#### 3. Batch Convert
+**3. Batch Convert**
 
 ```bash
 # Convert all skills in directory
 usk batch "skills/**/*.md" -t codex -o ./output
 
-# Use specific compression strategy
-usk batch "skills/*/" -t codex -s aggressive
-
-# Parallel processing (default)
+# Parallel processing
 usk batch "skills/*/" -t codex --parallel
+```
+
+#### Phase 2: Unified Development (New! 🎉)
+
+**1. Initialize a New Project**
+
+```bash
+# Interactive initialization
+usk init my-skill
+
+# Quick initialization with defaults
+usk init my-skill --yes
+
+# Use specific template
+usk init my-skill --template multi-platform
+```
+
+**2. Build for Multiple Platforms**
+
+```bash
+# Build all enabled platforms
+usk build
+
+# Build with verbose output
+usk build --verbose
+
+# Force rebuild (ignore cache)
+usk build --force
+
+# Watch mode
+usk build --watch
+```
+
+**3. Validate Configuration**
+
+```bash
+# Validate config file
+usk validate
+
+# Strict mode (warnings as errors)
+usk validate --strict
+
+# JSON output
+usk validate --json
+```
+
+**4. Diagnose Project**
+
+```bash
+# Check project health
+usk doctor
+
+# Show all checks
+usk doctor --verbose
+```
+
+**5. Manage Cache**
+
+```bash
+# View cache status
+usk cache status
+
+# Clean cache
+usk cache clean --force
+
+# Remove expired entries
+usk cache prune
 ```
 
 ## 🎯 Core Features

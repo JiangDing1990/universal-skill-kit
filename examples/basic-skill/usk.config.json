@@ -1,0 +1,28 @@
+{
+  "name": "basic-skill-example",
+  "version": "1.0.0",
+  "author": "USK Team",
+  "description": "A basic skill example demonstrating Universal Skill Kit",
+  "tags": ["example", "basic", "demo"],
+  "platforms": {
+    "claude": {
+      "enabled": true,
+      "output": "dist/claude"
+    },
+    "codex": {
+      "enabled": true,
+      "output": "dist/codex"
+    }
+  },
+  "source": {
+    "entry": "src/SKILL.md",
+    "templates": "templates/**/*",
+    "scripts": "scripts/**/*",
+    "resources": "resources/**/*"
+  },
+  "build": {
+    "clean": true,
+    "sourcemap": false,
+    "minify": false
+  }
+}
