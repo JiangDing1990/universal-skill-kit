@@ -9,6 +9,9 @@ import { convertCommand } from './commands/convert.js'
 import { analyzeCommand } from './commands/analyze.js'
 import { batchConvertCommand } from './commands/batch-convert.js'
 import { createCacheCommand } from './commands/cache.js'
+import { initCommand } from './commands/init.js'
+import { validateCommand } from './commands/validate.js'
+import { doctorCommand } from './commands/doctor.js'
 
 const program = new Command()
 
@@ -16,6 +19,15 @@ program
   .name('usk')
   .description('Universal Skill Kit - Convert skills between Claude Code and Codex')
   .version('0.2.0')
+
+// Init command
+program
+  .command('init [name]')
+  .description('Initialize a new USK project')
+  .option('-t, --template <type>', 'Template type (basic|multi-platform|advanced)', 'basic')
+  .option('-y, --yes', 'Skip prompts and use defaults', false)
+  .option('-f, --force', 'Force overwrite existing directory', false)
+  .action(initCommand)
 
 // Convert command
 program
@@ -51,6 +63,23 @@ program
 
 // Cache management command
 program.addCommand(createCacheCommand())
+
+// Validate command
+program
+  .command('validate')
+  .description('Validate USK configuration file')
+  .option('-c, --config <path>', 'Configuration file path', 'usk.config.json')
+  .option('--json', 'Output as JSON', false)
+  .option('--strict', 'Strict mode (warnings are errors)', false)
+  .action(validateCommand)
+
+// Doctor command
+program
+  .command('doctor')
+  .description('Diagnose USK project and check for issues')
+  .option('-c, --config <path>', 'Configuration file path', 'usk.config.json')
+  .option('-v, --verbose', 'Show all checks including passed ones', false)
+  .action(doctorCommand)
 
 // Parse command line arguments
 program.parse(process.argv)
