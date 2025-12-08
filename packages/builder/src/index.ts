@@ -8,6 +8,7 @@ export * from './types/config'
 export * from './types/template'
 export * from './types/builder'
 export * from './types/cache'
+export * from './types/plugin'
 
 // Configuration
 export * from './config'
@@ -17,6 +18,10 @@ export * from './template'
 
 // Cache
 export * from './cache'
+
+// Plugin
+export * from './plugin'
+export * from './plugin/examples'
 
 // Utils
 export * from './utils/error-reporter'
