@@ -37,6 +37,12 @@ export interface BuildOptions {
    * 监听模式
    */
   watch?: boolean
+
+  /**
+   * 并发构建数量限制
+   * @default 5
+   */
+  concurrency?: number
 }
 
 /**

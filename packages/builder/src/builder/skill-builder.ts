@@ -12,6 +12,7 @@ import { ConfigLoader } from '../config'
 import { TemplateEngine, TemplateContextManager } from '../template'
 import { CacheManager } from '../cache'
 import type { CacheConfig } from '../types/cache'
+import { createErrorReporter, type ErrorReporter } from '../utils/error-reporter'
 
 /**
  * 构建错误
@@ -35,6 +36,7 @@ export class SkillBuilder {
   private templateEngine: TemplateEngine
   private contextManager: TemplateContextManager
   private cacheManager: CacheManager
+  private errorReporter: ErrorReporter
   private statistics: BuildStatistics
 
   constructor(config: ResolvedConfig, cacheConfig?: CacheConfig) {
@@ -42,6 +44,7 @@ export class SkillBuilder {
     this.templateEngine = new TemplateEngine()
     this.contextManager = new TemplateContextManager()
     this.cacheManager = new CacheManager(cacheConfig)
+    this.errorReporter = createErrorReporter()
     this.statistics = {
       templatesRendered: 0,
       filesCopied: 0,
@@ -82,19 +85,31 @@ export class SkillBuilder {
       await this.cleanOutputDirs(enabledPlatforms)
     }
 
-    // 并行构建所有平台
+    // 使用p-limit控制并发
+    const pLimit = (await import('p-limit')).default
+    const concurrency = options.concurrency ?? 5
+    const limit = pLimit(concurrency)
+
+    if (options.verbose) {
+      console.log(`\n🚀 Building ${enabledPlatforms.length} platform(s) with concurrency limit: ${concurrency}`)
+    }
+
+    // 并行构建所有平台（受并发限制）
     const buildPromises = enabledPlatforms.map((platform) =>
-      this.buildForPlatform(platform, options).catch((error) => {
-        errors.push(error)
-        return {
-          platform,
-          success: false,
-          outputPath: this.getOutputPath(platform),
-          size: 0,
-          duration: 0,
-          error: error as Error
-        }
-      })
+      limit(() =>
+        this.buildForPlatform(platform, options).catch((error) => {
+          errors.push(error)
+          this.errorReporter.fromError(error as Error, platform)
+          return {
+            platform,
+            success: false,
+            outputPath: this.getOutputPath(platform),
+            size: 0,
+            duration: 0,
+            error: error as Error
+          }
+        })
+      )
     )
 
     const platformResults = await Promise.all(buildPromises)
@@ -104,7 +119,15 @@ export class SkillBuilder {
     for (const result of results) {
       if (result.warnings) {
         warnings.push(...result.warnings)
+        for (const warning of result.warnings) {
+          this.errorReporter.addWarning(warning, { file: result.platform })
+        }
       }
+    }
+
+    // 输出错误报告
+    if (this.errorReporter.hasErrors() || warnings.length > 0) {
+      this.errorReporter.print({ verbose: options.verbose, colors: true })
     }
 
     return {
@@ -374,5 +397,12 @@ export class SkillBuilder {
    */
   getCacheManager(): CacheManager {
     return this.cacheManager
+  }
+
+  /**
+   * 获取错误报告器
+   */
+  getErrorReporter(): ErrorReporter {
+    return this.errorReporter
   }
 }

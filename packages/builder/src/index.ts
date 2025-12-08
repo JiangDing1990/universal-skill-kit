@@ -18,5 +18,8 @@ export * from './template'
 // Cache
 export * from './cache'
 
+// Utils
+export * from './utils/error-reporter'
+
 // Builder
 export * from './builder'
