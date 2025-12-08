@@ -8,6 +8,7 @@ import { Command } from 'commander'
 import { convertCommand } from './commands/convert.js'
 import { analyzeCommand } from './commands/analyze.js'
 import { batchConvertCommand } from './commands/batch-convert.js'
+import { createCacheCommand } from './commands/cache.js'
 
 const program = new Command()
 
@@ -47,6 +48,9 @@ program
   .option('-s, --strategy <strategy>', 'Compression strategy')
   .option('--parallel', 'Process files in parallel', false)
   .action(batchConvertCommand)
+
+// Cache management command
+program.addCommand(createCacheCommand())
 
 // Parse command line arguments
 program.parse(process.argv)
