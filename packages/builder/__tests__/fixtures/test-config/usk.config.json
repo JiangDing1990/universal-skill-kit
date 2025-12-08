@@ -1,0 +1,21 @@
+{
+  "name": "test-skill",
+  "version": "1.0.0",
+  "author": "Test Author",
+  "description": "A test skill for Universal Skill Kit",
+  "tags": ["test", "example"],
+  "platforms": {
+    "claude": {
+      "enabled": true,
+      "output": "dist/claude"
+    },
+    "codex": {
+      "enabled": true,
+      "output": "dist/codex",
+      "compressionStrategy": "balanced"
+    }
+  },
+  "source": {
+    "entry": "src/SKILL.md"
+  }
+}
