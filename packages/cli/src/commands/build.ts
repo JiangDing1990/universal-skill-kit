@@ -4,10 +4,10 @@
  */
 
 import { existsSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { resolve, relative } from 'node:path'
 import chalk from 'chalk'
 import ora from 'ora'
-import { SkillBuilder } from '@jiangding/usk-builder'
+import { SkillBuilder, SkillWatcher } from '@jiangding/usk-builder'
 
 export interface BuildCommandOptions {
   config?: string
@@ -52,12 +52,8 @@ export async function buildCommand(options: BuildCommandOptions = {}): Promise<v
 
     // Watch 模式
     if (options.watch) {
-      console.log(chalk.cyan('\n👀 Watch mode enabled - monitoring for changes...\n'))
-      console.log(chalk.gray('Press Ctrl+C to stop'))
-
-      // TODO: 实现 watch 模式
-      console.log(chalk.yellow('\n⚠️  Watch mode is not implemented yet'))
-      process.exit(1)
+      await runWatchMode(builder, configPath, options)
+      return
     }
 
     // 普通构建模式
@@ -155,4 +151,74 @@ function formatSize(bytes: number): string {
   const size = (bytes / Math.pow(1024, i)).toFixed(1)
 
   return `${size} ${units[i]}`
+}
+
+/**
+ * 运行 watch 模式
+ */
+async function runWatchMode(
+  builder: SkillBuilder,
+  configPath: string,
+  options: BuildCommandOptions
+): Promise<void> {
+  const cwd = process.cwd()
+
+  console.log(chalk.cyan('\n👀 Watch mode enabled'))
+  console.log(chalk.gray('Press Ctrl+C to stop\n'))
+
+  // 创建 watcher
+  const config = (builder as any).config
+  const watcher = new SkillWatcher(config, builder)
+
+  // 处理 Ctrl+C 信号
+  process.on('SIGINT', async () => {
+    console.log(chalk.yellow('\n\n⏹  Stopping watcher...'))
+    await watcher.stop()
+    console.log(chalk.green('✓ Watcher stopped'))
+    process.exit(0)
+  })
+
+  // 处理 SIGTERM 信号
+  process.on('SIGTERM', async () => {
+    await watcher.stop()
+    process.exit(0)
+  })
+
+  // 启动 watcher
+  await watcher.start({
+    verbose: options.verbose,
+    force: options.force,
+    concurrency: options.concurrency,
+    debounceDelay: 300,
+
+    // 文件变化回调
+    onChange: (file) => {
+      const relativePath = relative(cwd, file)
+      if (!options.verbose) {
+        console.log(chalk.blue('📝 Changed:'), chalk.gray(relativePath))
+      }
+    },
+
+    // 构建完成回调
+    onBuildComplete: (success, duration) => {
+      if (!options.verbose) {
+        if (success) {
+          console.log(chalk.green(`✅ Rebuild completed in ${duration}ms\n`))
+        } else {
+          console.log(chalk.red(`❌ Rebuild failed in ${duration}ms\n`))
+        }
+      }
+    },
+
+    // 错误回调
+    onError: (error) => {
+      console.error(chalk.red('\n❌ Build error:'))
+      console.error(chalk.red(`  ${error.message}`))
+      if (options.verbose && error.stack) {
+        console.error()
+        console.error(chalk.gray(error.stack))
+      }
+      console.log()
+    }
+  })
 }

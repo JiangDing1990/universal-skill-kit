@@ -138,6 +138,10 @@ usk build --force
 # 不清理输出目录
 usk build --no-clean
 
+# Watch 模式 - 监听文件变化自动重新构建
+usk build --watch
+usk build -w --verbose  # 详细输出
+
 # 验证配置
 usk validate
 
