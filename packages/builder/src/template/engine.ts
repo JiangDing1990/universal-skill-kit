@@ -89,6 +89,60 @@ export class TemplateEngine {
     this.handlebars.registerHelper('platform', function (this: any, name: string) {
       return this.platform?.name === name
     })
+
+    // 11. uppercase helper - 转大写
+    this.handlebars.registerHelper('uppercase', function (str: string) {
+      return typeof str === 'string' ? str.toUpperCase() : str
+    })
+
+    // 12. lowercase helper - 转小写
+    this.handlebars.registerHelper('lowercase', function (str: string) {
+      return typeof str === 'string' ? str.toLowerCase() : str
+    })
+
+    // 13. capitalize helper - 首字母大写
+    this.handlebars.registerHelper('capitalize', function (str: string) {
+      if (typeof str !== 'string') return str
+      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+    })
+
+    // 14. join helper - 数组连接
+    this.handlebars.registerHelper('join', function (...args: any[]) {
+      const [arr, separator] = args.slice(0, -1)
+      if (!Array.isArray(arr)) return ''
+      return arr.join(separator || ', ')
+    })
+
+    // 15. default helper - 默认值
+    this.handlebars.registerHelper('default', function (...args: any[]) {
+      const [value, defaultValue] = args.slice(0, -1)
+      return value !== null && value !== undefined && value !== '' ? value : defaultValue
+    })
+
+    // 16. length helper - 获取长度
+    this.handlebars.registerHelper('length', function (value: any) {
+      if (typeof value === 'string' || Array.isArray(value)) {
+        return value.length
+      }
+      return 0
+    })
+
+    // 17. truncate helper - 截断字符串
+    this.handlebars.registerHelper('truncate', function (...args: any[]) {
+      // 最后一个参数是 Handlebars options，需要排除
+      const [str, length, suffix] = args.slice(0, -1)
+      if (typeof str !== 'string') return str
+      const len = parseInt(length, 10)
+      if (str.length <= len) return str
+      return str.substring(0, len) + (suffix || '...')
+    })
+
+    // 18. replace helper - 替换字符串
+    this.handlebars.registerHelper('replace', function (...args: any[]) {
+      const [str, search, replaceWith] = args.slice(0, -1)
+      if (typeof str !== 'string') return str
+      return str.replace(new RegExp(search, 'g'), replaceWith)
+    })
   }
 
   /**
