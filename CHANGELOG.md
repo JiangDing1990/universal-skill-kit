@@ -7,216 +7,150 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Planned for v0.4.0
 
-**Bilingual User Interface** (`@usk/core/src/errors.ts`, `@usk/cli/src/commands/`)
+- Integration tests and e2e testing
+- Interactive Optimizer for manual description editing
+- Advanced caching strategies
+- Multi-language skill support
 
-- Chinese-English bilingual output for all user-facing messages
-- Bilingual error messages (SkillNotFoundError, ConversionError, etc.)
-- Bilingual error suggestions for better user experience
-- Bilingual CLI prompts (interactive mode, spinners, status messages)
-- Bilingual statistics display (compression rate, duration, etc.)
-- Supports both English and Chinese-speaking users without configuration
-- Improves accessibility for international users
+## [0.3.0] - 2025-12-09
 
-**Performance Optimization** (`@usk/core/src/converter/`)
+### Added - Phase 2 Enhancement (Week 6-8)
 
-- Parallel batch conversion with configurable concurrency (default: 5 files at a time)
-- Real-time progress callbacks for batch operations
-- Intelligent error handling that doesn't block other conversions
-- 80% performance improvement for batch operations (20 Skills: 20s → 4s)
+**CLI Commands** (`@jiangding/usk-cli/src/commands/`)
 
-**Error Handling System** (`@usk/core/src/errors.ts`)
+- `usk init` - Interactive project initialization
+  - Three project templates: basic, multi-platform, advanced
+  - Interactive prompts for project configuration
+  - Automatic directory structure creation
+  - Configuration file generation (usk.config.json)
+  - Template file scaffolding (SKILL.md)
+  - Git initialization option
+  - Dependency installation option
 
-- Unified error class hierarchy (`USKError` base class)
-- Specific error types: `SkillNotFoundError`, `ConversionError`, `ResourceNotFoundError`, etc.
-- Automatic error suggestion system based on error type
-- Formatted error messages with clear actionable suggestions
-- Error code constants for programmatic error handling
+- `usk validate` - Configuration validation
+  - Comprehensive config file validation
+  - Strict mode for production environments
+  - JSON output format support
+  - Detailed error messages with suggestions
+  - Platform-specific validation rules
+  - File path existence checks
 
-**Logging System** (`@usk/utils/src/logger.ts`)
+- `usk doctor` - Project health diagnostics
+  - Configuration file analysis
+  - Source file verification
+  - Output directory checks
+  - Cache status inspection
+  - Dependency validation
+  - Common issue detection
+  - Auto-fix suggestions
+  - Health score reporting
 
-- Configurable log levels (ERROR, WARN, INFO, DEBUG, TRACE)
-- `--verbose` flag for detailed conversion logs
-- Automatic log level management
-- Structured logging with timestamps and prefixes
-- Debug logs for every conversion step
+**Plugin System** (`@jiangding/usk-builder/src/plugin/`)
 
-**Constants and Type Safety** (`@usk/core/src/constants.ts`)
+- Complete plugin lifecycle system
+- 9 lifecycle hooks:
+  - `onBuildStart` - Before build starts
+  - `onBuildEnd` - After build completes
+  - `onPlatformStart` - Before platform build
+  - `onPlatformEnd` - After platform build
+  - `onConfigLoaded` - After config loaded
+  - `onTemplateLoaded` - After template loaded
+  - `onTemplateRendered` - After template rendered
+  - `onResourceCopied` - After resource copied
+  - `onError` - On error occurred
 
-- Centralized constant definitions (platforms, limits, paths, etc.)
-- Type-safe constants using `as const`
-- Elimination of magic numbers and strings throughout codebase
-- Improved code maintainability and readability
+**Plugin Manager** (`@jiangding/usk-builder/src/plugin/manager.ts`)
 
-**CLI Enhancements**
+- Plugin registration and management
+- Hook execution with error handling
+- Async hook support
+- Plugin context injection
+- Error aggregation and reporting
 
-- `--verbose` option for all commands
-- Real-time progress display in batch convert (shows current file)
-- Detailed error messages with suggestions
-- Parallel batch processing enabled by default
+**Example Plugins**
 
-**Multi-File Skill Support** (`@usk/core/src/converter/`)
+- `loggerPlugin` - Detailed build logging
+  - Verbose mode support
+  - Colorized output
+  - Timing information
+  - File size reporting
 
-- Full support for directory-based skills with multiple files
-- Automatic collection of resource files (templates, scripts, references)
-- Recursive file copying with structure preservation
-- Executable permission preservation for script files (.sh, .bash, .py, .js, .ts)
-- Smart output path determination for both files and directories
-- Warning messages for missing resource files
+- `minifyPlugin` - Content minification
+  - HTML comment removal
+  - Whitespace compression
+  - Newline preservation options
+  - Markdown-aware processing
 
-**Key Features**:
-- Input can be either a file path or directory path
-- Automatically searches for SKILL.md in directories
-- Copies all referenced files maintaining relative paths
-- Handles nested folder structures (templates/, scripts/, resources/)
+**Example Project** (`examples/basic-skill/`)
 
-**Skill Validator** (`@usk/core/src/validator/`)
-
-- Complete validation system for skill definitions
-- Metadata validation (name, version, description, author, tags)
-- Description length validation with platform-specific checks
-- Body content validation (structure, examples, documentation quality)
-- Resource file existence verification
-- Common issue detection (broken links, TODO markers, placeholder text)
-- Platform-specific validation for Codex (500 char description limit)
-
-**Validation Features**:
-- Error detection for critical issues (missing name, empty body, missing resources)
-- Warning system for quality improvements (short descriptions, missing author, etc.)
-- Severity levels: low, medium, high
-- Detailed error messages with field identification
-- Async validation for resource file checking
-
-**Validator CLI Integration** (`@usk/cli/src/commands/`)
-
-- Automatic validation before conversion
-- Beautiful colored output with icons (✓, ⚠, ✗)
-- Three-level validation display:
-  - Errors (red ❌): Block conversion unless --interactive override
-  - Warnings (yellow/gray ⚠): Quality suggestions with severity indicators
-  - Platform-specific notes (cyan ℹ️): Codex compression warnings
-- Interactive mode: Allow users to continue despite errors
-- Non-interactive mode: Require --interactive flag to override
-- Validation steps clearly shown in spinner progress
-
-**CLI Commands** (`@usk/cli/src/`)
-
-- Command-line interface with Commander.js
-- Three core commands:
-  - `usk convert <input>` - Convert single skill
-  - `usk analyze <input>` - Analyze skill and show recommendations
-  - `usk batch <pattern>` - Batch convert multiple skills
-- Interactive mode with inquirer prompts
-- Beautiful output with chalk colors
-- Progress indicators with ora spinners
-- Conversion statistics display
-- Quality score reporting
-- Keyword preservation tracking
-- Error handling and user-friendly messages
-
-**Convert Command**
-
-- Platform selection (claude|codex)
-- Compression strategy selection
-- Output directory specification
-- Interactive mode with prompts
-- Detailed conversion statistics
-- Success/failure indicators
-
-**Analyze Command**
-
-- Complexity analysis display
-- Technical keywords extraction
-- Strategy recommendations
-- Quality score with color coding
-- Warnings and suggestions
-- Verbose mode for detailed info
-- JSON output support
-
-**Batch Convert Command**
-
-- Glob pattern matching for multiple files
-- Batch processing with progress tracking
-- Overall statistics aggregation
-- Individual result reporting
-- Continue on error
-- Success/failure summary
-
-**Skill Converter** (`@usk/core/src/converter/`)
-
-- Bidirectional conversion: Claude ↔ Codex
-- Automatic source platform detection from file paths
-- Smart description compression for Codex (500 char limit)
-- Path mapping integration (.claude → .codex)
-- Batch conversion support for multiple skills
-- Conversion statistics:
-  - Compression rate calculation
-  - Preserved/lost keywords tracking
-  - Duration measurement
-  - Quality score reporting
-- YAML frontmatter generation
-- File I/O operations with error handling
-- Integration of all core modules:
-  - SkillParser for file parsing
-  - DescriptionCompressor for text optimization
-  - SkillAnalyzer for strategy recommendation
-  - PathMapper for path transformation
+- Complete working example
+- Demonstrates all USK features:
+  - Multi-platform support (Claude + Codex)
+  - Handlebars templates with conditionals
+  - Platform-specific content
+  - Resource file management
+  - Build configuration
+- Comprehensive README documentation
+- Chinese documentation (README_CN.md)
 
 ### Changed
 
-- **Breaking**: `convertBatch()` now returns immediately on individual failures instead of blocking
-- `ConvertOptions` interface now includes `parallel` and `verbose` flags
-- `ConversionResult` interface now includes optional `error` field for failed conversions
-- Replaced magic numbers and strings with constants from `constants.ts`
-- Improved script file detection using `SCRIPT_EXTENSIONS` constant
-- Batch concurrency now configurable via `LIMITS.BATCH_CONCURRENCY`
-- Updated `@usk/core` package dependencies: added `@usk/utils` workspace dependency
-- Fixed `@usk/utils` package.json exports configuration
-- Updated core module exports to include converter, validator, errors, and constants
-- Enhanced README with comprehensive feature documentation
-- Fixed Validator regex to properly detect empty links
+- Updated all package names from `@usk/*` to `@jiangding/usk-*`
+- Enhanced builder to support plugin system
+- Improved CLI output with better formatting
+- Added workspace dependencies for builder
 
 ### Tests
 
-**New Tests** (25 new tests):
-- Validator module: 25 comprehensive test cases
-  - Metadata validation: 7 tests
-  - Description length: 3 tests
-  - Body content: 4 tests
-  - Resource files: 3 tests
-  - Common issues: 3 tests
-  - Platform-specific: 3 tests
-  - Severity levels: 2 tests
+**New Tests** (78 tests for builder):
+- Plugin system: lifecycle hooks, manager, context
+- Builder integration with plugins
+- Cache manager with concurrency
+- Template engine with conditionals
+- Configuration loader validation
 
 **Test Statistics**:
-- Total tests: 199 passing ✅
-- Overall coverage: 90.59%
-- Validator coverage: 97.75% ⭐
+- Total tests: 359 passing ✅
+- Core module: 199 tests
+- Utils module: 82 tests
+- Builder module: 78 tests
+- Overall coverage: >85%
 
 ### Documentation
 
 **New Documentation**:
-- USER_GUIDE.md - Comprehensive user guide (580+ lines)
-  - Quick start tutorials
-  - Advanced usage examples
-  - FAQ section
-  - Best practices
-  - Troubleshooting guide
+- `examples/basic-skill/README.md` - Example project guide
+- Plugin development guide in builder package
+- CLI command documentation
 
 **Updated Documentation**:
-- README.md - Complete rewrite with actual features
-  - Feature showcase
-  - Installation guide
-  - Usage examples
-  - API documentation
+- README.md - Added Phase 2 features
+- ROADMAP.md - Updated progress
+- Package documentation
 
-### Planned for v0.3.0
+### Build & Distribution
 
-- Skill Validator with schema validation
-- CLI commands implementation
-- Interactive Optimizer
-- Integration tests and documentation
+- All packages successfully building
+- Dual format output (CJS + ESM)
+- Type declarations generated
+- Published to npm as `@jiangding/usk-*`
+
+### Project Status
+
+**Phase 2 Progress: Enhanced Features (Week 1-8) - 100% Complete ✅**
+
+- ✅ Week 1-3: Configuration, Template, Build systems
+- ✅ Week 4-5: Cache and Performance optimization
+- ✅ Week 6-7: CLI commands (init/validate/doctor)
+- ✅ Week 8: Plugin system and examples
+
+**Next Phase: Phase 3**
+
+- Advanced features and ecosystem
+- Community contributions
+- Production optimization
 
 ## [0.2.0] - 2024-12-05
 
@@ -501,6 +435,7 @@ The project provides a complete TypeScript + Monorepo development environment re
 
 ---
 
-[Unreleased]: https://github.com/JiangDing1990/universal-skill-kit/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/JiangDing1990/universal-skill-kit/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/JiangDing1990/universal-skill-kit/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/JiangDing1990/universal-skill-kit/compare/v0.1.0-alpha...v0.2.0
 [0.1.0-alpha]: https://github.com/JiangDing1990/universal-skill-kit/releases/tag/v0.1.0-alpha
