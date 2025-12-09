@@ -1,0 +1,43 @@
+{
+  "entries": {
+    "23241858811600bad23f82ca51906dec021ba95a0eebd02a2189111c43c7510a:codex": {
+      "key": "23241858811600bad23f82ca51906dec021ba95a0eebd02a2189111c43c7510a:codex",
+      "value": "---\nname: advanced-skill-example\nversion: 3.0.0\nauthor: USK Advanced Team\ndescription: Advanced example demonstrating plugin system, custom build scripts, and performance optimization\ntags:\n  - advanced\n  - plugins\n  - custom-build\n  - optimization\n---\n\n# ADVANCED-SKILL-EXAMPLE\n\n> Advanced example demonstrating plugin system, custom build scripts, and performance optimization\n\n**Version:** 3.0.0 | **Author:** USK Advanced Team\n\n---\n\n## 高级特性演示\n\n此示例展示了 USK 的高级功能,包括插件系统、自定义构建流程和性能优化技巧。\n\n\n### ⚡ Codex 平台 - 快速参考\n\n核心特性:\n- 插件系统使用\n- 自定义构建\n- 性能优化\n\n---\n\n## 插件系统\n\nUSK 提供了强大的插件系统,允许你在构建过程的不同阶段插入自定义逻辑。\n\n\n### 插件钩子\n\n- beforeBuild, afterBuild\n- beforePlatformBuild, afterPlatformBuild\n- afterTemplateRender\n- onError\n\n### 内置插件\n\n- loggerPlugin - 构建日志\n- minifyPlugin - 内容压缩\n\n---\n\n## 自定义构建脚本\n\n\n### 编程式 API\n\n使用 SkillBuilder API 自定义构建流程。\n\n### 配置选项\n\n- 缓存策略\n- 并发限制\n- 自定义 helpers\n\n---\n\n## 性能优化\n\n\n### 性能优化\n\n- 智能缓存系统\n- 并发构建 (默认 5)\n- 增量更新 (Watch 模式)\n- 使用 --verbose 监控性能\n\n---\n\n## 错误处理\n\n\n### 错误处理\n\n- 详细的错误报告\n- 修复建议\n- 使用 --verbose 调试\n- 清理缓存重试\n\n---\n\n## 实战技巧\n\n\n### 实战技巧\n\n1. 自定义 Helper 扩展功能\n2. 条件构建支持多环境\n3. 使用构建钩子自动化\n4. 合理使用缓存\n5. 集成 CI/CD 流程\n\n---\n\n## 最佳实践\n\n\n### 最佳实践\n\n- 合理的项目结构\n- 版本控制管理配置\n- Watch 模式开发\n- 启用缓存优化性能\n- 定期验证和诊断\n\n---\n\n## 进阶主题\n\n\n### 进阶主题\n\n- 插件开发\n- 模板引擎扩展\n- 缓存系统定制\n- 构建优化\n- 监控和分析\n\n---\n\n## 资源链接\n\n- **USK 仓库**: https://github.com/JiangDing1990/universal-skill-kit\n- **插件文档**: 查看 packages/builder/src/plugin/\n- **API 文档**: 查看源码和类型定义\n- **问题反馈**: https://github.com/JiangDing1990/universal-skill-kit/issues\n\n\n---\n\n## 许可证\n\nMIT License\n\n---\n\n**Advanced features powered by Universal Skill Kit v3.0.0**\n\n\n💡 **提示**: 高级功能示例。完整文档请查看 Claude 平台版本。\n",
+      "createdAt": 1765266058351,
+      "accessedAt": 1765266058351,
+      "hits": 0,
+      "hash": "4536db6eec11b8573089530d159b1773d4574fb9f32f77eb7839a084bde28e12",
+      "dependencies": [
+        "/Users/jiangding/claude-skills/universal-skill-kit/examples/advanced/usk.config.json",
+        "/Users/jiangding/claude-skills/universal-skill-kit/examples/advanced/src/SKILL.md"
+      ],
+      "metadata": {
+        "tags": [
+          "codex",
+          "template"
+        ]
+      }
+    },
+    "23241858811600bad23f82ca51906dec021ba95a0eebd02a2189111c43c7510a:claude": {
+      "key": "23241858811600bad23f82ca51906dec021ba95a0eebd02a2189111c43c7510a:claude",
+      "value": "---\nname: advanced-skill-example\nversion: 3.0.0\nauthor: USK Advanced Team\ndescription: Advanced example demonstrating plugin system, custom build scripts, and performance optimization\ntags:\n  - advanced\n  - plugins\n  - custom-build\n  - optimization\n---\n\n# ADVANCED-SKILL-EXAMPLE\n\n> Advanced example demonstrating plugin system, custom build scripts, and performance optimization\n\n**Version:** 3.0.0 | **Author:** USK Advanced Team\n\n---\n\n## 高级特性演示\n\n此示例展示了 USK 的高级功能,包括插件系统、自定义构建流程和性能优化技巧。\n\n### 🎯 Claude 平台 - 完整文档\n\n本示例重点展示:\n- 插件系统的使用和开发\n- 自定义构建脚本编写\n- 性能优化最佳实践\n- 缓存策略和增量构建\n- 错误处理和调试技巧\n\n\n---\n\n## 插件系统\n\nUSK 提供了强大的插件系统,允许你在构建过程的不同阶段插入自定义逻辑。\n\n### 插件生命周期\n\nUSK 插件系统提供了以下生命周期钩子:\n\n1. **beforeBuild** - 构建开始前\n2. **afterConfigLoad** - 配置加载后\n3. **beforePlatformBuild** - 单个平台构建前\n4. **afterTemplateRender** - 模板渲染后\n5. **beforeFileWrite** - 文件写入前\n6. **afterFileWrite** - 文件写入后\n7. **afterPlatformBuild** - 单个平台构建后\n8. **afterBuild** - 所有构建完成后\n9. **onError** - 发生错误时\n\n### 内置插件\n\nUSK 提供了两个常用的内置插件:\n\n1. **loggerPlugin** - 详细的构建日志\n2. **minifyPlugin** - Markdown 内容压缩\n\n### 使用方式\n\n通过编程方式使用插件,在项目中创建 build.js 文件。\n\n\n---\n\n## 自定义构建脚本\n\n### 编程式 API\n\nUSK 提供了完整的编程式 API,允许完全自定义构建流程。\n\n### 基本示例\n\n创建 build.js 文件使用 USK Builder API 进行自定义构建。\n\n### 高级配置\n\n可以配置:\n- 缓存策略\n- 并发限制\n- 错误处理\n- 自定义 helpers\n- Partial 注册\n\n### 构建流程控制\n\n完全控制构建流程,包括:\n- 条件构建\n- 平台选择\n- 增量更新\n- 自定义输出\n\n\n---\n\n## 性能优化\n\n### 缓存策略\n\nUSK 使用智能缓存系统加速构建:\n\n1. **模板缓存** - 缓存已渲染的模板\n2. **文件哈希** - 基于内容的缓存键\n3. **依赖追踪** - 自动失效相关缓存\n4. **跨平台共享** - 不同平台共享缓存\n\n### 并发构建\n\n默认限制 5 个并发构建,可以根据机器性能调整:\n- 单核/双核: concurrency = 2\n- 四核: concurrency = 5\n- 八核+: concurrency = 10\n\n### 增量构建\n\nWatch 模式下自动使用增量构建:\n- 只重新渲染变化的文件\n- 保留未变化的输出\n- 跳过清理步骤\n\n### 性能监控\n\n使用 verbose 模式查看性能指标:\n- 渲染时间\n- 文件复制时间\n- 总构建时间\n- 缓存命中率\n\n### 优化建议\n\n1. 启用缓存 (默认启用)\n2. 合理设置并发数\n3. 使用 Watch 模式开发\n4. 避免不必要的资源文件\n5. 优化模板复杂度\n\n\n---\n\n## 错误处理\n\n### 错误类型\n\nUSK 定义了多种错误类型:\n- ConfigValidationError - 配置验证错误\n- TemplateEngineError - 模板引擎错误\n- BuildError - 构建错误\n- CacheError - 缓存错误\n\n### 错误报告\n\nUSK 提供详细的错误报告:\n- 错误消息和上下文\n- 错误代码分类\n- 修复建议\n- 相关文档链接\n\n### 错误恢复\n\n- 验证错误: 修复配置文件\n- 模板错误: 检查 Handlebars 语法\n- 构建错误: 查看详细日志\n- 缓存错误: 清理缓存重试\n\n### 调试模式\n\n使用 --verbose 启用详细输出:\n- 构建步骤详情\n- 错误堆栈跟踪\n- 性能指标\n- 缓存使用情况\n\n\n---\n\n## 实战技巧\n\n### 1. 自定义 Helper\n\n注册自定义 Handlebars helper 扩展模板功能。\n\n### 2. 条件构建\n\n根据环境变量或配置条件性构建不同平台。\n\n### 3. 构建钩子\n\n在构建过程中插入自定义逻辑,如:\n- 自动生成文档\n- 代码质量检查\n- 自动部署\n- 通知发送\n\n### 4. 缓存管理\n\n合理使用缓存提升性能:\n- 开发时启用缓存\n- CI/CD 中清理缓存\n- 使用 --force 强制重建\n\n### 5. 多环境构建\n\n为不同环境配置不同的构建选项:\n- 开发环境: 完整输出\n- 生产环境: 压缩优化\n- 测试环境: 包含测试数据\n\n### 6. 集成 CI/CD\n\n在 CI/CD 管道中使用 USK:\n- 自动验证配置\n- 自动构建和测试\n- 自动发布\n- 性能监控\n\n\n---\n\n## 最佳实践\n\n### 项目结构\n\n推荐的项目结构:\n- src/ - 源文件\n- templates/ - 模板片段\n- scripts/ - 构建脚本\n- dist/ - 输出目录\n- build.js - 自定义构建\n- usk.config.json - 配置文件\n\n### 配置管理\n\n- 使用版本控制管理配置\n- 敏感信息使用环境变量\n- 为不同环境准备不同配置\n- 定期验证配置有效性\n\n### 开发工作流\n\n1. 使用 Watch 模式开发\n2. 定期运行 validate 和 doctor\n3. 及时提交代码\n4. 使用分支管理特性\n5. 编写完整的文档\n\n### 性能优化\n\n- 启用缓存机制\n- 合理设置并发数\n- 避免不必要的资源\n- 优化模板复杂度\n- 使用增量构建\n\n### 测试策略\n\n- 验证配置文件\n- 测试模板渲染\n- 检查输出质量\n- 性能基准测试\n- 跨平台测试\n\n\n---\n\n## 进阶主题\n\n### 插件开发\n\n开发自定义插件扩展 USK 功能:\n- 实现生命周期钩子\n- 访问构建上下文\n- 修改构建流程\n- 添加自定义功能\n\n### 模板引擎扩展\n\n扩展模板引擎功能:\n- 注册自定义 helpers\n- 注册 partials\n- 自定义渲染选项\n- 实现自定义指令\n\n### 缓存系统定制\n\n定制缓存系统行为:\n- 自定义缓存键生成\n- 配置缓存过期策略\n- 实现自定义存储\n- 缓存预热\n\n### 构建优化\n\n深度优化构建性能:\n- 并行任务调度\n- 资源预加载\n- 智能依赖分析\n- 构建流水线\n\n### 监控和分析\n\n监控和分析构建性能:\n- 性能指标收集\n- 构建时间分析\n- 资源使用监控\n- 错误率统计\n\n\n---\n\n## 资源链接\n\n- **USK 仓库**: https://github.com/JiangDing1990/universal-skill-kit\n- **插件文档**: 查看 packages/builder/src/plugin/\n- **API 文档**: 查看源码和类型定义\n- **问题反馈**: https://github.com/JiangDing1990/universal-skill-kit/issues\n\n### 相关示例\n\n1. **basic-skill** - 基础功能入门\n2. **multi-platform** - 多平台特性\n3. **advanced** (当前) - 高级功能演示\n\n### 学习路径\n\n1. 掌握基础用法 (basic-skill)\n2. 学习平台适配 (multi-platform)\n3. 深入高级特性 (advanced)\n4. 阅读源码理解实现\n5. 开发自定义插件\n\n---\n\n## 许可证\n\nMIT License\n\n---\n\n**Advanced features powered by Universal Skill Kit v3.0.0**\n\n💡 **提示**: 这是高级示例,展示了 USK 的插件系统和自定义构建能力。建议先学习 basic-skill 和 multi-platform 示例。\n\n",
+      "createdAt": 1765266058354,
+      "accessedAt": 1765266058354,
+      "hits": 0,
+      "hash": "4536db6eec11b8573089530d159b1773d4574fb9f32f77eb7839a084bde28e12",
+      "dependencies": [
+        "/Users/jiangding/claude-skills/universal-skill-kit/examples/advanced/usk.config.json",
+        "/Users/jiangding/claude-skills/universal-skill-kit/examples/advanced/src/SKILL.md"
+      ],
+      "metadata": {
+        "tags": [
+          "claude",
+          "template"
+        ]
+      }
+    }
+  },
+  "version": "1.0.0",
+  "createdAt": 1765266058331,
+  "updatedAt": 1765266058354
+}

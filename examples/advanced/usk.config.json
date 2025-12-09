@@ -1,0 +1,25 @@
+{
+  "name": "advanced-skill-example",
+  "version": "3.0.0",
+  "author": "USK Advanced Team",
+  "description": "Advanced example demonstrating plugin system, custom build scripts, and performance optimization",
+  "tags": ["advanced", "plugins", "custom-build", "optimization"],
+  "platforms": {
+    "claude": {
+      "enabled": true,
+      "output": "./dist/claude"
+    },
+    "codex": {
+      "enabled": true,
+      "output": "./dist/codex"
+    }
+  },
+  "source": {
+    "entry": "src/SKILL.md"
+  },
+  "build": {
+    "clean": true,
+    "sourcemap": false,
+    "minify": false
+  }
+}

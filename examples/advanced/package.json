@@ -1,0 +1,26 @@
+{
+  "name": "advanced-skill-example",
+  "version": "3.0.0",
+  "description": "Advanced example demonstrating plugin system and custom builds",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "build:usk": "usk build",
+    "build:watch": "usk build --watch",
+    "validate": "usk validate",
+    "doctor": "usk doctor"
+  },
+  "dependencies": {
+    "@jiangding/usk-builder": "^0.1.0",
+    "@jiangding/usk-cli": "^0.2.0"
+  },
+  "keywords": [
+    "usk",
+    "universal-skill-kit",
+    "advanced",
+    "plugins",
+    "custom-build"
+  ],
+  "author": "USK Advanced Team",
+  "license": "MIT"
+}
