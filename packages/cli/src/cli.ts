@@ -12,6 +12,7 @@ import { createCacheCommand } from './commands/cache.js'
 import { initCommand } from './commands/init.js'
 import { validateCommand } from './commands/validate.js'
 import { doctorCommand } from './commands/doctor.js'
+import { buildCommand } from './commands/build.js'
 
 const program = new Command()
 
@@ -28,6 +29,20 @@ program
   .option('-y, --yes', 'Skip prompts and use defaults', false)
   .option('-f, --force', 'Force overwrite existing directory', false)
   .action(initCommand)
+
+// Build command
+program
+  .command('build')
+  .description('Build USK project for all enabled platforms')
+  .option('-c, --config <path>', 'Configuration file path', 'usk.config.json')
+  .option('-p, --platforms <platforms>', 'Platforms to build (comma-separated)')
+  .option('--clean', 'Clean output directories before build', true)
+  .option('--no-clean', 'Do not clean output directories')
+  .option('-f, --force', 'Force rebuild (ignore cache)', false)
+  .option('-w, --watch', 'Watch mode - rebuild on file changes', false)
+  .option('--concurrency <number>', 'Number of concurrent builds', (val) => parseInt(val, 10))
+  .option('-v, --verbose', 'Show detailed build logs', false)
+  .action(buildCommand)
 
 // Convert command
 program
