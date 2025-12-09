@@ -105,21 +105,21 @@ usk doctor --verbose
 ### 平台条件
 
 \`\`\`handlebars
-{{#if platform.claude}}
+\{{#if platform.claude}}
   这段内容只在 Claude 平台显示
-{{/if}}
+\{{/if}}
 
-{{#if platform.codex}}
+\{{#if platform.codex}}
   这段内容只在 Codex 平台显示
-{{/if}}
+\{{/if}}
 \`\`\`
 
 ### 列表循环
 
 \`\`\`handlebars
-{{#each tags}}
-  - {{this}}
-{{/each}}
+\{{#each tags}}
+  - \{{this}}
+\{{/each}}
 \`\`\`
 
 ## 配置说明
@@ -135,7 +135,7 @@ usk doctor --verbose
 ## 开发建议
 
 1. **使用模板变量** - 充分利用 Handlebars 模板语法
-2. **平台条件编译** - 使用 \`{{#if platform.xxx}}\` 区分平台
+2. **平台条件编译** - 使用 \`\{{#if platform.xxx}}\` 区分平台
 3. **描述优化** - Codex 平台保持描述简洁（≤500字符）
 4. **定期验证** - 运行 \`usk validate\` 检查配置
 5. **使用缓存** - 利用缓存加速构建
