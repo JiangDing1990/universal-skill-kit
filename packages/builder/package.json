@@ -16,6 +16,15 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JiangDing1990/universal-skill-kit.git",
+    "directory": "packages/builder"
+  },
+  "homepage": "https://github.com/JiangDing1990/universal-skill-kit#readme",
+  "bugs": {
+    "url": "https://github.com/JiangDing1990/universal-skill-kit/issues"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -24,9 +33,9 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@jiangding/usk-core": "workspace:*",
-    "@jiangding/usk-template": "workspace:*",
-    "@jiangding/usk-utils": "workspace:*",
+    "@jiangding/usk-core": "^0.1.3",
+    "@jiangding/usk-template": "^0.1.0",
+    "@jiangding/usk-utils": "^0.1.0",
     "chokidar": "^3.5.3",
     "glob": "^10.3.10",
     "handlebars": "^4.7.8",
