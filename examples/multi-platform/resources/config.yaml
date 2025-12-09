@@ -1,0 +1,57 @@
+# Multi-platform Skill Configuration
+
+skill:
+  name: multi-platform-skill
+  version: 2.0.0
+  author: USK Development Team
+
+platforms:
+  claude:
+    enabled: true
+    features:
+      - detailed-documentation
+      - code-examples
+      - rich-markdown
+    limits:
+      description: unlimited
+
+  codex:
+    enabled: true
+    features:
+      - concise-docs
+      - quick-reference
+    limits:
+      description: 500  # characters
+
+build:
+  optimization:
+    cache: true
+    minify: false
+    sourcemap: false
+
+  output:
+    claude: ./dist/claude
+    codex: ./dist/codex
+
+  concurrency: 5
+
+features:
+  conditional-compilation: true
+  template-variables: true
+  resource-management: true
+  watch-mode: true
+  incremental-builds: true
+
+metadata:
+  tags:
+    - multi-platform
+    - advanced
+    - example
+    - conditional-compilation
+
+  keywords:
+    - usk
+    - universal-skill-kit
+    - claude-code
+    - codex
+    - multi-platform

@@ -1,0 +1,18 @@
+{
+  "name": "multi-platform-skill",
+  "version": "2.0.0",
+  "author": "USK Team",
+  "description": "Test",
+  "platforms": {
+    "claude": {
+      "enabled": true,
+      "output": "./dist/claude"
+    }
+  },
+  "source": {
+    "entry": "src/SKILL_SIMPLE.md"
+  },
+  "build": {
+    "clean": true
+  }
+}

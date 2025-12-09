@@ -1,0 +1,28 @@
+{
+  "name": "multi-platform-skill",
+  "version": "2.0.0",
+  "author": "USK Development Team",
+  "description": "An advanced multi-platform skill demonstrating platform-specific features, resource management, and conditional compilation",
+  "tags": ["multi-platform", "advanced", "example", "conditional-compilation"],
+  "platforms": {
+    "claude": {
+      "enabled": true,
+      "output": "./dist/claude"
+    },
+    "codex": {
+      "enabled": true,
+      "output": "./dist/codex"
+    }
+  },
+  "source": {
+    "entry": "src/SKILL.md",
+    "templates": "templates/**/*.md",
+    "scripts": "scripts/**/*.sh",
+    "resources": "resources/**/*"
+  },
+  "build": {
+    "clean": true,
+    "sourcemap": false,
+    "minify": false
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "skill": {
+    "id": "multi-platform-skill",
+    "name": "Multi-Platform Skill",
+    "version": "2.0.0",
+    "author": "USK Development Team",
+    "license": "MIT",
+    "homepage": "https://github.com/JiangDing1990/universal-skill-kit",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/JiangDing1990/universal-skill-kit.git",
+      "directory": "examples/multi-platform"
+    }
+  },
+  "platforms": {
+    "claude": {
+      "enabled": true,
+      "output": "./dist/claude",
+      "features": [
+        "detailed-documentation",
+        "code-examples",
+        "rich-markdown"
+      ]
+    },
+    "codex": {
+      "enabled": true,
+      "output": "./dist/codex",
+      "features": [
+        "concise-docs",
+        "quick-reference"
+      ]
+    }
+  },
+  "build": {
+    "timestamp": "2024-01-01T00:00:00.000Z",
+    "environment": "development",
+    "tooling": {
+      "builder": "@jiangding/usk-builder",
+      "cli": "@jiangding/usk-cli",
+      "version": "0.3.0"
+    }
+  },
+  "features": {
+    "conditionalCompilation": true,
+    "templateVariables": true,
+    "resourceManagement": true,
+    "watchMode": true,
+    "incrementalBuilds": true,
+    "caching": true
+  },
+  "tags": [
+    "multi-platform",
+    "advanced",
+    "example",
+    "conditional-compilation"
+  ],
+  "keywords": [
+    "usk",
+    "universal-skill-kit",
+    "claude-code",
+    "codex",
+    "multi-platform",
+    "skill-development"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "entries": {
+    "f4e34d27fe92f0cf2c37f72ac4b8e433f77efd442aff668e8c61c121a83b5409:claude": {
+      "key": "f4e34d27fe92f0cf2c37f72ac4b8e433f77efd442aff668e8c61c121a83b5409:claude",
+      "value": "---\nname: multi-platform-skill\nversion: 2.0.0\n---\n\n# multi-platform-skill\n\nTest\n\n## Platform\n\nClaude platform\n\n",
+      "createdAt": 1765265249611,
+      "accessedAt": 1765265249611,
+      "hits": 0,
+      "hash": "120537ee33650f198784becfef1d65d6133a5a3a9777de9449f0acd55e892413",
+      "dependencies": [
+        "/Users/jiangding/claude-skills/universal-skill-kit/examples/multi-platform/usk.config.test.json",
+        "/Users/jiangding/claude-skills/universal-skill-kit/examples/multi-platform/src/SKILL_SIMPLE.md"
+      ],
+      "metadata": {
+        "tags": [
+          "claude",
+          "template"
+        ]
+      }
+    },
+    "e6c815efbf634c3c3e05d927e4116266b5369805e212d0744101c669f029868c:claude": {
+      "key": "e6c815efbf634c3c3e05d927e4116266b5369805e212d0744101c669f029868c:claude",
+      "value": "---\nname: multi-platform-skill\nversion: 2.0.0\nauthor: USK Development Team\ndescription: An advanced multi-platform skill demonstrating platform-specific features, resource management, and conditional compilation\ntags:\n  - multi-platform\n  - advanced\n  - example\n  - conditional-compilation\n---\n\n# MULTI-PLATFORM-SKILL\n\n> An advanced multi-platform skill demonstrating platform-specific features, resource management, and conditional compilation\n\n**Version:** 2.0.0 | **Author:** USK Development Team\n\n---\n\n## 平台特性演示\n\n### 🎯 Claude Code 平台\n\n**Claude 专属功能:**\n- 详细的文档说明\n- 完整的配置指南\n- 丰富的使用示例\n\n\n---\n\n## 模板变量\n\n- Name: multi-platform-skill\n- Version: 2.0.0\n- Author: USK Development Team\n- Tags: multi-platform, advanced, example, conditional-compilation\n- Tag Count: 4\n\n---\n\n## 安装使用\n\n### Claude 详细步骤\n\n1. 安装 USK CLI\n2. 初始化项目\n3. 配置平台\n4. 构建输出\n\n\n---\n\nMIT License\n",
+      "createdAt": 1765265521837,
+      "accessedAt": 1765265521837,
+      "hits": 0,
+      "hash": "df136d06d1aad08b1d23f25922597a15e93b748389e3830160cc21809784ab7f",
+      "dependencies": [
+        "/Users/jiangding/claude-skills/universal-skill-kit/examples/multi-platform/usk.config.json",
+        "/Users/jiangding/claude-skills/universal-skill-kit/examples/multi-platform/src/SKILL.md",
+        "/Users/jiangding/claude-skills/universal-skill-kit/examples/multi-platform/templates/**/*.md"
+      ],
+      "metadata": {
+        "tags": [
+          "claude",
+          "template"
+        ]
+      }
+    },
+    "e6c815efbf634c3c3e05d927e4116266b5369805e212d0744101c669f029868c:codex": {
+      "key": "e6c815efbf634c3c3e05d927e4116266b5369805e212d0744101c669f029868c:codex",
+      "value": "---\nname: multi-platform-skill\nversion: 2.0.0\nauthor: USK Development Team\ndescription: An advanced multi-platform skill demonstrating platform-specific features, resource management, and conditional compilation\ntags:\n  - multi-platform\n  - advanced\n  - example\n  - conditional-compilation\n---\n\n# MULTI-PLATFORM-SKILL\n\n> An advanced multi-platform skill demonstrating platform-specific features, resource management, and conditional compilation\n\n**Version:** 2.0.0 | **Author:** USK Development Team\n\n---\n\n## 平台特性演示\n\n\n### ⚡ Codex 平台\n\n**Codex 优化:**\n- 精简高效\n- 快速响应\n- 核心功能\n\n---\n\n## 模板变量\n\n- Name: multi-platform-skill\n- Version: 2.0.0\n- Author: USK Development Team\n- Tags: multi-platform, advanced, example, conditional-compilation\n- Tag Count: 4\n\n---\n\n## 安装使用\n\n\n### Codex 快速开始\n\n快速安装、配置、构建三步完成。\n\n---\n\nMIT License\n",
+      "createdAt": 1765265521838,
+      "accessedAt": 1765265521838,
+      "hits": 0,
+      "hash": "df136d06d1aad08b1d23f25922597a15e93b748389e3830160cc21809784ab7f",
+      "dependencies": [
+        "/Users/jiangding/claude-skills/universal-skill-kit/examples/multi-platform/usk.config.json",
+        "/Users/jiangding/claude-skills/universal-skill-kit/examples/multi-platform/src/SKILL.md",
+        "/Users/jiangding/claude-skills/universal-skill-kit/examples/multi-platform/templates/**/*.md"
+      ],
+      "metadata": {
+        "tags": [
+          "codex",
+          "template"
+        ]
+      }
+    }
+  },
+  "version": "1.0.0",
+  "createdAt": 1765264358078,
+  "updatedAt": 1765265521838
+}
