@@ -2,12 +2,18 @@
  * Template engine types
  */
 
+import type { TemplateEngine } from '@jiangding/usk-template'
 import type { Platform } from './config'
+
+type BaseContext = Parameters<TemplateEngine['render']>[1]
+type BaseOptions = Parameters<TemplateEngine['render']>[2]
+type BaseResult = ReturnType<TemplateEngine['render']>
+type EnginePartial = Parameters<TemplateEngine['registerPartials']>[0][number]
 
 /**
  * 模板上下文
  */
-export interface TemplateContext {
+export interface TemplateContext extends BaseContext {
   /**
    * Skill名称
    */
@@ -60,65 +66,16 @@ export interface TemplateContext {
 }
 
 /**
- * 模板渲染选项
+ * 模板渲染选项（使用模板引擎默认定义）
  */
-export interface TemplateRenderOptions {
-  /**
-   * 严格模式
-   * @default true
-   */
-  strict?: boolean
-
-  /**
-   * 是否转义HTML
-   * @default true
-   */
-  noEscape?: boolean
-
-  /**
-   * 是否允许原型属性访问
-   * @default false
-   */
-  allowProtoPropertiesByDefault?: boolean
-
-  /**
-   * 是否允许原型方法访问
-   * @default false
-   */
-  allowProtoMethodsByDefault?: boolean
-}
+export type TemplateRenderOptions = BaseOptions
 
 /**
- * Partial定义
+ * Partial 定义
  */
-export interface PartialDefinition {
-  /**
-   * Partial名称
-   */
-  name: string
-
-  /**
-   * Partial内容
-   */
-  content: string
-}
+export type PartialDefinition = EnginePartial
 
 /**
  * 模板渲染结果
  */
-export interface TemplateRenderResult {
-  /**
-   * 渲染后的内容
-   */
-  content: string
-
-  /**
-   * 使用的partials
-   */
-  usedPartials: string[]
-
-  /**
-   * 渲染时长(ms)
-   */
-  duration: number
-}
+export type TemplateRenderResult = BaseResult

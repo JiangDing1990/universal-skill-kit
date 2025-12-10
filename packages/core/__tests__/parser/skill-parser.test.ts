@@ -29,9 +29,7 @@ describe('SkillParser', () => {
 
       expect(result.metadata.name).toBe('test-skill')
       expect(result.metadata.version).toBe('1.0.0')
-      expect(result.metadata.description).toBe(
-        'A test skill for unit testing'
-      )
+      expect(result.metadata.description).toBe('A test skill for unit testing')
       expect(result.metadata.author).toBe('Test Author')
       expect(result.metadata.tags).toEqual(['test', 'example'])
     })
@@ -58,10 +56,10 @@ describe('SkillParser', () => {
 
       expect(result.resources.references.length).toBeGreaterThan(0)
       expect(
-        result.resources.references.some((ref) => ref.includes('reference.md'))
+        result.resources.references.some(ref => ref.includes('reference.md'))
       ).toBe(true)
       expect(
-        result.resources.references.some((ref) => ref.includes('config.json'))
+        result.resources.references.some(ref => ref.includes('config.json'))
       ).toBe(true)
     })
 
@@ -71,7 +69,7 @@ describe('SkillParser', () => {
 
       expect(result.resources.scripts.length).toBeGreaterThan(0)
       expect(
-        result.resources.scripts.some((script) => script.includes('setup.sh'))
+        result.resources.scripts.some(script => script.includes('setup.sh'))
       ).toBe(true)
     })
 
@@ -79,10 +77,10 @@ describe('SkillParser', () => {
       const skillPath = join(fixturesDir, 'valid-skill.md')
       const result = await parser.parse(skillPath)
 
-      const hasTypeScriptFile = result.resources.scripts.some((script) =>
+      const hasTypeScriptFile = result.resources.scripts.some(script =>
         script.includes('index.ts')
       )
-      const hasBashFile = result.resources.scripts.some((script) =>
+      const hasBashFile = result.resources.scripts.some(script =>
         script.includes('deploy.sh')
       )
 
@@ -99,9 +97,7 @@ describe('SkillParser', () => {
         ...result.resources.scripts
       ]
 
-      expect(
-        allResources.some((res) => res.includes('example.com'))
-      ).toBe(false)
+      expect(allResources.some(res => res.includes('example.com'))).toBe(false)
     })
 
     it('should ignore anchor links', async () => {
@@ -114,7 +110,7 @@ describe('SkillParser', () => {
         ...result.resources.scripts
       ]
 
-      expect(allResources.some((res) => res.startsWith('#'))).toBe(false)
+      expect(allResources.some(res => res.startsWith('#'))).toBe(false)
     })
 
     it('should handle minimal skill without resources', async () => {
@@ -158,7 +154,7 @@ describe('SkillParser', () => {
         ...result.resources.scripts
       ]
 
-      allResources.forEach((resource) => {
+      allResources.forEach(resource => {
         expect(resource).toMatch(/^\//) // Unix absolute path
       })
     })

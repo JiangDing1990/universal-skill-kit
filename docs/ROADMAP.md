@@ -10,11 +10,11 @@
 
 ## 🎯 项目状态总览
 
-| Phase | 状态 | 进度 | 完成时间 | 备注 |
-|-------|------|------|----------|------|
-| Phase 1: MVP | ✅ 已完成 | 100% | 2024-12-05 | 核心功能全部实现 |
-| Phase 2: 统一开发框架 | ⏳ 待开始 | 0% | TBD | 待 NPM 发布后开始 |
-| Phase 3: 生态系统 | ⏳ 待开始 | 0% | TBD | 待 Phase 2 完成 |
+| Phase                 | 状态      | 进度 | 完成时间   | 备注              |
+| --------------------- | --------- | ---- | ---------- | ----------------- |
+| Phase 1: MVP          | ✅ 已完成 | 100% | 2024-12-05 | 核心功能全部实现  |
+| Phase 2: 统一开发框架 | ⏳ 待开始 | 0%   | TBD        | 待 NPM 发布后开始 |
+| Phase 3: 生态系统     | ⏳ 待开始 | 0%   | TBD        | 待 Phase 2 完成   |
 
 ### 当前里程碑
 
@@ -559,9 +559,9 @@ interface Directive {
 }
 ```
 
-#### 交付物
+#### 交付物（已完成）
 
-- [ ] `@usk/template` 包
+- [x] `@jiangding/usk-template` 包：受限 Handlebars 运行时，提供 helper/partial 注册、URL 文件渲染、使用追踪。
 - [ ] 模板语法文档
 - [ ] 模板示例库
 
@@ -607,6 +607,17 @@ class SkillBuilder {
 class SkillInitializer {
   init(name: string, options: InitOptions): Promise<InitResult>
   createFromTemplate(template: string, name: string): Promise<void>
+}
+
+interface BuildResult {
+  platform: Platform
+  output: string
+  metrics: {
+    renderDuration: number
+    usedPartials: string[]
+    cacheHit: boolean
+    cacheKey: string
+  }
 }
 ```
 

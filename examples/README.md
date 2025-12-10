@@ -9,18 +9,21 @@
 真实的企业级React开发Skill示例。
 
 **特点**：
+
 - ✅ 完整的技术栈描述（1018字符）
 - ✅ 详细的代码示例
 - ✅ 压缩策略对比
 - ✅ 最佳实践展示
 
 **学习内容**：
+
 - 如何编写高质量Skill
 - 如何处理超长描述
 - 如何选择压缩策略
 - 如何保留关键信息
 
 **快速开始**：
+
 ```bash
 cd real-world-skill
 usk analyze SKILL.md
@@ -34,12 +37,14 @@ usk convert SKILL.md -t codex -o ./output
 ### 场景1：首次使用USK
 
 推荐：
+
 1. 先看[Quick Start](../README.md#-quick-start)
 2. 然后试试[Real-World Skill](./real-world-skill/)
 
 ### 场景2：学习压缩策略
 
 推荐：
+
 1. [Real-World Skill](./real-world-skill/) - 对比三种策略
 
 ### 场景3：多文件Skill
@@ -145,16 +150,17 @@ Content goes here...
 
 ### 2. 压缩策略选择
 
-| 描述长度 | 推荐策略 |
-|---------|---------|
-| < 500 | 无需压缩 |
-| 500-600 | conservative |
-| 600-800 | balanced ⭐ |
-| 800+ | aggressive |
+| 描述长度 | 推荐策略     |
+| -------- | ------------ |
+| < 500    | 无需压缩     |
+| 500-600  | conservative |
+| 600-800  | balanced ⭐  |
+| 800+     | aggressive   |
 
 ### 3. 关键信息保留
 
 USK自动保留：
+
 - ✅ 版本号（16.14, v2.x）
 - ✅ 技术栈名称（React, TypeScript）
 - ✅ 重要约束（NOT compatible with）
@@ -166,6 +172,7 @@ usk analyze your-skill.md
 ```
 
 关注：
+
 - Quality Score (>80为优秀)
 - Technical Keywords
 - Recommended Strategy
@@ -205,6 +212,7 @@ usk analyze your-skill.md
 ### Q: 示例可以直接用于生产吗？
 
 A: 示例主要用于学习和参考。在生产环境使用前，请：
+
 - 根据实际需求修改
 - 测试转换结果
 - 验证质量评分

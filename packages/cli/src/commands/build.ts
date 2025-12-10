@@ -22,7 +22,9 @@ export interface BuildCommandOptions {
 /**
  * Build command implementation
  */
-export async function buildCommand(options: BuildCommandOptions = {}): Promise<void> {
+export async function buildCommand(
+  options: BuildCommandOptions = {}
+): Promise<void> {
   const configPath = resolve(process.cwd(), options.config || 'usk.config.json')
 
   // 检查配置文件是否存在
@@ -92,7 +94,11 @@ export async function buildCommand(options: BuildCommandOptions = {}): Promise<v
           )
           console.log(chalk.gray(`  → ${platform.outputPath}`))
         } else {
-          console.log(chalk.red('✗'), chalk.bold(platform.platform), chalk.red('failed'))
+          console.log(
+            chalk.red('✗'),
+            chalk.bold(platform.platform),
+            chalk.red('failed')
+          )
           if (platform.error) {
             console.log(chalk.red(`  ${platform.error.message}`))
           }
@@ -102,11 +108,64 @@ export async function buildCommand(options: BuildCommandOptions = {}): Promise<v
       console.log()
       console.log(chalk.gray(`Total duration: ${buildResult.duration}ms`))
 
+      if (buildResult.metrics) {
+        const { statistics, cache, plugins } = buildResult.metrics
+        console.log()
+        console.log(chalk.cyan('📈 Build Metrics / 构建指标'))
+        console.log(
+          chalk.gray('  Templates Rendered / 模板渲染数:'),
+          statistics.templatesRendered
+        )
+        console.log(
+          chalk.gray('  Files Copied / 复制文件数:'),
+          statistics.filesCopied
+        )
+        console.log(
+          chalk.gray('  Total Output Size / 输出体积:'),
+          formatSize(statistics.totalSize)
+        )
+
+        if (cache) {
+          const hitRate = (cache.hitRate * 100).toFixed(1)
+          console.log(
+            chalk.gray('  Cache Hit Rate / 缓存命中率:'),
+            `${hitRate}% (${cache.hits} hits / ${cache.misses} misses, ${cache.entryCount} entries)`
+          )
+        }
+
+        if (plugins && plugins.length > 0) {
+          console.log(chalk.gray('  Plugin Hooks / 插件耗时:'))
+          plugins.slice(0, 3).forEach(pluginMetric => {
+            const total = pluginMetric.totalDuration.toFixed(1)
+            const hookSummary = pluginMetric.hooks
+              .slice(0, 2)
+              .map(
+                hook =>
+                  `${String(hook.hook)} ${hook.totalDuration.toFixed(1)}ms`
+              )
+              .join(', ')
+            console.log(
+              chalk.gray(
+                `    • ${pluginMetric.name}: ${total}ms${hookSummary ? ` (${hookSummary})` : ''}`
+              )
+            )
+          })
+
+          if (plugins.length > 3) {
+            console.log(
+              chalk.gray(`    • … ${plugins.length - 3} more plugin(s)`)
+            )
+          }
+        }
+      }
+
       // 显示警告
       if (buildResult.warnings && buildResult.warnings.length > 0) {
         console.log()
-        console.log(chalk.yellow(`⚠️  ${buildResult.warnings.length} warning(s):`))
-        buildResult.warnings.forEach((warning) => {
+        console.log(
+          chalk.yellow(`⚠️  ${buildResult.warnings.length} warning(s):`)
+        )
+        buildResult.warnings.forEach(warning => {
           console.log(chalk.yellow(`  • ${warning}`))
         })
       }
@@ -115,7 +174,7 @@ export async function buildCommand(options: BuildCommandOptions = {}): Promise<v
 
       // 显示错误
       if (buildResult.errors && buildResult.errors.length > 0) {
-        buildResult.errors.forEach((error) => {
+        buildResult.errors.forEach(error => {
           console.log(chalk.red(`  ${error.message}`))
         })
       }
@@ -167,21 +226,24 @@ async function runWatchMode(
   console.log(chalk.gray('Press Ctrl+C to stop\n'))
 
   // 创建 watcher
-  const config = (builder as any).config
-  const watcher = new SkillWatcher(config, builder)
+  const watcher = new SkillWatcher(builder.getConfig(), builder)
 
   // 处理 Ctrl+C 信号
-  process.on('SIGINT', async () => {
-    console.log(chalk.yellow('\n\n⏹  Stopping watcher...'))
-    await watcher.stop()
-    console.log(chalk.green('✓ Watcher stopped'))
-    process.exit(0)
+  process.on('SIGINT', () => {
+    void (async () => {
+      console.log(chalk.yellow('\n\n⏹  Stopping watcher...'))
+      await watcher.stop()
+      console.log(chalk.green('✓ Watcher stopped'))
+      process.exit(0)
+    })()
   })
 
   // 处理 SIGTERM 信号
-  process.on('SIGTERM', async () => {
-    await watcher.stop()
-    process.exit(0)
+  process.on('SIGTERM', () => {
+    void (async () => {
+      await watcher.stop()
+      process.exit(0)
+    })()
   })
 
   // 启动 watcher
@@ -192,7 +254,7 @@ async function runWatchMode(
     debounceDelay: 300,
 
     // 文件变化回调
-    onChange: (file) => {
+    onChange: file => {
       const relativePath = relative(cwd, file)
       if (!options.verbose) {
         console.log(chalk.blue('📝 Changed:'), chalk.gray(relativePath))
@@ -211,7 +273,7 @@ async function runWatchMode(
     },
 
     // 错误回调
-    onError: (error) => {
+    onError: error => {
       console.error(chalk.red('\n❌ Build error:'))
       console.error(chalk.red(`  ${error.message}`))
       if (options.verbose && error.stack) {

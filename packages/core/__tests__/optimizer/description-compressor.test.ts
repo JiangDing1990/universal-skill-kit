@@ -12,8 +12,7 @@ import {
   descriptionWithExamples,
   descriptionWithVerbosePhrases,
   chineseDescription,
-  descriptionAt500Chars,
-  descriptionAt600Chars
+  descriptionAt500Chars
 } from './fixtures'
 
 describe('DescriptionCompressor', () => {
@@ -110,7 +109,10 @@ describe('DescriptionCompressor', () => {
           strategy: 'conservative'
         }
 
-        const result = compressor.compress(descriptionWithVerbosePhrases, options)
+        const result = compressor.compress(
+          descriptionWithVerbosePhrases,
+          options
+        )
 
         expect(result.compressedLength).toBeLessThanOrEqual(options.maxLength)
         expect(result.ratio).toBeLessThan(1)
@@ -169,7 +171,10 @@ describe('DescriptionCompressor', () => {
           strategy: 'balanced'
         }
 
-        const result = compressor.compress(descriptionWithVerbosePhrases, options)
+        const result = compressor.compress(
+          descriptionWithVerbosePhrases,
+          options
+        )
 
         expect(result.text).not.toContain('due to the fact that')
         expect(result.text).not.toContain('in order to')
@@ -231,7 +236,8 @@ describe('DescriptionCompressor', () => {
           strategy: 'conservative'
         }
 
-        const input = 'First sentence here. Second sentence that is very long and will be cut off. Third sentence.'
+        const input =
+          'First sentence here. Second sentence that is very long and will be cut off. Third sentence.'
         const result = compressor.compress(input, options)
 
         expect(result.compressedLength).toBeLessThanOrEqual(options.maxLength)
@@ -248,7 +254,8 @@ describe('DescriptionCompressor', () => {
           customKeywords: ['React']
         }
 
-        const input = 'This is a description that will be truncated at some point. It uses React framework for building user interfaces efficiently.'
+        const input =
+          'This is a description that will be truncated at some point. It uses React framework for building user interfaces efficiently.'
         const result = compressor.compress(input, options)
 
         expect(result.compressedLength).toBeLessThanOrEqual(options.maxLength)

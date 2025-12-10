@@ -164,13 +164,11 @@ diff dist/claude/SKILL.md dist/codex/SKILL.md
 
 ```handlebars
 {{#if platform.claude}}
-  这段内容只在 Claude 平台显示
-  可以包含详细的技术文档和代码示例
+  这段内容只在 Claude 平台显示 可以包含详细的技术文档和代码示例
 {{/if}}
 
 {{#if platform.codex}}
-  这段内容只在 Codex 平台显示
-  保持简洁,快速上手
+  这段内容只在 Codex 平台显示 保持简洁,快速上手
 {{/if}}
 ```
 
@@ -178,25 +176,35 @@ diff dist/claude/SKILL.md dist/codex/SKILL.md
 
 ```handlebars
 <!-- 基础变量 -->
-名称: {{name}}
-版本: {{version}}
+名称:
+{{name}}
+版本:
+{{version}}
 
 <!-- 文本转换 -->
-大写: {{uppercase name}}
-小写: {{lowercase name}}
-首字母大写: {{capitalize name}}
+大写:
+{{uppercase name}}
+小写:
+{{lowercase name}}
+首字母大写:
+{{capitalize name}}
 
 <!-- 数组操作 -->
-标签: {{join tags ", "}}
-标签数量: {{length tags}}
+标签:
+{{join tags ', '}}
+标签数量:
+{{length tags}}
 
 <!-- 字符串处理 -->
-截断: {{truncate description 100}}
-替换: {{replace name "-" " "}}
-默认值: {{default author "Unknown"}}
+截断:
+{{truncate description 100}}
+替换:
+{{replace name '-' ' '}}
+默认值:
+{{default author 'Unknown'}}
 
 <!-- 条件逻辑 -->
-{{#if (eq version "2.0.0")}}
+{{#if (eq version '2.0.0')}}
   版本是 2.0.0
 {{/if}}
 
@@ -213,7 +221,8 @@ diff dist/claude/SKILL.md dist/codex/SKILL.md
 
 ```handlebars
 {{#each tags}}
-  - {{this}}
+  -
+  {{this}}
 {{/each}}
 ```
 
@@ -278,6 +287,7 @@ usk cache clean --force      # 强制清理所有缓存
 ### 2. 条件编译策略
 
 **Claude 平台** (详细模式):
+
 - 完整的安装步骤
 - 详细的 API 文档
 - 丰富的代码示例
@@ -285,6 +295,7 @@ usk cache clean --force      # 强制清理所有缓存
 - 完整的命令参考
 
 **Codex 平台** (精简模式):
+
 - 快速安装指南
 - 核心命令列表
 - 简洁的使用示例
@@ -328,11 +339,7 @@ A: 在 `usk.config.json` 中添加路径模式:
 ```json
 {
   "source": {
-    "resources": [
-      "resources/**/*",
-      "assets/**/*.png",
-      "data/**/*.json"
-    ]
+    "resources": ["resources/**/*", "assets/**/*.png", "data/**/*.json"]
   }
 }
 ```
@@ -368,6 +375,7 @@ usk build --verbose
 ```
 
 这会显示:
+
 - 模板渲染过程
 - 使用的 partials
 - 资源复制详情
@@ -378,7 +386,8 @@ usk build --verbose
 A: 对于 Codex 平台,使用条件编译提供简短版本:
 
 ```handlebars
-description: {{#if platform.codex}}{{truncate description 450}}{{else}}{{description}}{{/if}}
+description:
+{{#if platform.codex}}{{truncate description 450}}{{else}}{{description}}{{/if}}
 ```
 
 ## 相关链接

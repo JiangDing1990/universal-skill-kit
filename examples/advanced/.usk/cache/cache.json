@@ -12,10 +12,7 @@
         "/Users/jiangding/claude-skills/universal-skill-kit/examples/advanced/src/SKILL.md"
       ],
       "metadata": {
-        "tags": [
-          "codex",
-          "template"
-        ]
+        "tags": ["codex", "template"]
       }
     },
     "23241858811600bad23f82ca51906dec021ba95a0eebd02a2189111c43c7510a:claude": {
@@ -30,10 +27,7 @@
         "/Users/jiangding/claude-skills/universal-skill-kit/examples/advanced/src/SKILL.md"
       ],
       "metadata": {
-        "tags": [
-          "claude",
-          "template"
-        ]
+        "tags": ["claude", "template"]
       }
     }
   },

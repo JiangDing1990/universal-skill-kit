@@ -372,7 +372,10 @@ Also see .codex/skills/another-skill
 
   describe('edge cases', () => {
     it('should handle paths with special characters', () => {
-      const result = mapper.mapPath('~/.claude/skills/my-skill (special)', 'codex')
+      const result = mapper.mapPath(
+        '~/.claude/skills/my-skill (special)',
+        'codex'
+      )
 
       expect(result.mappedPath).toBe('~/.codex/skills/my-skill (special)')
     })

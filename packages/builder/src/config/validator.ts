@@ -119,7 +119,11 @@ export class ConfigValidator {
   /**
    * 验证文件存在性
    */
-  private validateFiles(config: SkillConfig, configDir: string, errors: ValidationError[]): void {
+  private validateFiles(
+    config: SkillConfig,
+    configDir: string,
+    errors: ValidationError[]
+  ): void {
     // 检查入口文件
     const entryPath = resolve(configDir, config.source.entry)
     if (!existsSync(entryPath)) {
@@ -152,10 +156,16 @@ export class ConfigValidator {
   /**
    * 逻辑验证
    */
-  private validateLogic(config: SkillConfig, warnings: ValidationWarning[]): void {
+  private validateLogic(
+    config: SkillConfig,
+    warnings: ValidationWarning[]
+  ): void {
     // 检查Codex平台的描述长度
     if (config.platforms.codex?.enabled) {
-      const description = this.getDescriptionForPlatform(config.description, 'codex')
+      const description = this.getDescriptionForPlatform(
+        config.description,
+        'codex'
+      )
 
       if (description.length > 500) {
         warnings.push({
@@ -172,7 +182,8 @@ export class ConfigValidator {
       warnings.push({
         type: 'suggestion',
         path: 'version',
-        message: '版本号以0开头，表示项目处于开发阶段，发布正式版本时建议升级到1.0.0'
+        message:
+          '版本号以0开头，表示项目处于开发阶段，发布正式版本时建议升级到1.0.0'
       })
     }
   }
@@ -180,7 +191,10 @@ export class ConfigValidator {
   /**
    * 检查最佳实践
    */
-  private checkBestPractices(config: SkillConfig, warnings: ValidationWarning[]): void {
+  private checkBestPractices(
+    config: SkillConfig,
+    warnings: ValidationWarning[]
+  ): void {
     // 建议添加作者信息
     if (!config.author) {
       warnings.push({
@@ -212,7 +226,10 @@ export class ConfigValidator {
   /**
    * 获取平台特定描述
    */
-  private getDescriptionForPlatform(description: string | { common: string; [key: string]: string | undefined }, platform: string): string {
+  private getDescriptionForPlatform(
+    description: string | { common: string; [key: string]: string | undefined },
+    platform: string
+  ): string {
     if (typeof description === 'string') {
       return description
     }

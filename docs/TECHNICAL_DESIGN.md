@@ -28,9 +28,12 @@ universal-skill-kit/
 │   │   ├── prompts/             # 交互式提示
 │   │   └── reporters/           # 结果输出
 │   ├── builder/                 # 统一构建工具
-│   │   ├── template-engine/    # 模板引擎
+│   │   ├── template/            # 模板上下文管理与导出
+│   │   ├── builder/             # 构建调度与执行
 │   │   ├── config-loader/       # 配置加载器
-│   │   └── bundler/             # 打包器
+│   │   ├── cache/               # 缓存系统
+│   │   └── plugin/              # 生命周期插件
+│   ├── template/                # Handlebars 模板引擎封装
 │   └── utils/                   # 通用工具
 │       ├── description-compressor/  # 描述压缩
 │       ├── path-mapper/            # 路径映射
@@ -141,133 +144,51 @@ class ClaudeToCodexConverter implements SkillConverter {
 
 ### 2. Template Engine（模板引擎）
 
-支持条件编译，实现一套代码适配多平台。
+模板渲染能力由独立的 `@jiangding/usk-template` 包提供。该包基于 Handlebars 创建隔离运行时，统一暴露受限 helper、partial 注册与文件渲染 API，供 Builder 及其他上层工具共享。
 
-#### 语法设计
+#### 关键特性
 
-```markdown
-<!-- @if platform=claude -->
+- 使用 `Handlebars.create()` 生成独立实例，避免外部状态污染。
+- 内置 `eq`、`and`、`uppercase`、`truncate`、`platform` 等常用 helper，同时允许安全扩展自定义 helper。
+- `renderFile` 同时兼容字符串路径与 `URL` 对象，便于在 ESM/Vite 环境中复用。
+- 统一管理 partial 注册/卸载，并通过代理追踪渲染过程中实际使用的 partial 列表。
+- 根据传入的 `TemplateRenderOptions` 动态开启 `allowProto*` 等运行时开关，默认保持严格模式。
+- 读取、编译、渲染环节均包装为 `TemplateEngineError`，外层只需处理统一的错误类型。
 
-这段内容只在 Claude 平台显示
-
-<!-- @endif -->
-
-<!-- @if platform=codex -->
-
-这段内容只在 Codex 平台显示
-
-<!-- @endif -->
-
-<!-- @if platform=claude,codex -->
-
-这段内容在两个平台都显示
-
-<!-- @endif -->
-
-<!-- @unless platform=claude -->
-
-这段内容在非 Claude 平台显示
-
-<!-- @endunless -->
-```
-
-#### 实现示例
+#### 使用示例
 
 ```typescript
-class TemplateEngine {
-  private platform: Platform
-  private directives: Map<string, DirectiveHandler>
+import { TemplateEngine } from '@jiangding/usk-template'
 
-  constructor(platform: Platform) {
-    this.platform = platform
-    this.directives = new Map([
-      ['if', this.handleIf.bind(this)],
-      ['unless', this.handleUnless.bind(this)],
-      ['include', this.handleInclude.bind(this)]
-    ])
+const engine = new TemplateEngine()
+
+engine.registerPartial('header', `# {{uppercase name}}`)
+
+const { content, usedPartials } = engine.render(
+  `{{> header }}
+作者：{{default author 'Unknown'}}
+标签：{{join tags ', '}}`,
+  {
+    name: 'Universal Skill Kit',
+    author: 'USK Team',
+    tags: ['cli', 'template']
   }
+)
 
-  render(template: string, context: Record<string, any>): string {
-    let result = template
-
-    // 处理条件指令
-    result = this.processDirectives(result, context)
-
-    // 替换变量
-    result = this.replaceVariables(result, context)
-
-    return result
-  }
-
-  private processDirectives(
-    content: string,
-    context: Record<string, any>
-  ): string {
-    const directivePattern =
-      /<!-- @(\w+)\s+(.*?)\s*-->([\s\S]*?)<!-- @end\1 -->/g
-
-    return content.replace(directivePattern, (match, directive, args, body) => {
-      const handler = this.directives.get(directive)
-      if (!handler) return match
-
-      return handler(args, body, context)
-    })
-  }
-
-  private handleIf(
-    args: string,
-    body: string,
-    context: Record<string, any>
-  ): string {
-    const condition = this.parseCondition(args)
-
-    if (this.evaluateCondition(condition, context)) {
-      return body
-    }
-
-    return ''
-  }
-
-  private parseCondition(args: string): Condition {
-    // 解析 platform=claude,codex 这样的条件
-    const match = args.match(/platform=(.+)/)
-    if (!match) throw new Error(`Invalid condition: ${args}`)
-
-    return {
-      type: 'platform',
-      values: match[1].split(',').map(v => v.trim())
-    }
-  }
-
-  private evaluateCondition(
-    condition: Condition,
-    context: Record<string, any>
-  ): boolean {
-    if (condition.type === 'platform') {
-      return condition.values.includes(this.platform)
-    }
-    return false
-  }
-
-  private replaceVariables(
-    content: string,
-    context: Record<string, any>
-  ): string {
-    return content.replace(/\{\{(\w+)\}\}/g, (match, varName) => {
-      return context[varName] || match
-    })
-  }
-}
-
-interface Condition {
-  type: string
-  values: string[]
-}
-
-interface DirectiveHandler {
-  (args: string, body: string, context: Record<string, any>): string
-}
+console.log(content)
+// # UNIVERSAL SKILL KIT
+// 作者：USK Team
+// 标签：cli, template
+console.log(usedPartials) // ['header']
 ```
+
+Builder 在构建流程中结合 `TemplateContextManager` 生成平台特定上下文，再调用模板引擎渲染 `SKILL.md`。渲染完成后，构建结果会记录下列指标并透出给 CLI：
+
+- `renderDuration`：每个平台模板渲染耗时（毫秒）。
+- `usedPartials`：本次构建实际使用的 partial 列表。
+- `cacheHit` / `cacheKey`：模板缓存命中信息，支持在插件中进行二次分析。
+
+这些指标同样会通过 `usk build` 命令输出到终端，便于排查性能瓶颈。
 
 ### 3. Description Compressor（描述压缩器）
 

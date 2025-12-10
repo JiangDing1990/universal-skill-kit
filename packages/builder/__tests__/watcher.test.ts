@@ -97,7 +97,7 @@ version: {{version}}
       })
 
       // 等待初始构建完成
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
       // 验证状态
       expect(watcher.isWatching()).toBe(true)
@@ -109,7 +109,7 @@ version: {{version}}
       // 确保 start promise 完成
       await Promise.race([
         startPromise,
-        new Promise((resolve) => setTimeout(resolve, 100))
+        new Promise(resolve => setTimeout(resolve, 100))
       ])
     }, 10000)
 
@@ -126,7 +126,7 @@ version: {{version}}
       })
 
       // 等待初始构建完成
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
       // 重置 mock
       onChange.mockClear()
@@ -148,12 +148,10 @@ version: {{version}}
       )
 
       // 等待文件变化检测和重新构建
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await new Promise(resolve => setTimeout(resolve, 1500))
 
       // 验证回调被调用
-      expect(onChange).toHaveBeenCalledWith(
-        expect.stringContaining('SKILL.md')
-      )
+      expect(onChange).toHaveBeenCalledWith(expect.stringContaining('SKILL.md'))
       expect(onBuildComplete).toHaveBeenCalledWith(true, expect.any(Number))
 
       // 停止 watcher
@@ -162,7 +160,7 @@ version: {{version}}
       // 确保 start promise 完成
       await Promise.race([
         startPromise,
-        new Promise((resolve) => setTimeout(resolve, 100))
+        new Promise(resolve => setTimeout(resolve, 100))
       ])
     }, 15000)
 
@@ -178,13 +176,13 @@ version: {{version}}
       })
 
       // 等待初始构建完成
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
       // 删除入口文件以触发错误
       await rm(resolve(testRoot, 'src', 'SKILL.md'), { force: true })
 
       // 等待错误检测
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await new Promise(resolve => setTimeout(resolve, 1500))
 
       // 停止 watcher
       await watcher.stop()
@@ -192,7 +190,7 @@ version: {{version}}
       // 确保 start promise 完成
       await Promise.race([
         startPromise,
-        new Promise((resolve) => setTimeout(resolve, 100))
+        new Promise(resolve => setTimeout(resolve, 100))
       ])
     }, 15000)
   })
@@ -205,7 +203,7 @@ version: {{version}}
       })
 
       // 等待初始构建完成
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
       // 验证正在监听
       expect(watcher.isWatching()).toBe(true)
@@ -219,7 +217,7 @@ version: {{version}}
       // 确保 start promise 完成
       await Promise.race([
         startPromise,
-        new Promise((resolve) => setTimeout(resolve, 100))
+        new Promise(resolve => setTimeout(resolve, 100))
       ])
     }, 10000)
   })

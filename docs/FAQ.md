@@ -16,9 +16,18 @@ Universal Skill Kit的常见问题和解决方案。
 
 ## 安装和配置
 
+### Q0: 运行需要哪个版本的 Node.js？
+
+**解答**：
+
+- Universal Skill Kit 要求 **Node.js 22.17.1**。根目录提供 `.nvmrc`，推荐执行 `nvm use` 或配置 Volta。
+- 如果运行 `pnpm`、`usk` 命令时提示 `This version of pnpm requires at least Node.js v18.12` 等信息，请先切换到正确的 Node 版本再重试。
+- 在 CI / 自动化环境中，可使用 `actions/setup-node@v4` 指定 `node-version: 22.17.1`，并执行 `corepack enable` 以保证 pnpm 版本一致。
+
 ### Q1: 安装后提示"command not found: usk"
 
 **问题**：
+
 ```bash
 $ usk --version
 command not found: usk
@@ -27,17 +36,20 @@ command not found: usk
 **解决方案**：
 
 1. **检查是否安装成功**：
+
 ```bash
 npm list -g @jiangding/usk-cli
 ```
 
 2. **检查全局bin目录是否在PATH中**：
+
 ```bash
 npm config get prefix
 echo $PATH
 ```
 
 3. **如果不在PATH中，添加它**：
+
 ```bash
 # 对于bash
 echo 'export PATH="$(npm config get prefix)/bin:$PATH"' >> ~/.bashrc
@@ -49,6 +61,7 @@ source ~/.zshrc
 ```
 
 4. **或者使用npx**：
+
 ```bash
 npx @jiangding/usk-cli --version
 ```
@@ -58,6 +71,7 @@ npx @jiangding/usk-cli --version
 ### Q2: 权限错误 EACCES
 
 **问题**：
+
 ```bash
 Error: EACCES: permission denied
 ```
@@ -65,6 +79,7 @@ Error: EACCES: permission denied
 **解决方案**：
 
 **方法1：修改npm全局目录（推荐）**：
+
 ```bash
 # 创建全局目录
 mkdir ~/.npm-global
@@ -81,6 +96,7 @@ npm install -g @jiangding/usk-cli
 ```
 
 **方法2：使用sudo（不推荐）**：
+
 ```bash
 sudo npm install -g @jiangding/usk-cli
 ```
@@ -90,6 +106,7 @@ sudo npm install -g @jiangding/usk-cli
 ### Q3: 版本冲突或安装失败
 
 **问题**：
+
 ```bash
 npm ERR! peer dep missing
 ```
@@ -97,17 +114,20 @@ npm ERR! peer dep missing
 **解决方案**：
 
 1. **清除npm缓存**：
+
 ```bash
 npm cache clean --force
 ```
 
 2. **使用特定版本的Node.js**：
+
 ```bash
 # 使用nvm切换到Node.js 18+
 nvm use 18
 ```
 
 3. **重新安装**：
+
 ```bash
 npm uninstall -g @jiangding/usk-cli
 npm install -g @jiangding/usk-cli@latest
@@ -123,12 +143,14 @@ npm install -g @jiangding/usk-cli@latest
 当源Skill的描述超过500字符时，USK会自动压缩以满足Codex平台限制。
 
 **检查原始长度**：
+
 ```bash
 usk analyze my-skill.md
 # 查看 "Description Length" 字段
 ```
 
 **控制压缩**：
+
 ```bash
 # 使用保守策略（压缩较少）
 usk convert my-skill.md -t codex -s conservative
@@ -138,6 +160,7 @@ usk convert my-skill.md -t codex --verbose
 ```
 
 **优化建议**：
+
 - 手动精简原始描述
 - 移除冗余词汇
 - 保留关键技术信息
@@ -147,11 +170,13 @@ usk convert my-skill.md -t codex --verbose
 ### Q5: 转换失败，提示文件不存在
 
 **问题**：
+
 ```bash
 ❌ Skill file not found or not readable
 ```
 
 **原因**：
+
 1. 文件路径不正确
 2. 目录中缺少SKILL.md
 3. 权限问题
@@ -159,6 +184,7 @@ usk convert my-skill.md -t codex --verbose
 **解决方案**：
 
 1. **检查文件是否存在**：
+
 ```bash
 ls -la my-skill.md
 # 或对于目录
@@ -166,11 +192,13 @@ ls -la my-skill/SKILL.md
 ```
 
 2. **使用绝对路径**：
+
 ```bash
 usk convert /absolute/path/to/my-skill.md -t codex
 ```
 
 3. **检查权限**：
+
 ```bash
 chmod 644 my-skill.md
 ```
@@ -180,6 +208,7 @@ chmod 644 my-skill.md
 ### Q6: batch命令找不到任何文件
 
 **问题**：
+
 ```bash
 ✔ Found 0 skill(s)
 ```
@@ -190,6 +219,7 @@ Glob模式未正确引用或路径不对。
 **解决方案**：
 
 1. **使用引号包裹pattern**：
+
 ```bash
 # ❌ 错误
 usk batch skills/**/*.md -t codex
@@ -199,12 +229,14 @@ usk batch "skills/**/*.md" -t codex
 ```
 
 2. **使用相对路径**：
+
 ```bash
 cd /path/to/project
 usk batch "skills/**/*.md" -t codex
 ```
 
 3. **测试pattern**：
+
 ```bash
 # 使用ls测试
 ls skills/**/*.md
@@ -217,6 +249,7 @@ ls skills/**/*.md
 ### Q7: 转换后信息丢失了重要内容
 
 **检查是否被压缩**：
+
 ```bash
 usk convert my-skill.md -t codex --verbose
 # 查看 "Compression Rate"
@@ -225,6 +258,7 @@ usk convert my-skill.md -t codex --verbose
 **解决方案**：
 
 1. **使用更保守的策略**：
+
 ```bash
 usk convert my-skill.md -t codex -s conservative
 ```
@@ -235,6 +269,7 @@ usk convert my-skill.md -t codex -s conservative
    - 使用简洁表达
 
 3. **检查保留的关键词**：
+
 ```bash
 usk convert my-skill.md -t codex --verbose
 # 查看 "Preserved Keywords"
@@ -245,6 +280,7 @@ usk convert my-skill.md -t codex --verbose
 ### Q8: 多文件Skill某些文件没有被复制
 
 **问题**：
+
 ```bash
 ⚠️ Warning: Referenced file not found: templates/foo.md
 ```
@@ -255,20 +291,25 @@ usk convert my-skill.md -t codex --verbose
 **解决方案**：
 
 1. **检查文件是否存在**：
+
 ```bash
 ls -la my-skill/templates/foo.md
 ```
 
 2. **检查路径引用**：
+
 ```markdown
 <!-- ✅ 正确 -->
+
 See templates/example.md
 
 <!-- ❌ 错误 -->
+
 See /absolute/path/templates/example.md
 ```
 
 3. **使用详细日志**：
+
 ```bash
 usk convert my-skill/ -t codex --verbose
 ```
@@ -281,6 +322,7 @@ usk convert my-skill/ -t codex --verbose
 Codex Skill的描述通常很短（≤500字符），转换时保持原样。
 
 **这是正常的**：
+
 - Codex → Claude不需要扩展描述
 - 原始信息已完整保留
 - 可以手动补充详细说明
@@ -296,15 +338,16 @@ Codex Skill的描述通常很短（≤500字符），转换时保持原样。
 
 **参考表格**：
 
-| 原始长度 | 推荐策略 | 预期压缩率 | 适用场景 |
-|---------|---------|-----------|----------|
-| < 500 | 无需压缩 | 0% | 简短描述 |
-| 500-600 | conservative | ~10% | 稍长描述 |
-| 600-800 | balanced ⭐ | ~40% | 中等描述 |
-| 800-1000 | aggressive | ~60% | 很长描述 |
-| > 1000 | 手动优化 | - | 需重写 |
+| 原始长度 | 推荐策略     | 预期压缩率 | 适用场景 |
+| -------- | ------------ | ---------- | -------- |
+| < 500    | 无需压缩     | 0%         | 简短描述 |
+| 500-600  | conservative | ~10%       | 稍长描述 |
+| 600-800  | balanced ⭐  | ~40%       | 中等描述 |
+| 800-1000 | aggressive   | ~60%       | 很长描述 |
+| > 1000   | 手动优化     | -          | 需重写   |
 
 **测试方法**：
+
 ```bash
 # 尝试所有策略
 usk convert my-skill.md -t codex -s conservative -o ./test1
@@ -327,6 +370,7 @@ head -15 ./test3/my-skill.md
 **解决方案**：
 
 1. **在描述前部提及版本**：
+
 ```markdown
 ---
 description: |
@@ -335,14 +379,15 @@ description: |
 ```
 
 2. **使用明确格式**：
+
 ```markdown
-React 16.14  ✅
-React v16    ✅
-React 16     ⚠️ 可能被识别为普通数字
+React 16.14 ✅
+React v16 ✅
+React 16 ⚠️ 可能被识别为普通数字
 ```
 
 3. **报告bug**：
-如果确认是bug，请提Issue并提供完整示例。
+   如果确认是bug，请提Issue并提供完整示例。
 
 ---
 
@@ -352,6 +397,7 @@ React 16     ⚠️ 可能被识别为普通数字
 USK使用内置的4种策略，暂不支持自定义规则。
 
 **建议**：
+
 1. 选择最接近的策略
 2. 转换后手动微调
 
@@ -365,6 +411,7 @@ Phase 2可能支持自定义压缩配置。
 ### Q13: 遇到YAML解析错误
 
 **问题**：
+
 ```bash
 ❌ Error: Invalid YAML frontmatter
 ```
@@ -372,14 +419,14 @@ Phase 2可能支持自定义压缩配置。
 **常见原因**：
 
 1. **缩进错误**：
+
 ```yaml
 # ❌ 错误
 ---
 tags:
-- tag1
-  - tag2  # 缩进不一致
+  - tag1
+    - tag2 # 缩进不一致
 ---
-
 # ✅ 正确
 ---
 tags:
@@ -389,6 +436,7 @@ tags:
 ```
 
 2. **引号问题**：
+
 ```yaml
 # ❌ 错误
 description: It's a test  # 单引号未转义
@@ -400,6 +448,7 @@ description: It\'s a test
 ```
 
 3. **特殊字符**：
+
 ```yaml
 # ❌ 错误
 name: skill:test  # 冒号后需要空格
@@ -416,6 +465,7 @@ name: "skill:test"
 ### Q14: 模块解析错误
 
 **问题**：
+
 ```bash
 Error [ERR_MODULE_NOT_FOUND]: Cannot find package
 ```
@@ -423,16 +473,19 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find package
 **解决方案**：
 
 1. **更新到最新版本**：
+
 ```bash
 npm install -g @jiangding/usk-cli@latest
 ```
 
 2. **清除缓存**：
+
 ```bash
 npm cache clean --force
 ```
 
 3. **重新安装**：
+
 ```bash
 npm uninstall -g @jiangding/usk-cli
 npm install -g @jiangding/usk-cli
@@ -445,6 +498,7 @@ npm install -g @jiangding/usk-cli
 ### Q15: 批量转换很慢
 
 **原因**：
+
 - 大量文件
 - 单线程处理
 - 网络问题（如有）
@@ -452,11 +506,13 @@ npm install -g @jiangding/usk-cli
 **优化方法**：
 
 1. **确保并行处理开启**（默认）：
+
 ```bash
 usk batch "skills/**/*.md" -t codex --parallel
 ```
 
 2. **分批处理**：
+
 ```bash
 # 分目录处理
 usk batch "skills/group1/**/*.md" -t codex -o ./output1
@@ -464,9 +520,10 @@ usk batch "skills/group2/**/*.md" -t codex -o ./output2
 ```
 
 3. **使用SSD**：
-磁盘I/O性能影响较大。
+   磁盘I/O性能影响较大。
 
 **预期性能**：
+
 - 单文件：< 100ms
 - 20文件批量：~4s（并行）
 - 100文件批量：~20s（并行）
@@ -479,11 +536,13 @@ usk batch "skills/group2/**/*.md" -t codex -o ./output2
 大型Skill文件分析需要时间。
 
 **正常范围**：
+
 - 简单Skill: < 50ms
 - 复杂Skill（含代码示例）: < 200ms
 - 超大Skill（10000+ chars）: < 500ms
 
 **如果超过这个范围**：
+
 1. 检查文件大小
 2. 使用`--verbose`查看详细日志
 3. 报告性能问题
@@ -592,32 +651,30 @@ exit $FAILED
 **验证脚本（scripts/validate-skills.js）**：
 
 ```javascript
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { exec } from 'child_process'
+import { promisify } from 'util'
 
-const execAsync = promisify(exec);
+const execAsync = promisify(exec)
 
 async function validateSkill(skillPath) {
   try {
-    const { stdout } = await execAsync(
-      `usk analyze "${skillPath}" --json`
-    );
-    const report = JSON.parse(stdout);
+    const { stdout } = await execAsync(`usk analyze "${skillPath}" --json`)
+    const report = JSON.parse(stdout)
 
     if (report.estimatedQuality < 80) {
-      console.error(`❌ Low quality: ${skillPath}`);
-      process.exit(1);
+      console.error(`❌ Low quality: ${skillPath}`)
+      process.exit(1)
     }
 
-    console.log(`✅ Passed: ${skillPath}`);
+    console.log(`✅ Passed: ${skillPath}`)
   } catch (error) {
-    console.error(`❌ Error: ${skillPath}`, error.message);
-    process.exit(1);
+    console.error(`❌ Error: ${skillPath}`, error.message)
+    process.exit(1)
   }
 }
 
 // Run validation
-await validateSkill('skills/my-skill.md');
+await validateSkill('skills/my-skill.md')
 ```
 
 ---
@@ -668,10 +725,12 @@ done
 ### Q21: 支持哪些平台？
 
 **当前支持**：
+
 - ✅ Claude Code
 - ✅ Codex
 
 **计划支持**（Phase 2+）：
+
 - ⏳ Cursor
 - ⏳ 其他AI CLI平台
 
@@ -682,11 +741,13 @@ done
 **当然欢迎！**
 
 请参考：
+
 - [贡献指南](../CONTRIBUTING.md)
 - [技术设计](TECHNICAL_DESIGN.md)
 - [开发路线图](ROADMAP.md)
 
 **建议从这些开始**：
+
 - 报告bug
 - 改进文档
 - 添加测试
@@ -708,6 +769,7 @@ done
    直接提交改进
 
 **提Issue建议**：
+
 - 描述清晰
 - 提供复现步骤
 - 附上错误日志

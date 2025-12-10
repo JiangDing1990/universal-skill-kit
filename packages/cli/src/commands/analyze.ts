@@ -64,9 +64,19 @@ export async function analyzeCommand(
         : report.complexity === 'medium'
           ? chalk.yellow
           : chalk.green
-    console.log(chalk.cyan('  Level:'), complexityColor(report.complexity.toUpperCase()))
-    console.log(chalk.cyan('  Description Length:'), report.descriptionLength, 'chars')
-    console.log(chalk.cyan('  Has Code Examples:'), report.hasCodeExamples ? '✓' : '✗')
+    console.log(
+      chalk.cyan('  Level:'),
+      complexityColor(report.complexity.toUpperCase())
+    )
+    console.log(
+      chalk.cyan('  Description Length:'),
+      report.descriptionLength,
+      'chars'
+    )
+    console.log(
+      chalk.cyan('  Has Code Examples:'),
+      report.hasCodeExamples ? '✓' : '✗'
+    )
 
     // Technical keywords
     if (report.technicalKeywords.length > 0) {
@@ -74,13 +84,18 @@ export async function analyzeCommand(
       const keywords = report.technicalKeywords.slice(0, 15)
       console.log('  ' + keywords.join(', '))
       if (report.technicalKeywords.length > 15) {
-        console.log(chalk.gray(`  ... and ${report.technicalKeywords.length - 15} more`))
+        console.log(
+          chalk.gray(`  ... and ${report.technicalKeywords.length - 15} more`)
+        )
       }
     }
 
     // Strategy recommendation
     console.log('\n' + chalk.bold('Compression Strategy:'))
-    console.log(chalk.cyan('  Recommended:'), chalk.bold(report.recommendedStrategy))
+    console.log(
+      chalk.cyan('  Recommended:'),
+      chalk.bold(report.recommendedStrategy)
+    )
 
     // Quality score
     console.log('\n' + chalk.bold('Quality Assessment:'))
@@ -98,7 +113,7 @@ export async function analyzeCommand(
     // Warnings
     if (report.warnings.length > 0) {
       console.log('\n' + chalk.bold.yellow('⚠️  Warnings:'))
-      report.warnings.forEach((warning) => {
+      report.warnings.forEach(warning => {
         console.log(chalk.yellow('  • ' + warning))
       })
     }
@@ -106,7 +121,7 @@ export async function analyzeCommand(
     // Suggestions
     if (report.suggestions.length > 0) {
       console.log('\n' + chalk.bold.cyan('💡 Suggestions:'))
-      report.suggestions.forEach((suggestion) => {
+      report.suggestions.forEach(suggestion => {
         const icon =
           suggestion.type === 'warning'
             ? chalk.yellow('⚠')
@@ -129,13 +144,22 @@ export async function analyzeCommand(
       )
 
       if (skill.resources.templates && skill.resources.templates.length > 0) {
-        console.log(chalk.gray('    Templates:'), skill.resources.templates.join(', '))
+        console.log(
+          chalk.gray('    Templates:'),
+          skill.resources.templates.join(', ')
+        )
       }
       if (skill.resources.references && skill.resources.references.length > 0) {
-        console.log(chalk.gray('    References:'), skill.resources.references.join(', '))
+        console.log(
+          chalk.gray('    References:'),
+          skill.resources.references.join(', ')
+        )
       }
       if (skill.resources.scripts && skill.resources.scripts.length > 0) {
-        console.log(chalk.gray('    Scripts:'), skill.resources.scripts.join(', '))
+        console.log(
+          chalk.gray('    Scripts:'),
+          skill.resources.scripts.join(', ')
+        )
       }
     }
 

@@ -26,7 +26,10 @@ export class DescriptionCompressor {
   constructor() {
     this.strategies = new Map([
       // Conservative: minimal changes, preserve most content
-      ['conservative', [new SimplifySyntaxStrategy(), new AbbreviateStrategy()]],
+      [
+        'conservative',
+        [new SimplifySyntaxStrategy(), new AbbreviateStrategy()]
+      ],
       // Balanced: moderate compression
       [
         'balanced',
@@ -126,8 +129,8 @@ export class DescriptionCompressor {
       const nextChar = text[i + 1]
 
       if (
-        sentenceEndMarkers.some((marker) =>
-          marker === `${char}${nextChar}` || marker === char
+        sentenceEndMarkers.some(
+          marker => marker === `${char}${nextChar}` || marker === char
         )
       ) {
         bestBreakPoint = i + 1
@@ -143,7 +146,7 @@ export class DescriptionCompressor {
       if (customKeywords && customKeywords.length > 0) {
         const cutOffText = text.substring(bestBreakPoint)
         const missingKeywords = customKeywords.filter(
-          (kw) => cutOffText.includes(kw) && !truncated.includes(kw)
+          kw => cutOffText.includes(kw) && !truncated.includes(kw)
         )
 
         if (missingKeywords.length > 0) {

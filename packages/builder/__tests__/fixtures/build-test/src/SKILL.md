@@ -18,12 +18,14 @@ tags:
 This skill is built for: **{{platform.name}}**
 
 {{#if platform.claude}}
+
 ### Claude Platform
 
 This is additional content for Claude platform.
 {{/if}}
 
 {{#if platform.codex}}
+
 ### Codex Platform
 
 This is content for Codex platform.
@@ -38,5 +40,6 @@ This is content for Codex platform.
 ## Tags
 
 {{#each tags}}
+
 - {{this}}
-{{/each}}
+  {{/each}}

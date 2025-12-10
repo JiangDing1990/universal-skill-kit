@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { resolve } from 'node:path'
-import { ConfigLoader, ConfigLoadError, ConfigValidationError } from '../src/config'
+import { ConfigLoader, ConfigLoadError } from '../src/config'
 
 describe('ConfigLoader', () => {
   const loader = new ConfigLoader()
@@ -38,7 +38,9 @@ describe('ConfigLoader', () => {
     })
 
     it('should throw error if config file not found', async () => {
-      await expect(loader.load('/non/existent/path')).rejects.toThrow(ConfigLoadError)
+      await expect(loader.load('/non/existent/path')).rejects.toThrow(
+        ConfigLoadError
+      )
     })
 
     it('should throw validation error for invalid config', async () => {

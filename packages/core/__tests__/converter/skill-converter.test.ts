@@ -7,7 +7,10 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
 import * as os from 'node:os'
-import { SkillConverter, createSkillConverter } from '../../src/converter/skill-converter'
+import {
+  SkillConverter,
+  createSkillConverter
+} from '../../src/converter/skill-converter'
 import type { ConvertOptions } from '../../src/types'
 
 describe('SkillConverter', () => {
@@ -227,8 +230,8 @@ Body for ${skillName}
       const results = await converter.convertBatch(skillPaths, options)
 
       expect(results).toHaveLength(3)
-      expect(results.every((r) => r.success)).toBe(true)
-      expect(results.every((r) => r.platform === 'codex')).toBe(true)
+      expect(results.every(r => r.success)).toBe(true)
+      expect(results.every(r => r.platform === 'codex')).toBe(true)
     })
 
     it('should continue batch conversion even if one file fails', async () => {

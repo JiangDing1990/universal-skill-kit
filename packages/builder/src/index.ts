@@ -14,7 +14,11 @@ export * from './types/plugin'
 export * from './config'
 
 // Template
-export * from './template'
+export {
+  TemplateEngine,
+  TemplateEngineError,
+  TemplateContextManager
+} from './template'
 
 // Cache
 export * from './cache'

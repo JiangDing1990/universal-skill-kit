@@ -31,7 +31,9 @@ export function loggerPlugin(options: LoggerPluginOptions = {}): Plugin {
     onBuildStart(context: PluginContext) {
       log(`[Logger] Build started for project: ${context.config.name}`)
       if (verbose) {
-        log(`[Logger] Platforms: ${Object.keys(context.config.platforms).join(', ')}`)
+        log(
+          `[Logger] Platforms: ${Object.keys(context.config.platforms).join(', ')}`
+        )
       }
     },
 
@@ -42,7 +44,9 @@ export function loggerPlugin(options: LoggerPluginOptions = {}): Plugin {
       if (verbose) {
         for (const platform of result.platforms) {
           const platformStatus = platform.success ? '✓' : '✖'
-          log(`[Logger]   ${platformStatus} ${platform.platform}: ${platform.size} bytes (${platform.duration}ms)`)
+          log(
+            `[Logger]   ${platformStatus} ${platform.platform}: ${platform.size} bytes (${platform.duration}ms)`
+          )
         }
       }
     },
@@ -56,7 +60,9 @@ export function loggerPlugin(options: LoggerPluginOptions = {}): Plugin {
     onPlatformBuildEnd(_context: PluginContext, result: PlatformBuildResult) {
       if (verbose) {
         const status = result.success ? '✓' : '✖'
-        log(`[Logger] Platform ${result.platform} ${status} built (${result.duration}ms)`)
+        log(
+          `[Logger] Platform ${result.platform} ${status} built (${result.duration}ms)`
+        )
       }
     },
 

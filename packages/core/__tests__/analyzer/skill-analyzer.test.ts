@@ -4,7 +4,10 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest'
-import { SkillAnalyzer, createSkillAnalyzer } from '../../src/analyzer/skill-analyzer'
+import {
+  SkillAnalyzer,
+  createSkillAnalyzer
+} from '../../src/analyzer/skill-analyzer'
 import {
   simpleSkill,
   complexSkill,
@@ -101,21 +104,23 @@ describe('SkillAnalyzer', () => {
       const report = analyzer.analyze(skillWithLongDescription)
 
       expect(report.warnings.length).toBeGreaterThan(0)
-      expect(report.warnings.some((w) => w.includes('500'))).toBe(true)
+      expect(report.warnings.some(w => w.includes('500'))).toBe(true)
     })
 
     it('should generate warnings for short description', () => {
       const report = analyzer.analyze(skillWithShortDescription)
 
-      expect(report.warnings.some((w) => w.toLowerCase().includes('too short'))).toBe(true)
+      expect(
+        report.warnings.some(w => w.toLowerCase().includes('too short'))
+      ).toBe(true)
     })
 
     it('should generate warnings for incomplete metadata', () => {
       const report = analyzer.analyze(incompleteSkill)
 
       expect(report.warnings.length).toBeGreaterThan(0)
-      expect(report.warnings.some((w) => w.includes('version'))).toBe(true)
-      expect(report.warnings.some((w) => w.includes('tags'))).toBe(true)
+      expect(report.warnings.some(w => w.includes('version'))).toBe(true)
+      expect(report.warnings.some(w => w.includes('tags'))).toBe(true)
     })
 
     it('should generate suggestions', () => {
@@ -186,7 +191,9 @@ describe('SkillAnalyzer', () => {
       const report = analyzer.analyze(skillWithCodeExamples)
 
       // Strategy depends on description length and complexity
-      expect(['conservative', 'balanced', 'aggressive']).toContain(report.recommendedStrategy)
+      expect(['conservative', 'balanced', 'aggressive']).toContain(
+        report.recommendedStrategy
+      )
     })
 
     it('should consider complexity in recommendation', () => {
@@ -252,7 +259,7 @@ describe('SkillAnalyzer', () => {
       const report = analyzer.analyze(skillWithLongDescription)
 
       const hasLengthWarning = report.warnings.some(
-        (w) => w.includes('500') && w.includes('Codex')
+        w => w.includes('500') && w.includes('Codex')
       )
       expect(hasLengthWarning).toBe(true)
     })
@@ -260,28 +267,30 @@ describe('SkillAnalyzer', () => {
     it('should warn about short descriptions', () => {
       const report = analyzer.analyze(skillWithShortDescription)
 
-      const hasShortWarning = report.warnings.some((w) => w.toLowerCase().includes('too short'))
+      const hasShortWarning = report.warnings.some(w =>
+        w.toLowerCase().includes('too short')
+      )
       expect(hasShortWarning).toBe(true)
     })
 
     it('should warn about missing version', () => {
       const report = analyzer.analyze(incompleteSkill)
 
-      const hasVersionWarning = report.warnings.some((w) => w.includes('version'))
+      const hasVersionWarning = report.warnings.some(w => w.includes('version'))
       expect(hasVersionWarning).toBe(true)
     })
 
     it('should warn about missing tags', () => {
       const report = analyzer.analyze(incompleteSkill)
 
-      const hasTagsWarning = report.warnings.some((w) => w.includes('tags'))
+      const hasTagsWarning = report.warnings.some(w => w.includes('tags'))
       expect(hasTagsWarning).toBe(true)
     })
 
     it('should warn about very short body', () => {
       const report = analyzer.analyze(incompleteSkill)
 
-      const hasBodyWarning = report.warnings.some((w) => w.includes('Body'))
+      const hasBodyWarning = report.warnings.some(w => w.includes('Body'))
       expect(hasBodyWarning).toBe(true)
     })
 
@@ -293,7 +302,9 @@ describe('SkillAnalyzer', () => {
 
       const report = analyzer.analyze(skillWithManyExamples)
 
-      const hasExampleWarning = report.warnings.some((w) => w.includes('code examples'))
+      const hasExampleWarning = report.warnings.some(w =>
+        w.includes('code examples')
+      )
       expect(hasExampleWarning).toBe(true)
     })
 
@@ -310,7 +321,7 @@ describe('SkillAnalyzer', () => {
       const report = analyzer.analyze(skillWithLongDescription)
 
       const hasCompressionSuggestion = report.suggestions.some(
-        (s) => s.type === 'optimization' && s.message.includes('compression')
+        s => s.type === 'optimization' && s.message.includes('compression')
       )
       expect(hasCompressionSuggestion).toBe(true)
     })
@@ -318,17 +329,22 @@ describe('SkillAnalyzer', () => {
     it('should suggest adding version if missing', () => {
       const report = analyzer.analyze(incompleteSkill)
 
-      const hasVersionSuggestion = report.suggestions.some(
-        (s) => s.message.includes('version')
+      const hasVersionSuggestion = report.suggestions.some(s =>
+        s.message.includes('version')
       )
       expect(hasVersionSuggestion).toBe(true)
     })
 
     it('should suggest adding tags with detected keywords', () => {
-      const skillNoTags = { ...skillWithManyKeywords, metadata: { ...skillWithManyKeywords.metadata, tags: [] } }
+      const skillNoTags = {
+        ...skillWithManyKeywords,
+        metadata: { ...skillWithManyKeywords.metadata, tags: [] }
+      }
       const report = analyzer.analyze(skillNoTags)
 
-      const hasTagSuggestion = report.suggestions.some((s) => s.message.includes('tags'))
+      const hasTagSuggestion = report.suggestions.some(s =>
+        s.message.includes('tags')
+      )
       expect(hasTagSuggestion).toBe(true)
     })
 
@@ -343,7 +359,7 @@ describe('SkillAnalyzer', () => {
 
       const report = analyzer.analyze(skillWithExamplesInDesc)
 
-      const hasExampleSuggestion = report.suggestions.some((s) =>
+      const hasExampleSuggestion = report.suggestions.some(s =>
         s.message.toLowerCase().includes('code examples')
       )
       expect(hasExampleSuggestion).toBe(true)
@@ -353,7 +369,8 @@ describe('SkillAnalyzer', () => {
       const report = analyzer.analyze(unstructuredSkill)
 
       const hasStructureSuggestion = report.suggestions.some(
-        (s) => s.message.includes('markdown headers') || s.message.includes('lists')
+        s =>
+          s.message.includes('markdown headers') || s.message.includes('lists')
       )
       expect(hasStructureSuggestion).toBe(true)
     })
@@ -362,7 +379,7 @@ describe('SkillAnalyzer', () => {
       const report = analyzer.analyze(complexSkill)
 
       const hasSplitSuggestion = report.suggestions.some(
-        (s) => s.type === 'warning' && s.message.includes('splitting')
+        s => s.type === 'warning' && s.message.includes('splitting')
       )
       expect(hasSplitSuggestion).toBe(true)
     })
@@ -370,8 +387,10 @@ describe('SkillAnalyzer', () => {
     it('should categorize suggestions by type', () => {
       const report = analyzer.analyze(incompleteSkill)
 
-      const types = report.suggestions.map((s) => s.type)
-      expect(types.some((t) => ['warning', 'info', 'optimization'].includes(t))).toBe(true)
+      const types = report.suggestions.map(s => s.type)
+      expect(
+        types.some(t => ['warning', 'info', 'optimization'].includes(t))
+      ).toBe(true)
     })
   })
 
@@ -394,14 +413,14 @@ describe('SkillAnalyzer', () => {
     it('should extract version numbers', () => {
       const report = analyzer.analyze(complexSkill)
 
-      const hasVersions = report.technicalKeywords.some((k) => /\d+\.\d+/.test(k))
+      const hasVersions = report.technicalKeywords.some(k => /\d+\.\d+/.test(k))
       expect(hasVersions).toBe(true)
     })
 
     it('should extract API-related terms', () => {
       const report = analyzer.analyze(skillWithManyKeywords)
 
-      const hasApiTerms = report.technicalKeywords.some((k) =>
+      const hasApiTerms = report.technicalKeywords.some(k =>
         ['REST', 'API', 'GraphQL', 'WebSocket'].includes(k)
       )
       expect(hasApiTerms).toBe(true)
@@ -410,7 +429,7 @@ describe('SkillAnalyzer', () => {
     it('should extract database terms', () => {
       const report = analyzer.analyze(skillWithManyKeywords)
 
-      const hasDbTerms = report.technicalKeywords.some((k) =>
+      const hasDbTerms = report.technicalKeywords.some(k =>
         ['PostgreSQL', 'MongoDB', 'Redis'].includes(k)
       )
       expect(hasDbTerms).toBe(true)
@@ -430,7 +449,9 @@ describe('SkillAnalyzer', () => {
 
       const report = analyzer.analyze(skillWithDuplicates)
 
-      const reactCount = report.technicalKeywords.filter((k) => k === 'React').length
+      const reactCount = report.technicalKeywords.filter(
+        k => k === 'React'
+      ).length
       expect(reactCount).toBe(1)
     })
   })
@@ -473,7 +494,11 @@ describe('SkillAnalyzer', () => {
     it('should handle skill with undefined resource arrays', () => {
       const undefinedResourcesSkill = {
         ...simpleSkill,
-        resources: { templates: undefined, references: undefined, scripts: undefined }
+        resources: {
+          templates: undefined,
+          references: undefined,
+          scripts: undefined
+        }
       }
 
       const report = analyzer.analyze(undefinedResourcesSkill as any)
@@ -500,7 +525,7 @@ describe('SkillAnalyzer', () => {
 
       const report = analyzer.analyze(justOverLimitSkill)
 
-      const hasWarning = report.warnings.some((w) => w.includes('500'))
+      const hasWarning = report.warnings.some(w => w.includes('500'))
       expect(hasWarning).toBe(true)
     })
   })

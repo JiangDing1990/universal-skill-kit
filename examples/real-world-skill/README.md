@@ -5,6 +5,7 @@
 ## 📋 关于这个示例
 
 这是一个完整的企业级Skill，包含：
+
 - 详细的技术栈说明（React 16.14, DVA 2.x）
 - 完整的代码示例
 - 最佳实践指南
@@ -14,6 +15,7 @@
 ## 🎯 学习目标
 
 通过这个示例，你将学会：
+
 1. 如何编写高质量的Skill描述
 2. 如何处理超长描述的压缩
 3. 如何保留关键技术信息
@@ -29,6 +31,7 @@ usk analyze SKILL.md
 ```
 
 **预期输出**：
+
 ```
 📊 Skill Analysis Report
 ══════════════════════════════════════════════════
@@ -61,6 +64,7 @@ usk convert SKILL.md -t codex -o ./codex-output --verbose
 ```
 
 **观察要点**：
+
 - 压缩率应该在 50-60% 之间
 - 保留了关键版本号（React 16.14, DVA 2.x）
 - 保留了"NOT compatible with React 18"警告
@@ -69,16 +73,19 @@ usk convert SKILL.md -t codex -o ./codex-output --verbose
 ### 3. 尝试不同压缩策略
 
 #### 保守压缩
+
 ```bash
 usk convert SKILL.md -t codex -s conservative -o ./test-conservative
 ```
 
 #### 均衡压缩
+
 ```bash
 usk convert SKILL.md -t codex -s balanced -o ./test-balanced
 ```
 
 #### 激进压缩
+
 ```bash
 usk convert SKILL.md -t codex -s aggressive -o ./test-aggressive
 ```
@@ -94,12 +101,12 @@ head -10 ./test-aggressive/SKILL.md
 
 ## 📊 预期结果
 
-| 策略 | 描述长度 | 压缩率 | 信息保留度 |
-|------|---------|--------|-----------|
-| Original | 1018 chars | - | 100% |
-| Conservative | ~900 chars | ~12% | 95% |
-| Balanced | ~600 chars | ~41% | 85% |
-| Aggressive | ~495 chars | ~51% | 75% |
+| 策略         | 描述长度   | 压缩率 | 信息保留度 |
+| ------------ | ---------- | ------ | ---------- |
+| Original     | 1018 chars | -      | 100%       |
+| Conservative | ~900 chars | ~12%   | 95%        |
+| Balanced     | ~600 chars | ~41%   | 85%        |
+| Aggressive   | ~495 chars | ~51%   | 75%        |
 
 ## 🎓 学习要点
 
@@ -138,6 +145,7 @@ usk convert SKILL.md -t codex -s aggressive --verbose
 ```
 
 输出会显示：
+
 - 原始描述长度
 - 每个压缩步骤的结果
 - 保留的关键词列表
@@ -155,11 +163,13 @@ cat analysis.json | jq
 ### ✅ DO（推荐）
 
 1. **明确版本约束**
+
    ```markdown
    React 16.14, NOT compatible with React 18
    ```
 
 2. **列举核心能力**
+
    ```markdown
    (1) List pages, (2) Form dialogs, (3) Detail views
    ```
@@ -172,12 +182,14 @@ cat analysis.json | jq
 ### ❌ DON'T（避免）
 
 1. **避免冗长废话**
+
    ```markdown
    ❌ This is an absolutely amazing and incredibly powerful skill...
    ✅ Enterprise React development skill for CRUD applications
    ```
 
 2. **避免过多细节**
+
    ```markdown
    ❌ [包含5页代码示例]
    ✅ See examples in body
@@ -206,6 +218,7 @@ cat analysis.json | jq
 ## 💡 提示
 
 这个示例也展示了：
+
 - 完整的代码示例（在body中）
 - 良好的文档结构
 - 清晰的版本兼容性说明

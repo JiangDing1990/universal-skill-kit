@@ -88,7 +88,10 @@ export class ErrorReporter {
     }
 
     // 根据错误类型提供建议
-    if (error.message.includes('不存在') || error.message.includes('not found')) {
+    if (
+      error.message.includes('不存在') ||
+      error.message.includes('not found')
+    ) {
       report.code = 'FILE_NOT_FOUND'
       report.suggestions = [
         '检查文件路径是否正确',
@@ -137,14 +140,14 @@ export class ErrorReporter {
    * 获取错误数量
    */
   getErrorCount(): number {
-    return this.reports.filter((r) => r.level === ErrorLevel.ERROR).length
+    return this.reports.filter(r => r.level === ErrorLevel.ERROR).length
   }
 
   /**
    * 获取警告数量
    */
   getWarningCount(): number {
-    return this.reports.filter((r) => r.level === ErrorLevel.WARNING).length
+    return this.reports.filter(r => r.level === ErrorLevel.WARNING).length
   }
 
   /**
@@ -169,13 +172,17 @@ export class ErrorReporter {
     const lines: string[] = []
 
     // 按级别分组
-    const errors = this.reports.filter((r) => r.level === ErrorLevel.ERROR)
-    const warnings = this.reports.filter((r) => r.level === ErrorLevel.WARNING)
-    const infos = this.reports.filter((r) => r.level === ErrorLevel.INFO)
+    const errors = this.reports.filter(r => r.level === ErrorLevel.ERROR)
+    const warnings = this.reports.filter(r => r.level === ErrorLevel.WARNING)
+    const infos = this.reports.filter(r => r.level === ErrorLevel.INFO)
 
     // 输出错误
     if (errors.length > 0) {
-      lines.push(colors ? '\n\x1b[31m✖ 错误 (' + errors.length + ')\x1b[0m\n' : `\n✖ 错误 (${errors.length})\n`)
+      lines.push(
+        colors
+          ? '\n\x1b[31m✖ 错误 (' + errors.length + ')\x1b[0m\n'
+          : `\n✖ 错误 (${errors.length})\n`
+      )
       for (const report of errors) {
         lines.push(this.formatReport(report, { verbose, colors }))
       }
@@ -183,7 +190,11 @@ export class ErrorReporter {
 
     // 输出警告
     if (warnings.length > 0) {
-      lines.push(colors ? '\n\x1b[33m⚠ 警告 (' + warnings.length + ')\x1b[0m\n' : `\n⚠ 警告 (${warnings.length})\n`)
+      lines.push(
+        colors
+          ? '\n\x1b[33m⚠ 警告 (' + warnings.length + ')\x1b[0m\n'
+          : `\n⚠ 警告 (${warnings.length})\n`
+      )
       for (const report of warnings) {
         lines.push(this.formatReport(report, { verbose, colors }))
       }
@@ -191,7 +202,11 @@ export class ErrorReporter {
 
     // 输出信息
     if (verbose && infos.length > 0) {
-      lines.push(colors ? '\n\x1b[36mℹ 信息 (' + infos.length + ')\x1b[0m\n' : `\nℹ 信息 (${infos.length})\n`)
+      lines.push(
+        colors
+          ? '\n\x1b[36mℹ 信息 (' + infos.length + ')\x1b[0m\n'
+          : `\nℹ 信息 (${infos.length})\n`
+      )
       for (const report of infos) {
         lines.push(this.formatReport(report, { verbose, colors }))
       }
@@ -239,13 +254,19 @@ export class ErrorReporter {
     // 文档链接
     if (report.docs) {
       lines.push('')
-      lines.push(colors ? '  \x1b[36m📖 文档:\x1b[0m ' + report.docs : `  📖 文档: ${report.docs}`)
+      lines.push(
+        colors
+          ? '  \x1b[36m📖 文档:\x1b[0m ' + report.docs
+          : `  📖 文档: ${report.docs}`
+      )
     }
 
     // 堆栈跟踪
     if (verbose && report.stack) {
       lines.push('')
-      lines.push(colors ? '  \x1b[90m' + report.stack + '\x1b[0m' : `  ${report.stack}`)
+      lines.push(
+        colors ? '  \x1b[90m' + report.stack + '\x1b[0m' : `  ${report.stack}`
+      )
     }
 
     lines.push('')

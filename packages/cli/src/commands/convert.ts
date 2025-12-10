@@ -64,7 +64,8 @@ export async function convertCommand(
         {
           type: 'input',
           name: 'output',
-          message: 'Output directory (leave empty for default) / 输出目录（留空使用默认）:',
+          message:
+            'Output directory (leave empty for default) / 输出目录（留空使用默认）:',
           default: options.output || ''
         }
       ])
@@ -79,7 +80,9 @@ export async function convertCommand(
     // Validate target platform
     const targetPlatform = options.target as Platform
     if (!['claude', 'codex'].includes(targetPlatform)) {
-      throw new Error(`Invalid target platform / 无效的目标平台: ${options.target}`)
+      throw new Error(
+        `Invalid target platform / 无效的目标平台: ${options.target}`
+      )
     }
 
     // Step 1: Parse skill
@@ -96,7 +99,7 @@ export async function convertCommand(
     if (!validation.valid) {
       spinner.fail('Validation failed / 验证失败')
       console.log('\n' + chalk.bold.red('❌ Validation Errors:'))
-      validation.errors.forEach((error) => {
+      validation.errors.forEach(error => {
         console.log(chalk.red(`  • [${error.field}] ${error.message}`))
       })
 
@@ -106,7 +109,8 @@ export async function convertCommand(
           {
             type: 'confirm',
             name: 'continueAnyway',
-            message: 'Skill has validation errors. Continue anyway? / Skill 存在验证错误，是否继续？',
+            message:
+              'Skill has validation errors. Continue anyway? / Skill 存在验证错误，是否继续？',
             default: false
           }
         ])
@@ -116,7 +120,11 @@ export async function convertCommand(
           process.exit(1)
         }
       } else {
-        console.log(chalk.red('\nUse --interactive to override validation errors / 使用 --interactive 覆盖验证错误。'))
+        console.log(
+          chalk.red(
+            '\nUse --interactive to override validation errors / 使用 --interactive 覆盖验证错误。'
+          )
+        )
         process.exit(1)
       }
     } else {
@@ -126,21 +134,25 @@ export async function convertCommand(
     // Display warnings if any
     if (validation.warnings.length > 0) {
       console.log('\n' + chalk.bold.yellow('⚠️  Validation Warnings:'))
-      validation.warnings.forEach((warning) => {
-        const icon = warning.severity === 'high'
-          ? chalk.red('⚠')
-          : warning.severity === 'medium'
-            ? chalk.yellow('⚠')
-            : chalk.gray('ℹ')
+      validation.warnings.forEach(warning => {
+        const icon =
+          warning.severity === 'high'
+            ? chalk.red('⚠')
+            : warning.severity === 'medium'
+              ? chalk.yellow('⚠')
+              : chalk.gray('ℹ')
         console.log(`  ${icon} [${warning.field}] ${warning.message}`)
       })
     }
 
     // Step 3: Check platform-specific requirements
-    const conversionValidation = validator.validateForConversion(skill, targetPlatform)
+    const conversionValidation = validator.validateForConversion(
+      skill,
+      targetPlatform
+    )
     if (conversionValidation.warnings.length > 0) {
       console.log('\n' + chalk.bold.cyan('ℹ️  Platform-Specific Notes:'))
-      conversionValidation.warnings.forEach((warning) => {
+      conversionValidation.warnings.forEach(warning => {
         console.log(chalk.cyan(`  • [${warning.field}] ${warning.message}`))
       })
     }
@@ -166,7 +178,10 @@ export async function convertCommand(
     console.log(chalk.gray('─'.repeat(50)))
     console.log(chalk.cyan('Platform / 平台:'), result.platform)
     console.log(chalk.cyan('Output / 输出:'), result.outputPath)
-    console.log(chalk.cyan('Quality Score / 质量分数:'), `${result.quality}/100`)
+    console.log(
+      chalk.cyan('Quality Score / 质量分数:'),
+      `${result.quality}/100`
+    )
     console.log(chalk.gray('─'.repeat(50)))
 
     // Statistics
@@ -193,8 +208,7 @@ export async function convertCommand(
     // Keyword preservation
     if (result.statistics.preservedKeywords.length > 0) {
       console.log(
-        '\n' +
-          chalk.green('✓ Preserved Keywords / 保留的关键词:'),
+        '\n' + chalk.green('✓ Preserved Keywords / 保留的关键词:'),
         result.statistics.preservedKeywords.slice(0, 10).join(', ')
       )
       if (result.statistics.preservedKeywords.length > 10) {
@@ -234,7 +248,7 @@ export async function convertCommand(
       const suggestions = getErrorSuggestions(error)
       if (suggestions.length > 0) {
         console.log('\n' + chalk.bold.yellow('💡 Suggestions / 建议:'))
-        suggestions.forEach((suggestion) => {
+        suggestions.forEach(suggestion => {
           console.log(chalk.yellow('  • ' + suggestion))
         })
       }

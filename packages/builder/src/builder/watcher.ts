@@ -96,12 +96,12 @@ export class SkillWatcher {
 
     if (verbose) {
       console.log('\n👀 Watching files:')
-      pathsToWatch.forEach((path) => {
+      pathsToWatch.forEach(path => {
         console.log(`   ${path}`)
       })
       if (ignored.length > 0) {
         console.log('\n🚫 Ignored patterns:')
-        ignored.forEach((pattern) => {
+        ignored.forEach(pattern => {
           console.log(`   ${pattern}`)
         })
       }
@@ -126,7 +126,7 @@ export class SkillWatcher {
     })
 
     // 监听文件变化事件
-    this.watcher.on('change', (path) => {
+    this.watcher.on('change', path => {
       this.handleFileChange('change', path, debounceDelay, {
         onChange,
         onBuildComplete,
@@ -136,7 +136,7 @@ export class SkillWatcher {
       })
     })
 
-    this.watcher.on('add', (path) => {
+    this.watcher.on('add', path => {
       this.handleFileChange('add', path, debounceDelay, {
         onChange,
         onBuildComplete,
@@ -146,7 +146,7 @@ export class SkillWatcher {
       })
     })
 
-    this.watcher.on('unlink', (path) => {
+    this.watcher.on('unlink', path => {
       this.handleFileChange('unlink', path, debounceDelay, {
         onChange,
         onBuildComplete,
@@ -156,7 +156,7 @@ export class SkillWatcher {
       })
     })
 
-    this.watcher.on('error', (error) => {
+    this.watcher.on('error', error => {
       if (onError) {
         onError(error)
       } else {
@@ -234,7 +234,7 @@ export class SkillWatcher {
     }
 
     this.debounceTimer = setTimeout(() => {
-      this.rebuild(options)
+      void this.rebuild(options)
     }, debounceDelay)
   }
 
@@ -288,7 +288,9 @@ export class SkillWatcher {
 
       // 如果在构建过程中有新的文件变化，立即触发重新构建
       if (this.pendingRebuild) {
-        setTimeout(() => this.rebuild(options), 100)
+        setTimeout(() => {
+          void this.rebuild(options)
+        }, 100)
       }
     }
   }
@@ -296,7 +298,10 @@ export class SkillWatcher {
   /**
    * 收集需要监听的文件路径
    */
-  private collectWatchPaths(watchConfig: boolean, customPaths?: string[]): string[] {
+  private collectWatchPaths(
+    watchConfig: boolean,
+    customPaths?: string[]
+  ): string[] {
     const paths: string[] = []
 
     // 配置文件

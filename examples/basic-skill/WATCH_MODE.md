@@ -73,6 +73,7 @@ Watch 模式下构建时会使用增量缓存,只重新渲染发生变化的内�
    ```
 
    输出:
+
    ```
    ✓ Configuration loaded
 
@@ -94,11 +95,13 @@ Watch 模式下构建时会使用增量缓存,只重新渲染发生变化的内�
 2. **编辑源文件**
 
    修改 `src/SKILL.md`:
+
    ```markdown
    # {{name}} - Updated!
    ```
 
    Watch 输出:
+
    ```
    📝 Changed: src/SKILL.md
    🔄 Rebuilding...
@@ -116,6 +119,7 @@ Watch 模式下构建时会使用增量缓存,只重新渲染发生变化的内�
 4. **停止 Watch**
 
    按 `Ctrl+C`:
+
    ```
    ^C
    ⏹  Stopping watcher...
@@ -143,6 +147,7 @@ usk build --watch --verbose
 ```
 
 输出:
+
 ```
 🔧 Loading configuration...
 ✓ Configuration loaded
@@ -189,10 +194,7 @@ await watcher.start({
 
 ```typescript
 await watcher.start({
-  watchPaths: [
-    'custom-dir/**/*.md',
-    'extra-templates/**/*'
-  ]
+  watchPaths: ['custom-dir/**/*.md', 'extra-templates/**/*']
 })
 ```
 
@@ -200,10 +202,7 @@ await watcher.start({
 
 ```typescript
 await watcher.start({
-  ignored: [
-    '**/backup/**',
-    '**/*.backup.md'
-  ]
+  ignored: ['**/backup/**', '**/*.backup.md']
 })
 ```
 

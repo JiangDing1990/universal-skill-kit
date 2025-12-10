@@ -43,7 +43,7 @@ export class ExtractKeywordsStrategy implements ICompressionStrategy {
           // Extract the technical terms
           const matches = sentence.match(regex)
           if (matches) {
-            matches.forEach((term) => extractedKeywords.add(term))
+            matches.forEach(term => extractedKeywords.add(term))
           }
         }
       }
@@ -62,16 +62,14 @@ export class ExtractKeywordsStrategy implements ICompressionStrategy {
     const firstSentences = sentences.slice(0, 2).join(' ')
     const keywords = Array.from(extractedKeywords).slice(0, 10).join(', ')
 
-    return keywords
-      ? `${firstSentences} Keywords: ${keywords}`
-      : firstSentences
+    return keywords ? `${firstSentences} Keywords: ${keywords}` : firstSentences
   }
 
   private splitIntoSentences(text: string): string[] {
     // Simple sentence splitting
     return text
       .split(/[.!?。！？]\s+/)
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0)
+      .map(s => s.trim())
+      .filter(s => s.length > 0)
   }
 }

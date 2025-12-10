@@ -71,7 +71,11 @@ const MyComponent = () => {
 - Community tutorials
 `,
   resources: {
-    templates: ['list-template.tsx', 'form-template.tsx', 'detail-template.tsx'],
+    templates: [
+      'list-template.tsx',
+      'form-template.tsx',
+      'detail-template.tsx'
+    ],
     references: ['react-docs.md', 'dva-guide.md'],
     scripts: ['generate-component.sh', 'build-prod.sh']
   }

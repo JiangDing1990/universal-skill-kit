@@ -33,18 +33,16 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@jiangding/usk-core": "^0.2.0",
-    "@jiangding/usk-template": "^0.1.0",
-    "@jiangding/usk-utils": "^0.1.0",
+    "@jiangding/usk-core": "workspace:^",
+    "@jiangding/usk-template": "workspace:^",
+    "@jiangding/usk-utils": "workspace:^",
     "chokidar": "^3.5.3",
     "glob": "^10.3.10",
-    "handlebars": "^4.7.8",
     "p-limit": "^7.2.0",
     "tsx": "^4.21.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/handlebars": "^4.1.0",
     "@types/node": "^20.10.5",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3",

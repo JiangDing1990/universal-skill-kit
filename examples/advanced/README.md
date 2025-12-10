@@ -95,7 +95,11 @@ usk build --watch
 ### build.js 核心功能
 
 ```javascript
-import { SkillBuilder, loggerPlugin, minifyPlugin } from '@jiangding/usk-builder'
+import {
+  SkillBuilder,
+  loggerPlugin,
+  minifyPlugin
+} from '@jiangding/usk-builder'
 
 async function main() {
   // 1. 创建 Builder
@@ -106,7 +110,7 @@ async function main() {
   builder.use(minifyPlugin({ removeComments: true }))
 
   // 3. 注册自定义 Helper
-  builder.templateEngine?.registerHelper('formatDate', (date) => {
+  builder.templateEngine?.registerHelper('formatDate', date => {
     return new Date(date).toLocaleDateString('zh-CN')
   })
 
@@ -129,12 +133,12 @@ async function main() {
 
 ### 构建选项
 
-| 选项 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `clean` | boolean | true | 构建前清理输出目录 |
-| `force` | boolean | false | 强制重建,忽略缓存 |
-| `verbose` | boolean | false | 显示详细输出 |
-| `concurrency` | number | 5 | 并发构建数量 |
+| 选项          | 类型    | 默认值 | 说明               |
+| ------------- | ------- | ------ | ------------------ |
+| `clean`       | boolean | true   | 构建前清理输出目录 |
+| `force`       | boolean | false  | 强制重建,忽略缓存  |
+| `verbose`     | boolean | false  | 显示详细输出       |
+| `concurrency` | number  | 5      | 并发构建数量       |
 
 ## 插件系统
 
@@ -145,14 +149,17 @@ async function main() {
 详细的构建日志插件:
 
 ```javascript
-builder.use(loggerPlugin({
-  verbose: true,      // 显示详细信息
-  colors: true,       // 使用颜色
-  timestamps: true    // 显示时间戳
-}))
+builder.use(
+  loggerPlugin({
+    verbose: true, // 显示详细信息
+    colors: true, // 使用颜色
+    timestamps: true // 显示时间戳
+  })
+)
 ```
 
 输出示例:
+
 ```
 [15:30:45] 📝 Rendering template: src/SKILL.md
 [15:30:45] ✨ Using cached template for claude
@@ -165,11 +172,13 @@ builder.use(loggerPlugin({
 Markdown 内容压缩插件:
 
 ```javascript
-builder.use(minifyPlugin({
-  removeComments: true,    // 移除 HTML 注释
-  removeEmptyLines: true,  // 移除空行
-  trimWhitespace: true     // 修剪空白字符
-}))
+builder.use(
+  minifyPlugin({
+    removeComments: true, // 移除 HTML 注释
+    removeEmptyLines: true, // 移除空行
+    trimWhitespace: true // 修剪空白字符
+  })
+)
 ```
 
 ### 自定义插件开发
@@ -182,7 +191,7 @@ const customPlugin = () => {
     name: 'custom-plugin',
 
     // 构建开始前
-    beforeBuild: async (config) => {
+    beforeBuild: async config => {
       console.log('Starting build for:', config.name)
     },
 
@@ -193,7 +202,7 @@ const customPlugin = () => {
     },
 
     // 构建完成后
-    afterBuild: async (result) => {
+    afterBuild: async result => {
       console.log('Build completed:', result.success)
     },
 
@@ -210,17 +219,17 @@ builder.use(customPlugin())
 
 ### 插件生命周期钩子
 
-| 钩子 | 触发时机 | 参数 | 返回值 |
-|------|---------|------|--------|
-| `beforeBuild` | 构建开始前 | config | void |
-| `afterConfigLoad` | 配置加载后 | config | void |
-| `beforePlatformBuild` | 平台构建前 | platform, config | void |
-| `afterTemplateRender` | 模板渲染后 | content, platform | string (可选) |
-| `beforeFileWrite` | 文件写入前 | path, content | content (可选) |
-| `afterFileWrite` | 文件写入后 | path, size | void |
-| `afterPlatformBuild` | 平台构建后 | result | void |
-| `afterBuild` | 所有构建完成 | result | void |
-| `onError` | 发生错误时 | error, context | void |
+| 钩子                  | 触发时机     | 参数              | 返回值         |
+| --------------------- | ------------ | ----------------- | -------------- |
+| `beforeBuild`         | 构建开始前   | config            | void           |
+| `afterConfigLoad`     | 配置加载后   | config            | void           |
+| `beforePlatformBuild` | 平台构建前   | platform, config  | void           |
+| `afterTemplateRender` | 模板渲染后   | content, platform | string (可选)  |
+| `beforeFileWrite`     | 文件写入前   | path, content     | content (可选) |
+| `afterFileWrite`      | 文件写入后   | path, size        | void           |
+| `afterPlatformBuild`  | 平台构建后   | result            | void           |
+| `afterBuild`          | 所有构建完成 | result            | void           |
+| `onError`             | 发生错误时   | error, context    | void           |
 
 ## 自定义 Helpers
 
@@ -228,18 +237,18 @@ builder.use(customPlugin())
 
 ```javascript
 // 简单 helper
-builder.templateEngine?.registerHelper('uppercase', (str) => {
+builder.templateEngine?.registerHelper('uppercase', str => {
   return str.toUpperCase()
 })
 
 // 带选项的 helper
-builder.templateEngine?.registerHelper('formatDate', function(date, format) {
+builder.templateEngine?.registerHelper('formatDate', function (date, format) {
   // this 指向模板上下文
   return new Date(date).toLocaleDateString(format || 'zh-CN')
 })
 
 // 块级 helper
-builder.templateEngine?.registerHelper('section', function(options) {
+builder.templateEngine?.registerHelper('section', function (options) {
   return `<section>\n${options.fn(this)}\n</section>`
 })
 ```
@@ -251,7 +260,7 @@ builder.templateEngine?.registerHelper('section', function(options) {
 {{uppercase name}}
 
 <!-- 带参数 -->
-{{formatDate buildTime "en-US"}}
+{{formatDate buildTime 'en-US'}}
 
 <!-- 块级 helper -->
 {{#section}}
@@ -266,9 +275,9 @@ builder.templateEngine?.registerHelper('section', function(options) {
 ```javascript
 // 配置缓存
 const builder = await SkillBuilder.fromConfig('usk.config.json', {
-  enabled: true,               // 启用缓存
-  directory: './.usk-cache',  // 缓存目录
-  ttl: 1000 * 60 * 60         // 缓存 TTL (1小时)
+  enabled: true, // 启用缓存
+  directory: './.usk-cache', // 缓存目录
+  ttl: 1000 * 60 * 60 // 缓存 TTL (1小时)
 })
 
 // 获取缓存统计
@@ -305,7 +314,7 @@ import { SkillWatcher } from '@jiangding/usk-builder'
 const watcher = new SkillWatcher(builder.config, builder)
 
 await watcher.start({
-  debounceDelay: 300,  // 防抖延迟
+  debounceDelay: 300, // 防抖延迟
   verbose: true
 })
 ```
@@ -509,6 +518,7 @@ usk doctor --verbose
 ### 5. 查看构建日志
 
 构建日志保存在 `.usk-cache/` 目录:
+
 ```bash
 ls -la .usk-cache/
 cat .usk-cache/build.log
@@ -527,6 +537,7 @@ A: 在 build.js 中使用 `builder.templateEngine?.registerHelper()` 注册。
 ### Q: 如何优化构建性能?
 
 A:
+
 1. 启用缓存 (默认启用)
 2. 合理设置并发数
 3. 使用 Watch 模式开发
@@ -535,6 +546,7 @@ A:
 ### Q: 如何处理构建错误?
 
 A:
+
 1. 使用 `--verbose` 查看详细日志
 2. 运行 `usk validate` 验证配置
 3. 运行 `usk doctor` 诊断问题

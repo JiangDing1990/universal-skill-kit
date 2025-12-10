@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Introduced `@jiangding/usk-template` as a dedicated Handlebars runtime with strict helper registration, URL-aware `renderFile` 支持及使用追踪能力，并补充首批单元测试。
+- Builder CLI 现在会在构建完成后输出模板渲染耗时、缓存命中等指标，便于快速诊断性能瓶颈。
+
+### Changed
+
+- `@jiangding/usk-builder` 完全依赖新的模板包，不再维护旧版内嵌引擎；类型定义通过模板引擎方法自动推断，消除了重复声明。
+- 工作区依赖统一采用 `workspace:^` 引用策略，确保本地与发布构建使用一致的产物。
+
+### Fixed
+
+- 修复模板渲染在严格模式下访问 `platform` helper 的报错，以及 `renderFile` 对 `URL` 参数解析失败的问题。
+- 构建流程重构后恢复 `pnpm build`/`pnpm test` 全量通过，解决之前 DTS 生成阶段的类型缺失报错。
+
 ### Planned for v0.4.0
 
 - Integration tests and e2e testing
@@ -62,11 +77,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Technical Details
 
 **新增代码**:
+
 - `collectSkillFiles()` 方法完全重写
 - 新增 `scanDirectory()` 递归扫描函数
 - 新增智能排除模式匹配逻辑
 
 **测试**:
+
 - 创建完整测试 Skill 项目验证功能
 - 验证文件数量：源 6 个文件 = 目标 6 个文件 ✅
 - 验证目录结构保持完整
@@ -77,12 +94,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 对于已有的 Skill 项目，无需任何修改即可享受新功能：
 
 **之前** (v0.2.0):
+
 ```bash
 # 只转换 SKILL.md 中引用的文件
 usk convert ~/.claude/skills/my-skill --target codex
 ```
 
 **现在** (v0.3.0):
+
 ```bash
 # 自动转换整个目录的所有文件！
 usk convert ~/.claude/skills/my-skill --target codex
@@ -95,6 +114,7 @@ usk convert ~/.claude/skills/my-skill --target codex
 ```
 
 **批量转换所有 Claude Skills**:
+
 ```bash
 usk batch "$HOME/.claude/skills/**/SKILL.md" \
   --target codex \
@@ -197,6 +217,7 @@ usk batch "$HOME/.claude/skills/**/SKILL.md" \
 ### Tests
 
 **New Tests** (78 tests for builder):
+
 - Plugin system: lifecycle hooks, manager, context
 - Builder integration with plugins
 - Cache manager with concurrency
@@ -204,6 +225,7 @@ usk batch "$HOME/.claude/skills/**/SKILL.md" \
 - Configuration loader validation
 
 **Test Statistics**:
+
 - Total tests: 359 passing ✅
 - Core module: 199 tests
 - Utils module: 82 tests
@@ -213,11 +235,13 @@ usk batch "$HOME/.claude/skills/**/SKILL.md" \
 ### Documentation
 
 **New Documentation**:
+
 - `examples/basic-skill/README.md` - Example project guide
 - Plugin development guide in builder package
 - CLI command documentation
 
 **Updated Documentation**:
+
 - README.md - Added Phase 2 features
 - ROADMAP.md - Updated progress
 - Package documentation

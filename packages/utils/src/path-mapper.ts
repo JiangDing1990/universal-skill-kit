@@ -120,7 +120,10 @@ export class PathMapper {
         },
         // Absolute home path
         {
-          source: new RegExp(`${this.escapeRegExp(this.homeDir)}/\\.claude/`, 'g'),
+          source: new RegExp(
+            `${this.escapeRegExp(this.homeDir)}/\\.claude/`,
+            'g'
+          ),
           target: `${this.homeDir}/.codex/`
         }
       ]
@@ -144,7 +147,10 @@ export class PathMapper {
         },
         // Absolute home path
         {
-          source: new RegExp(`${this.escapeRegExp(this.homeDir)}/\\.codex/`, 'g'),
+          source: new RegExp(
+            `${this.escapeRegExp(this.homeDir)}/\\.codex/`,
+            'g'
+          ),
           target: `${this.homeDir}/.claude/`
         }
       ]

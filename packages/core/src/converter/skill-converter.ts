@@ -9,10 +9,7 @@ import { SkillParser } from '../parser/skill-parser'
 import { DescriptionCompressor } from '../optimizer/description-compressor'
 import { SkillAnalyzer } from '../analyzer/skill-analyzer'
 import { PathMapper, getLogger } from '@jiangding/usk-utils'
-import {
-  SkillNotFoundError,
-  ConversionError
-} from '../errors'
+import { SkillNotFoundError, ConversionError } from '../errors'
 import { LIMITS, SKILL_FILES, SCRIPT_EXTENSIONS } from '../constants'
 import type {
   Platform,
@@ -111,14 +108,12 @@ export class SkillConverter {
 
       // 8. Determine output paths
       const outputPath = this.determineOutputPath(
-        skillPath,  // Use original skillPath instead of mainFile
+        skillPath, // Use original skillPath instead of mainFile
         options.targetPlatform,
         options.outputDir,
         isDirectory
       )
-      const outputDir = isDirectory
-        ? outputPath
-        : path.dirname(outputPath)
+      const outputDir = isDirectory ? outputPath : path.dirname(outputPath)
       const outputFilePath = isDirectory
         ? path.join(outputPath, 'SKILL.md')
         : outputPath
@@ -129,7 +124,12 @@ export class SkillConverter {
       // 10. Copy resource files
       if (allFiles.length > 0) {
         this.logger.debug(`复制 ${allFiles.length} 个资源文件`)
-        await this.copyResources(allFiles, workDir, outputDir, options.targetPlatform)
+        await this.copyResources(
+          allFiles,
+          workDir,
+          outputDir,
+          options.targetPlatform
+        )
       }
 
       // 11. Calculate statistics
@@ -154,7 +154,10 @@ export class SkillConverter {
       }
     } catch (error) {
       // Re-throw USK errors as-is
-      if (error instanceof SkillNotFoundError || error instanceof ConversionError) {
+      if (
+        error instanceof SkillNotFoundError ||
+        error instanceof ConversionError
+      ) {
         throw error
       }
 
@@ -194,21 +197,18 @@ export class SkillConverter {
     }
 
     // Convert paths in body
-    converted.body = this.pathMapper.mapPathsInText(
-      skill.body,
-      targetPlatform
-    )
+    converted.body = this.pathMapper.mapPathsInText(skill.body, targetPlatform)
 
     // Convert resource paths
     converted.resources = {
-      templates: skill.resources.templates?.map((t) =>
-        this.pathMapper.mapPath(t, targetPlatform).mappedPath
+      templates: skill.resources.templates?.map(
+        t => this.pathMapper.mapPath(t, targetPlatform).mappedPath
       ),
-      references: skill.resources.references?.map((r) =>
-        this.pathMapper.mapPath(r, targetPlatform).mappedPath
+      references: skill.resources.references?.map(
+        r => this.pathMapper.mapPath(r, targetPlatform).mappedPath
       ),
-      scripts: skill.resources.scripts?.map((s) =>
-        this.pathMapper.mapPath(s, targetPlatform).mappedPath
+      scripts: skill.resources.scripts?.map(
+        s => this.pathMapper.mapPath(s, targetPlatform).mappedPath
       )
     }
 
@@ -291,7 +291,7 @@ export class SkillConverter {
           const relativePath = path.relative(skillDir, fullPath)
 
           // Skip if matches exclude patterns
-          const shouldExclude = excludePatterns.some((pattern) => {
+          const shouldExclude = excludePatterns.some(pattern => {
             if (pattern.includes('*')) {
               // Handle wildcard patterns
               const regex = new RegExp(
@@ -483,7 +483,7 @@ export class SkillConverter {
 
     if (metadata.tags && metadata.tags.length > 0) {
       lines.push(`tags:`)
-      metadata.tags.forEach((tag) => {
+      metadata.tags.forEach(tag => {
         lines.push(`  - ${tag}`)
       })
     }
@@ -513,15 +513,14 @@ export class SkillConverter {
     )
 
     // Check which keywords were preserved
-    const convertedText =
-      converted.metadata.description + ' ' + converted.body
-    const preservedKeywords = originalKeywords.filter((kw) =>
+    const convertedText = converted.metadata.description + ' ' + converted.body
+    const preservedKeywords = originalKeywords.filter(kw =>
       convertedText.includes(kw)
     )
 
     // Find lost keywords
     const lostInformation = originalKeywords.filter(
-      (kw) => !convertedText.includes(kw)
+      kw => !convertedText.includes(kw)
     )
 
     return {
@@ -544,7 +543,7 @@ export class SkillConverter {
     // Extract version numbers
     const versions = text.match(/\b(v?\d+\.\d+(?:\.\d+)?)\b/g)
     if (versions) {
-      versions.forEach((v) => keywords.add(v))
+      versions.forEach(v => keywords.add(v))
     }
 
     // Extract common tech terms
@@ -552,7 +551,7 @@ export class SkillConverter {
       /\b(TypeScript|JavaScript|React|Vue|Angular|Node\.js|Python|Java|API|REST|GraphQL)\b/gi
     const matches = text.match(techTerms)
     if (matches) {
-      matches.forEach((m) => keywords.add(m))
+      matches.forEach(m => keywords.add(m))
     }
 
     return Array.from(keywords)
@@ -572,7 +571,8 @@ export class SkillConverter {
     onProgress?: (current: number, total: number, skillPath: string) => void
   ): Promise<ConversionResult[]> {
     // Use parallel processing with concurrency limit
-    const concurrency = options.parallel !== false ? LIMITS.BATCH_CONCURRENCY : 1
+    const concurrency =
+      options.parallel !== false ? LIMITS.BATCH_CONCURRENCY : 1
     const results: ConversionResult[] = []
 
     // Process in batches to avoid overwhelming the system

@@ -167,9 +167,11 @@ describe('SkillValidator', () => {
 
         const result = await validator.validate(skill, testDir)
 
-        expect(result.warnings.some(w =>
-          w.field === 'description' && w.message.includes('very short')
-        )).toBe(true)
+        expect(
+          result.warnings.some(
+            w => w.field === 'description' && w.message.includes('very short')
+          )
+        ).toBe(true)
       })
 
       it('should warn on description exceeding Codex limit', async () => {
@@ -185,9 +187,11 @@ describe('SkillValidator', () => {
 
         const result = await validator.validate(skill, testDir)
 
-        expect(result.warnings.some(w =>
-          w.field === 'description' && w.message.includes('500')
-        )).toBe(true)
+        expect(
+          result.warnings.some(
+            w => w.field === 'description' && w.message.includes('500')
+          )
+        ).toBe(true)
       })
 
       it('should warn on very long description', async () => {
@@ -203,9 +207,11 @@ describe('SkillValidator', () => {
 
         const result = await validator.validate(skill, testDir)
 
-        expect(result.warnings.some(w =>
-          w.field === 'description' && w.message.includes('very long')
-        )).toBe(true)
+        expect(
+          result.warnings.some(
+            w => w.field === 'description' && w.message.includes('very long')
+          )
+        ).toBe(true)
       })
     })
 
@@ -240,9 +246,11 @@ describe('SkillValidator', () => {
 
         const result = await validator.validate(skill, testDir)
 
-        expect(result.warnings.some(w =>
-          w.field === 'body' && w.message.includes('very short')
-        )).toBe(true)
+        expect(
+          result.warnings.some(
+            w => w.field === 'body' && w.message.includes('very short')
+          )
+        ).toBe(true)
       })
 
       it('should warn on missing headings', async () => {
@@ -258,9 +266,11 @@ describe('SkillValidator', () => {
 
         const result = await validator.validate(skill, testDir)
 
-        expect(result.warnings.some(w =>
-          w.field === 'body' && w.message.includes('heading')
-        )).toBe(true)
+        expect(
+          result.warnings.some(
+            w => w.field === 'body' && w.message.includes('heading')
+          )
+        ).toBe(true)
       })
 
       it('should warn on missing code examples', async () => {
@@ -276,9 +286,11 @@ describe('SkillValidator', () => {
 
         const result = await validator.validate(skill, testDir)
 
-        expect(result.warnings.some(w =>
-          w.field === 'body' && w.message.includes('code example')
-        )).toBe(true)
+        expect(
+          result.warnings.some(
+            w => w.field === 'body' && w.message.includes('code example')
+          )
+        ).toBe(true)
       })
     })
 
@@ -301,9 +313,13 @@ describe('SkillValidator', () => {
         const result = await validator.validate(skill, testDir)
 
         expect(result.valid).toBe(false)
-        expect(result.errors.some(e =>
-          e.code === 'MISSING_RESOURCE' && e.message.includes('missing-template.txt')
-        )).toBe(true)
+        expect(
+          result.errors.some(
+            e =>
+              e.code === 'MISSING_RESOURCE' &&
+              e.message.includes('missing-template.txt')
+          )
+        ).toBe(true)
       })
 
       it('should pass when referenced file exists', async () => {
@@ -364,9 +380,11 @@ describe('SkillValidator', () => {
 
         const result = await validator.validate(skill, testDir)
 
-        expect(result.warnings.some(w =>
-          w.field === 'body' && w.message.includes('Empty link')
-        )).toBe(true)
+        expect(
+          result.warnings.some(
+            w => w.field === 'body' && w.message.includes('Empty link')
+          )
+        ).toBe(true)
       })
 
       it('should warn on paths with spaces', async () => {
@@ -382,9 +400,11 @@ describe('SkillValidator', () => {
 
         const result = await validator.validate(skill, testDir)
 
-        expect(result.warnings.some(w =>
-          w.field === 'body' && w.message.includes('spaces')
-        )).toBe(true)
+        expect(
+          result.warnings.some(
+            w => w.field === 'body' && w.message.includes('spaces')
+          )
+        ).toBe(true)
       })
 
       it('should warn on TODO markers', async () => {
@@ -400,9 +420,11 @@ describe('SkillValidator', () => {
 
         const result = await validator.validate(skill, testDir)
 
-        expect(result.warnings.some(w =>
-          w.field === 'body' && w.message.includes('TODO')
-        )).toBe(true)
+        expect(
+          result.warnings.some(
+            w => w.field === 'body' && w.message.includes('TODO')
+          )
+        ).toBe(true)
       })
     })
   })
@@ -480,22 +502,24 @@ describe('SkillValidator', () => {
     it('should use correct severity for warnings', async () => {
       const skill: SkillDefinition = {
         metadata: {
-          name: 'ab',  // Short name
-          version: 'v1',  // Invalid version
-          description: 'Short',  // Short description
-          author: undefined,  // Missing author
-          tags: []  // Missing tags
+          name: 'ab', // Short name
+          version: 'v1', // Invalid version
+          description: 'Short', // Short description
+          author: undefined, // Missing author
+          tags: [] // Missing tags
         },
-        body: 'Short body',  // Short body
+        body: 'Short body', // Short body
         resources: {}
       }
 
       const result = await validator.validate(skill, testDir)
 
       // Check that different warnings have appropriate severity levels
-      const nameSeverity = result.warnings.find(w => w.field === 'name')?.severity
-      const descSeverity = result.warnings.find(w =>
-        w.field === 'description' && w.message.includes('short')
+      const nameSeverity = result.warnings.find(
+        w => w.field === 'name'
+      )?.severity
+      const descSeverity = result.warnings.find(
+        w => w.field === 'description' && w.message.includes('short')
       )?.severity
 
       expect(nameSeverity).toBeDefined()

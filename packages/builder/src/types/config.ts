@@ -188,7 +188,10 @@ export interface SkillConfig {
 /**
  * 已解析的配置（处理了继承和默认值）
  */
-export interface ResolvedConfig extends Omit<SkillConfig, 'extends' | 'environments'> {
+export interface ResolvedConfig extends Omit<
+  SkillConfig,
+  'extends' | 'environments'
+> {
   /**
    * 配置文件路径
    */
@@ -233,4 +236,6 @@ export interface ConfigEnv {
 /**
  * defineConfig辅助函数的参数类型
  */
-export type UserConfig = SkillConfig | ((env: ConfigEnv) => SkillConfig | Promise<SkillConfig>)
+export type UserConfig =
+  | SkillConfig
+  | ((env: ConfigEnv) => SkillConfig | Promise<SkillConfig>)

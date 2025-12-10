@@ -16,19 +16,12 @@
     "claude": {
       "enabled": true,
       "output": "./dist/claude",
-      "features": [
-        "detailed-documentation",
-        "code-examples",
-        "rich-markdown"
-      ]
+      "features": ["detailed-documentation", "code-examples", "rich-markdown"]
     },
     "codex": {
       "enabled": true,
       "output": "./dist/codex",
-      "features": [
-        "concise-docs",
-        "quick-reference"
-      ]
+      "features": ["concise-docs", "quick-reference"]
     }
   },
   "build": {
@@ -48,12 +41,7 @@
     "incrementalBuilds": true,
     "caching": true
   },
-  "tags": [
-    "multi-platform",
-    "advanced",
-    "example",
-    "conditional-compilation"
-  ],
+  "tags": ["multi-platform", "advanced", "example", "conditional-compilation"],
   "keywords": [
     "usk",
     "universal-skill-kit",

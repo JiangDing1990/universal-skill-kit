@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-22.17.1-green.svg)](https://nodejs.org/)
 [![Test Coverage](https://img.shields.io/badge/coverage-90.59%25-brightgreen.svg)](https://github.com/JiangDing1990/universal-skill-kit)
 [![Tests](https://img.shields.io/badge/tests-199%20passing-brightgreen.svg)](https://github.com/JiangDing1990/universal-skill-kit)
 
@@ -26,12 +26,15 @@
 - 📦 **智能压缩** - 4种压缩策略，自动适配Codex 500字符限制
 - 🎯 **批量处理** - 一次性转换多个Skills，支持并行处理
 - 💡 **质量分析** - 提供详细的质量评分和改进建议
+- 📊 **构建指标** - Builder 返回每个平台的渲染耗时、缓存命中率等数据，CLI 会自动输出
 - 🎨 **美观输出** - 彩色进度提示和清晰的错误信息
 - ⚡ **高性能** - 并行批量转换速度提升80%
 
 ## 📖 快速开始
 
 ### 安装
+
+> **需要 Node.js 22.17.1** · 项目根目录已提供 `.nvmrc`，推荐通过 `nvm use` 或 Volta 统一开发环境。
 
 ```bash
 npm install -g @jiangding/usk-cli
@@ -107,6 +110,7 @@ $ usk convert my-skill/ -t codex
 ```
 
 **验证检查**：
+
 - ❌ **Errors（错误）**：必填字段、资源文件存在性
 - ⚠️ **Warnings（警告）**：质量建议、格式问题
 - ℹ️ **Platform Notes（平台提示）**：Codex限制、压缩需求
@@ -215,21 +219,29 @@ $ usk convert non-existent/
 ```
 universal-skill-kit/
 ├── packages/
-│   ├── core/        # @usk/core - 核心转换引擎
+│   ├── template/    # @jiangding/usk-template - Handlebars 受限封装 ✨ 新增
+│   ├── builder/     # @jiangding/usk-builder - Skill 构建 & 插件系统
+│   ├── core/        # @jiangding/usk-core - 核心转换引擎
 │   │   ├── parser/      # Skill解析器
 │   │   ├── optimizer/   # 智能压缩器
 │   │   ├── analyzer/    # 质量分析器
-│   │   ├── validator/   # 验证器 ✨
+│   │   ├── validator/   # 验证器
 │   │   ├── converter/   # 转换器（支持多文件）
-│   │   ├── errors/      # 错误处理 ✨ 新增
-│   │   └── constants/   # 常量定义 ✨ 新增
-│   ├── cli/         # @usk/cli - 命令行工具
-│   └── utils/       # @usk/utils - 工具函数
-│       ├── path-mapper/ # 路径映射
-│       └── logger/      # 日志系统 ✨ 新增
+│   │   ├── errors/      # 错误处理
+│   │   └── constants/   # 常量定义
+│   ├── cli/         # @jiangding/usk-cli - 命令行工具
+│   └── utils/       # @jiangding/usk-utils - 工具函数（路径映射、日志）
 ├── docs/            # 文档
 └── examples/        # 示例
 ```
+
+## 🔄 多包协作流程
+
+- `@jiangding/usk-cli`：入口命令解析用户参数，串联转换（`@jiangding/usk-core`）与构建（`@jiangding/usk-builder`）流程，并提供中英双语交互体验。
+- `@jiangding/usk-core`：负责 Skill 解析、验证、分析与跨平台转换，产出标准化的 SkillDefinition 与转换统计。
+- `@jiangding/usk-builder`：读取 `usk.config.*`，利用模板上下文管理器与缓存系统批量构建多平台产物，同时暴露插件钩子并输出关键构建指标。
+- `@jiangding/usk-template`：提供受限 Handlebars 引擎与通用类型，供 Builder 与其他上层工具共享一致的模板渲染能力。
+- `@jiangding/usk-utils`：沉淀日志、路径映射、通用工具，支撑 Core/Builder 在不同平台间保持一致行为。
 
 ## 📊 测试覆盖率
 
@@ -250,7 +262,11 @@ Converter:   83.36%
 ### 使用核心API
 
 ```typescript
-import { SkillConverter, SkillValidator, SkillAnalyzer } from '@jiangding/usk-core'
+import {
+  SkillConverter,
+  SkillValidator,
+  SkillAnalyzer
+} from '@jiangding/usk-core'
 
 // 1. 验证Skill
 const validator = new SkillValidator()
@@ -272,7 +288,7 @@ const result = await converter.convert(skillPath, {
   targetPlatform: 'codex',
   outputDir: './output',
   compressionStrategy: 'balanced',
-  verbose: true  // 启用详细日志
+  verbose: true // 启用详细日志
 })
 
 console.log('Conversion successful:', result.success)
@@ -335,6 +351,7 @@ usk batch <pattern> [options]
 ### 自动验证
 
 转换前自动检查Skill质量：
+
 - 检查必填字段（name, description, body）
 - 验证资源文件存在性
 - 检测常见问题（空链接、TODO标记等）
@@ -343,6 +360,7 @@ usk batch <pattern> [options]
 ### 智能压缩
 
 保留关键技术信息的同时压缩描述：
+
 - 提取技术关键词（版本号、框架名称等）
 - 移除冗余示例代码
 - 简化冗长表述
@@ -351,6 +369,7 @@ usk batch <pattern> [options]
 ### 多文件支持
 
 完整支持复杂Skill结构：
+
 - 递归复制所有资源文件
 - 保持目录结构和相对路径
 - 脚本文件权限保留（755）

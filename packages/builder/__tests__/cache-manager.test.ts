@@ -184,7 +184,7 @@ describe('CacheManager', () => {
       expect(value1).toBe('value1')
 
       // 等待超过TTL
-      await new Promise((resolve) => setTimeout(resolve, 150))
+      await new Promise(resolve => setTimeout(resolve, 150))
 
       const value2 = await manager.get('key1')
       expect(value2).toBeNull()
@@ -198,7 +198,7 @@ describe('CacheManager', () => {
       const value1 = await manager.get('key1')
       expect(value1).toBe('value1')
 
-      await new Promise((resolve) => setTimeout(resolve, 150))
+      await new Promise(resolve => setTimeout(resolve, 150))
 
       const value2 = await manager.get('key1')
       expect(value2).toBeNull()
@@ -268,7 +268,7 @@ describe('CacheManager', () => {
       await manager.set('key1', 'value1')
       await manager.set('key2', 'value2')
 
-      await new Promise((resolve) => setTimeout(resolve, 150))
+      await new Promise(resolve => setTimeout(resolve, 150))
 
       const result = await manager.prune()
       expect(result.success).toBe(true)

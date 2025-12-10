@@ -12,10 +12,7 @@
         "/Users/jiangding/claude-skills/universal-skill-kit/examples/multi-platform/src/SKILL_SIMPLE.md"
       ],
       "metadata": {
-        "tags": [
-          "claude",
-          "template"
-        ]
+        "tags": ["claude", "template"]
       }
     },
     "e6c815efbf634c3c3e05d927e4116266b5369805e212d0744101c669f029868c:claude": {
@@ -31,10 +28,7 @@
         "/Users/jiangding/claude-skills/universal-skill-kit/examples/multi-platform/templates/**/*.md"
       ],
       "metadata": {
-        "tags": [
-          "claude",
-          "template"
-        ]
+        "tags": ["claude", "template"]
       }
     },
     "e6c815efbf634c3c3e05d927e4116266b5369805e212d0744101c669f029868c:codex": {
@@ -50,10 +44,7 @@
         "/Users/jiangding/claude-skills/universal-skill-kit/examples/multi-platform/templates/**/*.md"
       ],
       "metadata": {
-        "tags": [
-          "codex",
-          "template"
-        ]
+        "tags": ["codex", "template"]
       }
     }
   },

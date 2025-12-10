@@ -35,6 +35,7 @@ Phase 1解决了**转换**问题，但开发体验仍有不足：
 ### 用户体验提升
 
 **Before (Phase 1)**:
+
 ```bash
 # 1. 手动编辑两份文件
 vim claude-skill/SKILL.md
@@ -48,6 +49,7 @@ usk analyze dist/codex-skill/
 ```
 
 **After (Phase 2)**:
+
 ```bash
 # 1. 编辑一份模板
 vim src/SKILL.md
@@ -179,7 +181,7 @@ export interface PlatformConfig {
   enabled: boolean
   output: string
   compressionStrategy?: 'conservative' | 'balanced' | 'aggressive'
-  extends?: string  // 继承其他平台配置
+  extends?: string // 继承其他平台配置
 }
 
 export interface SourceConfig {
@@ -208,14 +210,16 @@ export interface BuildConfig {
 **支持的指令**：
 
 1. **变量替换** `{{variable}}`
+
 ```markdown
 ---
-name: {{name}}
-version: {{version}}
+name: { { name } }
+version: { { version } }
 ---
 ```
 
 2. **条件块** `{{#if condition}}...{{/if}}`
+
 ```markdown
 {{#if platform.claude}}
 This content only appears in Claude builds.
@@ -227,6 +231,7 @@ Short version for Codex.
 ```
 
 3. **反向条件** `{{#unless condition}}...{{/unless}}`
+
 ```markdown
 {{#unless platform.codex}}
 Extended documentation (not for Codex).
@@ -234,13 +239,16 @@ Extended documentation (not for Codex).
 ```
 
 4. **循环** `{{#each items}}...{{/each}}`
+
 ```markdown
 {{#each tags}}
+
 - {{this}}
-{{/each}}
+  {{/each}}
 ```
 
 5. **包含** `{{> partial}}`
+
 ```markdown
 {{> partials/examples}}
 {{> partials/api-reference}}
@@ -266,6 +274,7 @@ platform: {{platform.name}}
 {{description.common}}
 
 {{#if platform.claude}}
+
 ## Detailed Documentation
 
 This section provides comprehensive documentation for Claude users.
@@ -286,6 +295,7 @@ npm install {{name}}
 {{/if}}
 
 {{#if platform.codex}}
+
 ## Quick Start
 
 Quick usage guide for Codex users.
@@ -299,11 +309,12 @@ npm install {{name}}
 
 - Feature 1
 - Feature 2
-{{#if platform.claude}}
+  {{#if platform.claude}}
 - Extended feature (Claude only)
-{{/if}}
+  {{/if}}
 
 {{#unless platform.codex}}
+
 ## Advanced Usage
 
 Detailed advanced usage information...
@@ -315,65 +326,40 @@ Detailed advanced usage information...
 ```
 @jiangding/usk-template
 ├── src/
-│   ├── engine.ts           # 模板引擎核心
-│   ├── parser.ts           # 语法解析器
-│   ├── context.ts          # 上下文管理
-│   ├── renderer.ts         # 渲染器
-│   └── directives/         # 指令处理器
-│       ├── base.ts
-│       ├── if.ts
-│       ├── unless.ts
-│       ├── each.ts
-│       └── include.ts
+│   ├── engine.ts        # Handlebars 包装，注册 helper/partial
+│   ├── types.ts         # 通用类型定义（上下文/结果/参数）
+│   └── __tests__/       # 模板引擎单元测试
+└── tsup.config.ts       # 构建配置（生成 ESM/CJS+d.ts）
 ```
 
-**核心类**：
+`engine.ts` 内部直接依赖 Handlebars，核心职责包括：
+
+- 调用 `Handlebars.create()` 创建隔离实例，注册受限 helper 集合。
+- 支持字符串或 `URL` 形式的 `renderFile`，并将文件读取失败包装为 `TemplateEngineError`。
+- 通过 `Proxy` 追踪运行时实际使用的 partial，返回渲染耗时与 `usedPartials`。
+- 允许调用者按需开启 `allowProto*` 等运行时选项，同时默认保持严格模式。
+
+`types.ts` 对外暴露统一的 `TemplateContext`/`TemplateRenderOptions` 等类型，供 `@jiangding/usk-builder` 与第三方插件共享。
+
+Builder 侧通过 `TemplateContextManager` 组装平台上下文，随后调用模板引擎：
 
 ```typescript
-// engine.ts
-export class TemplateEngine {
-  private directives: Map<string, Directive>
+const engine = new TemplateEngine()
+const context = contextManager.createContext(config, platform)
+const result = engine.renderFile(templatePath, context, {
+  allowProtoMethodsByDefault: false
+})
 
-  constructor() {
-    this.registerDirective('if', new IfDirective())
-    this.registerDirective('unless', new UnlessDirective())
-    this.registerDirective('each', new EachDirective())
-    this.registerDirective('include', new IncludeDirective())
+return {
+  ...result,
+  metrics: {
+    renderDuration: result.duration,
+    usedPartials: result.usedPartials
   }
-
-  registerDirective(name: string, directive: Directive): void
-
-  async render(
-    template: string,
-    context: TemplateContext
-  ): Promise<string>
-
-  async renderFile(
-    filePath: string,
-    context: TemplateContext
-  ): Promise<string>
-}
-
-// context.ts
-export class TemplateContext {
-  constructor(
-    private data: Record<string, any>,
-    private helpers: Record<string, Function>
-  ) {}
-
-  get(path: string): any
-  set(path: string, value: any): void
-  has(path: string): boolean
-
-  createChild(data: Record<string, any>): TemplateContext
-}
-
-// directives/base.ts
-export interface Directive {
-  parse(content: string, params: string): DirectiveNode
-  render(node: DirectiveNode, context: TemplateContext): Promise<string>
 }
 ```
+
+构建完成后，这些指标会写入 `BuildResult.metrics` 并由 CLI 打印，帮助开发者快速定位模板性能问题。
 
 ---
 
@@ -707,6 +693,7 @@ SkillBuilder
 **目标**：实现配置文件加载和验证
 
 **任务**：
+
 - [ ] 定义 SkillConfig 类型（TypeScript）
 - [ ] 实现配置加载器
   - [ ] 支持 .ts 文件（使用 jiti/tsx）
@@ -720,6 +707,7 @@ SkillBuilder
 - [ ] 编写单元测试（目标：90%+）
 
 **交付物**：
+
 - `packages/builder/src/config/`
   - loader.ts
   - validator.ts
@@ -736,6 +724,7 @@ SkillBuilder
 **任务**：
 
 **Week 3: 核心解析**
+
 - [ ] 实现模板解析器
   - [ ] 词法分析（Tokenizer）
   - [ ] 语法分析（Parser）
@@ -745,6 +734,7 @@ SkillBuilder
   - [ ] 嵌套作用域支持
 
 **Week 4: 指令实现**
+
 - [ ] 实现基础指令
   - [ ] 变量替换 `{{var}}`
   - [ ] if指令 `{{#if}}...{{/if}}`
@@ -754,6 +744,7 @@ SkillBuilder
   - [ ] include指令 `{{> partial}}`
 
 **Week 5: 渲染和测试**
+
 - [ ] 实现渲染器
   - [ ] AST遍历
   - [ ] 输出生成
@@ -761,6 +752,7 @@ SkillBuilder
 - [ ] 集成测试
 
 **交付物**：
+
 - `packages/template/src/`
   - engine.ts
   - parser.ts
@@ -778,6 +770,7 @@ SkillBuilder
 **任务**：
 
 **Week 6: 核心构建**
+
 - [ ] 实现 SkillBuilder 类
   - [ ] build() 方法
   - [ ] buildForPlatform() 方法
@@ -790,6 +783,7 @@ SkillBuilder
   - [ ] 处理文件权限
 
 **Week 7: 高级功能**
+
 - [ ] 实现文件监听（watch mode）
   - [ ] 使用 chokidar
   - [ ] 增量构建优化
@@ -801,6 +795,7 @@ SkillBuilder
 - [ ] 集成测试
 
 **交付物**：
+
 - `packages/builder/src/`
   - builder.ts
   - watcher.ts
@@ -814,6 +809,7 @@ SkillBuilder
 **目标**：完善CLI命令和文档
 
 **任务**：
+
 - [ ] 实现 `usk build` 命令
 - [ ] 实现 `usk watch` 命令
 - [ ] 改进 `usk init` 命令
@@ -828,6 +824,7 @@ SkillBuilder
 - [ ] 端到端测试
 
 **交付物**：
+
 - CLI命令实现
 - 完整文档
 - 示例项目
@@ -842,16 +839,19 @@ SkillBuilder
 **选择**：`jiti`
 
 **理由**：
+
 - ✅ 支持TypeScript无需编译
 - ✅ 支持ESM和CJS
 - ✅ 轻量级
 - ✅ 无需额外配置
 
 **替代方案**：
+
 - tsx - 功能类似，但稍重
 - ts-node - 需要配置，较重
 
 **使用示例**：
+
 ```typescript
 import { createJiti } from 'jiti'
 
@@ -866,17 +866,20 @@ const config = await jiti.import('./usk.config.ts')
 **选择**：自定义实现
 
 **理由**：
+
 - ✅ 完全控制语法
 - ✅ 轻量级（< 10KB）
 - ✅ 针对Skill优化
 - ✅ 易于调试
 
 **不选现有方案**：
+
 - Handlebars - 过重（~100KB），功能过多
 - Mustache - 功能不足
 - EJS - 语法不够清晰
 
 **实现策略**：
+
 - 词法分析：正则表达式匹配
 - 语法分析：递归下降解析
 - 渲染：AST遍历
@@ -888,6 +891,7 @@ const config = await jiti.import('./usk.config.ts')
 **选择**：`chokidar`
 
 **理由**：
+
 - ✅ 已在builder包中使用
 - ✅ 跨平台兼容性好
 - ✅ 性能优秀
@@ -900,12 +904,14 @@ const config = await jiti.import('./usk.config.ts')
 **选择**：`zod`
 
 **理由**：
+
 - ✅ 已在core包中使用
 - ✅ TypeScript原生支持
 - ✅ 运行时类型检查
 - ✅ 详细错误信息
 
 **配置Schema示例**：
+
 ```typescript
 import { z } from 'zod'
 
@@ -922,11 +928,15 @@ export const SkillConfigSchema = z.object({
     })
   ]),
   tags: z.array(z.string()).optional(),
-  platforms: z.record(z.object({
-    enabled: z.boolean(),
-    output: z.string(),
-    compressionStrategy: z.enum(['conservative', 'balanced', 'aggressive']).optional()
-  })),
+  platforms: z.record(
+    z.object({
+      enabled: z.boolean(),
+      output: z.string(),
+      compressionStrategy: z
+        .enum(['conservative', 'balanced', 'aggressive'])
+        .optional()
+    })
+  ),
   source: z.object({
     entry: z.string(),
     templates: z.union([z.string(), z.array(z.string())]).optional(),
@@ -960,6 +970,7 @@ Phase 2完全向后兼容Phase 1：
 ### 迁移路径
 
 **Phase 1用户可以选择**：
+
 - 继续使用现有方式
 - 逐步迁移到配置文件
 - 只在新项目使用Phase 2
@@ -1010,6 +1021,7 @@ export default {
 ### 4. 类型安全
 
 充分利用TypeScript：
+
 ```typescript
 import { defineConfig } from '@jiangding/usk-builder'
 
@@ -1038,21 +1050,23 @@ export default defineConfig({
 
 ### 技术风险
 
-| 风险 | 影响 | 可能性 | 缓解措施 |
-|------|------|--------|----------|
-| 模板引擎复杂度超预期 | 高 | 中 | 简化语法，分阶段实现 |
-| 配置加载兼容性问题 | 中 | 低 | 使用成熟库（jiti） |
-| 构建性能问题 | 中 | 低 | 增量构建，缓存优化 |
-| 向后兼容性破坏 | 高 | 低 | 严格API版本管理 |
+| 风险                 | 影响 | 可能性 | 缓解措施             |
+| -------------------- | ---- | ------ | -------------------- |
+| 模板引擎复杂度超预期 | 高   | 中     | 简化语法，分阶段实现 |
+| 配置加载兼容性问题   | 中   | 低     | 使用成熟库（jiti）   |
+| 构建性能问题         | 中   | 低     | 增量构建，缓存优化   |
+| 向后兼容性破坏       | 高   | 低     | 严格API版本管理      |
 
 ### 时间风险
 
 **总计8周**，风险因素：
+
 - 模板引擎实现可能需要更多时间
 - 测试覆盖率要求高
 - 文档编写工作量大
 
 **缓解措施**：
+
 - 优先实现MVP功能
 - 并行开发和测试
 - 提前规划文档结构

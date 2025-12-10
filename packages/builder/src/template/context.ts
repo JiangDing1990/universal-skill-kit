@@ -30,7 +30,10 @@ export class TemplateContextManager {
   /**
    * 解析平台特定描述
    */
-  private resolveDescription(description: DescriptionConfig, platform: Platform): string {
+  private resolveDescription(
+    description: DescriptionConfig,
+    platform: Platform
+  ): string {
     if (typeof description === 'string') {
       return description
     }
@@ -42,7 +45,10 @@ export class TemplateContextManager {
   /**
    * 合并上下文
    */
-  mergeContext(base: TemplateContext, override: Partial<TemplateContext>): TemplateContext {
+  mergeContext(
+    base: TemplateContext,
+    override: Partial<TemplateContext>
+  ): TemplateContext {
     return {
       ...base,
       ...override,
@@ -57,7 +63,10 @@ export class TemplateContextManager {
    * 扩展上下文
    * 添加自定义变量
    */
-  extendContext(context: TemplateContext, variables: Record<string, any>): TemplateContext {
+  extendContext(
+    context: TemplateContext,
+    variables: Record<string, any>
+  ): TemplateContext {
     return {
       ...context,
       ...variables

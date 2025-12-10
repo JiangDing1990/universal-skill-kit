@@ -18,14 +18,20 @@ const program = new Command()
 
 program
   .name('usk')
-  .description('Universal Skill Kit - Convert skills between Claude Code and Codex')
+  .description(
+    'Universal Skill Kit - Convert skills between Claude Code and Codex'
+  )
   .version('0.2.0')
 
 // Init command
 program
   .command('init [name]')
   .description('Initialize a new USK project')
-  .option('-t, --template <type>', 'Template type (basic|multi-platform|advanced)', 'basic')
+  .option(
+    '-t, --template <type>',
+    'Template type (basic|multi-platform|advanced)',
+    'basic'
+  )
   .option('-y, --yes', 'Skip prompts and use defaults', false)
   .option('-f, --force', 'Force overwrite existing directory', false)
   .action(initCommand)
@@ -40,7 +46,9 @@ program
   .option('--no-clean', 'Do not clean output directories')
   .option('-f, --force', 'Force rebuild (ignore cache)', false)
   .option('-w, --watch', 'Watch mode - rebuild on file changes', false)
-  .option('--concurrency <number>', 'Number of concurrent builds', (val) => parseInt(val, 10))
+  .option('--concurrency <number>', 'Number of concurrent builds', val =>
+    parseInt(val, 10)
+  )
   .option('-v, --verbose', 'Show detailed build logs', false)
   .action(buildCommand)
 
@@ -51,7 +59,10 @@ program
   .argument('<input>', 'Input skill file path')
   .option('-t, --target <platform>', 'Target platform (claude|codex)', 'codex')
   .option('-o, --output <dir>', 'Output directory')
-  .option('-s, --strategy <strategy>', 'Compression strategy (conservative|balanced|aggressive)')
+  .option(
+    '-s, --strategy <strategy>',
+    'Compression strategy (conservative|balanced|aggressive)'
+  )
   .option('-i, --interactive', 'Interactive mode with prompts', false)
   .option('--verbose', 'Show detailed logs', false)
   .action(convertCommand)

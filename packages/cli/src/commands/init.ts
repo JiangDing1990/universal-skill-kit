@@ -306,7 +306,9 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
             message: '项目名称',
             initial: options.name || 'my-skill',
             validate: (value: string) =>
-              /^[a-z0-9-]+$/.test(value) ? true : '项目名称只能包含小写字母、数字和连字符'
+              /^[a-z0-9-]+$/.test(value)
+                ? true
+                : '项目名称只能包含小写字母、数字和连字符'
           },
           {
             type: 'select',
@@ -343,9 +345,7 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
 
     // 检查目录是否存在
     if (existsSync(projectDir) && !options.force) {
-      console.error(
-        chalk.red(`\n✖ 目录已存在: ${answers.name}`)
-      )
+      console.error(chalk.red(`\n✖ 目录已存在: ${answers.name}`))
       console.log(chalk.yellow('  使用 --force 选项强制覆盖\n'))
       return
     }
@@ -364,12 +364,14 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
       ...DEFAULT_CONFIGS[answers.template as TemplateType],
       name: answers.name,
       author: answers.author,
-      description: typeof DEFAULT_CONFIGS[answers.template as TemplateType].description === 'string'
-        ? answers.description
-        : {
-            ...DEFAULT_CONFIGS[answers.template as TemplateType].description,
-            common: answers.description
-          }
+      description:
+        typeof DEFAULT_CONFIGS[answers.template as TemplateType].description ===
+        'string'
+          ? answers.description
+          : {
+              ...DEFAULT_CONFIGS[answers.template as TemplateType].description,
+              common: answers.description
+            }
     }
 
     await writeFile(

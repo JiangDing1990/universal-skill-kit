@@ -47,7 +47,10 @@ export interface PluginHooks {
    * @param context 插件上下文
    * @param result 平台构建结果
    */
-  onPlatformBuildEnd?(context: PluginContext, result: PlatformBuildResult): void | Promise<void>
+  onPlatformBuildEnd?(
+    context: PluginContext,
+    result: PlatformBuildResult
+  ): void | Promise<void>
 
   /**
    * 模板渲染前
@@ -148,4 +151,34 @@ export interface PluginManagerOptions {
 
   /** 钩子执行超时（毫秒） */
   timeout?: number
+}
+
+/**
+ * 插件钩子耗时数据
+ */
+export interface PluginHookMetric {
+  /** 钩子名称 */
+  hook: keyof PluginHooks
+  /** 调用次数 */
+  calls: number
+  /** 总耗时（毫秒） */
+  totalDuration: number
+  /** 平均耗时（毫秒） */
+  averageDuration: number
+  /** 单次最大耗时（毫秒） */
+  maxDuration: number
+  /** 失败次数 */
+  failures: number
+}
+
+/**
+ * 插件指标汇总
+ */
+export interface PluginMetricSummary {
+  /** 插件名称 */
+  name: string
+  /** 总耗时（毫秒） */
+  totalDuration: number
+  /** 各钩子耗时 */
+  hooks: PluginHookMetric[]
 }

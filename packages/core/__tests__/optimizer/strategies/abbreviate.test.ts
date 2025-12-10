@@ -62,7 +62,8 @@ describe('AbbreviateStrategy', () => {
     })
 
     it('should handle multiple abbreviations in one text', () => {
-      const input = 'The application configuration connects to the database and provides documentation.'
+      const input =
+        'The application configuration connects to the database and provides documentation.'
       const result = strategy.compress(input)
       expect(result).toContain('app')
       expect(result).toContain('config')
@@ -77,7 +78,8 @@ describe('AbbreviateStrategy', () => {
     })
 
     it('should remove filler words', () => {
-      const input = 'Actually, basically, the system just really works very well.'
+      const input =
+        'Actually, basically, the system just really works very well.'
       const result = strategy.compress(input)
       expect(result).not.toContain('Actually')
       expect(result).not.toContain('basically')

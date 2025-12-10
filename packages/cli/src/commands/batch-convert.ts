@@ -35,12 +35,16 @@ export async function batchConvertCommand(
       return
     }
 
-    spinner.succeed(`Found ${files.length} skill(s) / 找到 ${files.length} 个 Skill`)
+    spinner.succeed(
+      `Found ${files.length} skill(s) / 找到 ${files.length} 个 Skill`
+    )
 
     // Validate target platform
     const targetPlatform = options.target as Platform
     if (!['claude', 'codex'].includes(targetPlatform)) {
-      throw new Error(`Invalid target platform / 无效的目标平台: ${options.target}`)
+      throw new Error(
+        `Invalid target platform / 无效的目标平台: ${options.target}`
+      )
     }
 
     // Create converter
@@ -54,7 +58,9 @@ export async function batchConvertCommand(
     }
 
     // Convert files with progress tracking
-    const progressSpinner = ora(`Converting 0/${files.length} skills / 转换 0/${files.length} 个 Skills...`).start()
+    const progressSpinner = ora(
+      `Converting 0/${files.length} skills / 转换 0/${files.length} 个 Skills...`
+    ).start()
 
     const results = await converter.convertBatch(
       files,
@@ -66,11 +72,13 @@ export async function batchConvertCommand(
       }
     )
 
-    const successCount = results.filter((r) => r.success).length
+    const successCount = results.filter(r => r.success).length
     const failCount = results.length - successCount
 
     if (failCount === 0) {
-      progressSpinner.succeed(`Converted all ${successCount} skills successfully / 成功转换所有 ${successCount} 个 Skills!`)
+      progressSpinner.succeed(
+        `Converted all ${successCount} skills successfully / 成功转换所有 ${successCount} 个 Skills!`
+      )
     } else {
       progressSpinner.warn(
         `Converted ${successCount}/${results.length} skills (${failCount} failed) / 转换了 ${successCount}/${results.length} 个 Skills (${failCount} 个失败)`
@@ -78,7 +86,9 @@ export async function batchConvertCommand(
     }
 
     // Display summary
-    console.log('\n' + chalk.bold.blue('📊 Batch Conversion Summary / 批量转换总结'))
+    console.log(
+      '\n' + chalk.bold.blue('📊 Batch Conversion Summary / 批量转换总结')
+    )
     console.log(chalk.gray('═'.repeat(50)))
 
     // Statistics
@@ -86,11 +96,17 @@ export async function batchConvertCommand(
       (sum, r) => sum + r.statistics.originalLength,
       0
     )
-    const totalFinal = results.reduce((sum, r) => sum + r.statistics.finalLength, 0)
+    const totalFinal = results.reduce(
+      (sum, r) => sum + r.statistics.finalLength,
+      0
+    )
     const avgCompression =
       results.reduce((sum, r) => sum + r.statistics.compressionRate, 0) /
       results.length
-    const totalDuration = results.reduce((sum, r) => sum + r.statistics.duration, 0)
+    const totalDuration = results.reduce(
+      (sum, r) => sum + r.statistics.duration,
+      0
+    )
 
     console.log('\n' + chalk.bold('Overall Statistics / 总体统计:'))
     console.log(chalk.cyan('  Total Files / 文件总数:'), results.length)
@@ -98,9 +114,16 @@ export async function batchConvertCommand(
     if (failCount > 0) {
       console.log(chalk.red('  Failed / 失败:'), failCount)
     }
-    console.log(chalk.cyan('  Original Size / 原始大小:'), totalOriginal, 'chars')
+    console.log(
+      chalk.cyan('  Original Size / 原始大小:'),
+      totalOriginal,
+      'chars'
+    )
     console.log(chalk.cyan('  Final Size / 最终大小:'), totalFinal, 'chars')
-    console.log(chalk.cyan('  Avg Compression / 平均压缩率:'), `${avgCompression.toFixed(1)}%`)
+    console.log(
+      chalk.cyan('  Avg Compression / 平均压缩率:'),
+      `${avgCompression.toFixed(1)}%`
+    )
     console.log(chalk.cyan('  Total Time / 总耗时:'), `${totalDuration}ms`)
 
     // Show individual results
@@ -108,7 +131,8 @@ export async function batchConvertCommand(
 
     results.forEach((result, index) => {
       const status = result.success ? chalk.green('✓') : chalk.red('✗')
-      const filename = files[index]?.split('/').pop() || files[index] || 'unknown'
+      const filename =
+        files[index]?.split('/').pop() || files[index] || 'unknown'
 
       if (result.success) {
         console.log(
@@ -137,7 +161,9 @@ export async function batchConvertCommand(
     console.log(
       failCount === 0
         ? chalk.green('✓ All conversions completed! / 所有转换完成!')
-        : chalk.yellow(`⚠ Completed with ${failCount} error(s) / 完成但有 ${failCount} 个错误`)
+        : chalk.yellow(
+            `⚠ Completed with ${failCount} error(s) / 完成但有 ${failCount} 个错误`
+          )
     )
   } catch (error) {
     spinner.fail('Batch conversion failed / 批量转换失败')

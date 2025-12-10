@@ -113,13 +113,16 @@ export class CacheManager {
   /**
    * 生成缓存键
    */
-  async generateCacheKey(filePath: string, options: CacheKeyOptions = {}): Promise<string> {
+  async generateCacheKey(
+    filePath: string,
+    options: CacheKeyOptions = {}
+  ): Promise<string> {
     const hash = await this.generateFileHash(filePath)
     const parts = [filePath, hash]
 
     if (options.includeDependencies && options.include) {
       const depHashes = await Promise.all(
-        options.include.map((dep) => this.generateFileHash(dep).catch(() => ''))
+        options.include.map(dep => this.generateFileHash(dep).catch(() => ''))
       )
       parts.push(...depHashes)
     }
@@ -130,13 +133,19 @@ export class CacheManager {
   /**
    * 获取缓存条目
    */
-  async get<T = any>(key: string, options: CacheOptions = {}): Promise<T | null> {
+  async get<T = any>(
+    key: string,
+    options: CacheOptions = {}
+  ): Promise<T | null> {
     if (!this.config.enabled) {
       return null
     }
 
     // 检查内存缓存
-    if (this.config.strategy === 'memory' || this.config.strategy === 'hybrid') {
+    if (
+      this.config.strategy === 'memory' ||
+      this.config.strategy === 'hybrid'
+    ) {
       const memEntry = this.memoryCache.get(key)
       if (memEntry && this.isValidEntry(memEntry, options)) {
         this.updateEntryAccess(memEntry)
@@ -146,7 +155,10 @@ export class CacheManager {
     }
 
     // 检查文件系统缓存
-    if (this.config.strategy === 'filesystem' || this.config.strategy === 'hybrid') {
+    if (
+      this.config.strategy === 'filesystem' ||
+      this.config.strategy === 'hybrid'
+    ) {
       const entry = this.store.entries[key]
       if (entry && this.isValidEntry(entry, options)) {
         this.updateEntryAccess(entry)
@@ -194,12 +206,18 @@ export class CacheManager {
     }
 
     // 更新内存缓存
-    if (this.config.strategy === 'memory' || this.config.strategy === 'hybrid') {
+    if (
+      this.config.strategy === 'memory' ||
+      this.config.strategy === 'hybrid'
+    ) {
       this.memoryCache.set(key, entry)
     }
 
     // 更新文件系统缓存
-    if (this.config.strategy === 'filesystem' || this.config.strategy === 'hybrid') {
+    if (
+      this.config.strategy === 'filesystem' ||
+      this.config.strategy === 'hybrid'
+    ) {
       this.store.entries[key] = entry
       this.store.updatedAt = now
       await this.saveStore()
@@ -240,7 +258,8 @@ export class CacheManager {
    */
   async clear(): Promise<CacheOperationResult> {
     const startTime = Date.now()
-    const entryCount = Object.keys(this.store.entries).length + this.memoryCache.size
+    const entryCount =
+      Object.keys(this.store.entries).length + this.memoryCache.size
 
     this.memoryCache.clear()
     this.store = this.createEmptyStore()
@@ -295,7 +314,7 @@ export class CacheManager {
       totalSize += JSON.stringify(entry.value).length
     }
 
-    const timestamps = entries.map((e) => e.createdAt)
+    const timestamps = entries.map(e => e.createdAt)
     const hitRate =
       this.stats.hits + this.stats.misses > 0
         ? this.stats.hits / (this.stats.hits + this.stats.misses)

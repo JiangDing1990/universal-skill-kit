@@ -87,10 +87,14 @@ basic-skill/
 ### 变量
 
 ```handlebars
-{{name}}          <!-- 项目名称 -->
-{{version}}       <!-- 版本号 -->
-{{description}}   <!-- 描述 -->
-{{author}}        <!-- 作者 -->
+{{name}}
+<!-- 项目名称 -->
+{{version}}
+<!-- 版本号 -->
+{{description}}
+<!-- 描述 -->
+{{author}}
+<!-- 作者 -->
 ```
 
 ### 平台条件
@@ -109,7 +113,8 @@ basic-skill/
 
 ```handlebars
 {{#each tags}}
-  - {{this}}
+  -
+  {{this}}
 {{/each}}
 ```
 
@@ -119,7 +124,7 @@ basic-skill/
 
 ```markdown
 \{{#if platform.claude}}
-  ...
+...
 \{{/if}}
 ```
 
@@ -158,6 +163,7 @@ usk cache clean --force
 ### Claude 平台
 
 生成的 `dist/claude/SKILL.md` 包含：
+
 - 完整的 YAML frontmatter
 - 渲染后的变量（name, version 等）
 - 只包含 Claude 平台特定内容
@@ -165,6 +171,7 @@ usk cache clean --force
 ### Codex 平台
 
 生成的 `dist/codex/SKILL.md` 包含：
+
 - 完整的 YAML frontmatter
 - 渲染后的变量（name, version 等）
 - 只包含 Codex 平台特定内容
@@ -212,7 +219,11 @@ USK 会自动缓存构建结果，加速后续构建。
 创建 `build.js` 文件：
 
 ```javascript
-import { SkillBuilder, loggerPlugin, minifyPlugin } from '@jiangding/usk-builder'
+import {
+  SkillBuilder,
+  loggerPlugin,
+  minifyPlugin
+} from '@jiangding/usk-builder'
 
 const builder = await SkillBuilder.fromConfig('usk.config.json')
 

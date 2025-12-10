@@ -8,5 +8,7 @@ export type {
   PluginConfig,
   PluginContext,
   PluginHooks,
-  PluginManagerOptions
+  PluginManagerOptions,
+  PluginHookMetric,
+  PluginMetricSummary
 } from '../types/plugin'

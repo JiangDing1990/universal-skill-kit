@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-22.17.1-green.svg)](https://nodejs.org/)
 [![Test Coverage](https://img.shields.io/badge/coverage-92.11%25-brightgreen.svg)](https://github.com/JiangDing1990/universal-skill-kit)
 [![Tests](https://img.shields.io/badge/tests-281%20passing-brightgreen.svg)](https://github.com/JiangDing1990/universal-skill-kit)
 
@@ -26,12 +26,15 @@
 - 📦 **Intelligent Compression** - 4 compression strategies, auto-adapting to Codex 500-character limit
 - 🎯 **Batch Processing** - Convert multiple Skills at once with parallel processing
 - 💡 **Quality Analysis** - Detailed quality scoring and improvement suggestions
+- 📊 **Build Metrics** - Builder returns per-platform render time, cache hit rate and template usage metrics which the CLI prints automatically
 - 🎨 **Beautiful Output** - Colorful progress indicators and clear error messages
 - ⚡ **High Performance** - 80% faster with parallel batch conversion
 
 ## 📖 Quick Start
 
 ### Installation
+
+> **Node.js 22.17.1 required** · 项目根目录包含 `.nvmrc`，推荐通过 `nvm use` 或 Volta 统一 Node 版本。
 
 ```bash
 npm install -g @jiangding/usk-cli
@@ -107,6 +110,7 @@ $ usk convert my-skill/ -t codex
 ```
 
 **Validation Checks**:
+
 - ❌ **Errors**: Required fields, resource file existence
 - ⚠️ **Warnings**: Quality suggestions, formatting issues
 - ℹ️ **Platform Notes**: Codex limits, compression requirements
@@ -215,18 +219,18 @@ $ usk convert non-existent/
 ```
 universal-skill-kit/
 ├── packages/
-│   ├── core/        # @usk/core - Core conversion engine
+│   ├── template/    # @jiangding/usk-template - Sandboxed Handlebars runtime ✨ NEW
+│   ├── builder/     # @jiangding/usk-builder - Build pipeline & plugin system
+│   ├── core/        # @jiangding/usk-core - Conversion engine
 │   │   ├── parser/      # Skill parser
 │   │   ├── optimizer/   # Smart compressor
 │   │   ├── analyzer/    # Quality analyzer
-│   │   ├── validator/   # Validator ✨
+│   │   ├── validator/   # Validator
 │   │   ├── converter/   # Converter (multi-file support)
-│   │   ├── errors/      # Error handling ✨ NEW
-│   │   └── constants/   # Constants ✨ NEW
-│   ├── cli/         # @usk/cli - Command-line tool
-│   └── utils/       # @usk/utils - Utilities
-│       ├── path-mapper/ # Path mapping
-│       └── logger/      # Logging system ✨ NEW
+│   │   ├── errors/      # Error handling
+│   │   └── constants/   # Constants
+│   ├── cli/         # @jiangding/usk-cli - Command-line tool
+│   └── utils/       # @jiangding/usk-utils - Utilities (path mapper, logger)
 ├── docs/            # Documentation
 └── examples/        # Examples
 ```
@@ -253,7 +257,11 @@ Tests Passing: 281/281 ✅
 ### Using Core APIs
 
 ```typescript
-import { SkillConverter, SkillValidator, SkillAnalyzer } from '@jiangding/usk-core'
+import {
+  SkillConverter,
+  SkillValidator,
+  SkillAnalyzer
+} from '@jiangding/usk-core'
 
 // 1. Validate Skill
 const validator = new SkillValidator()
@@ -275,7 +283,7 @@ const result = await converter.convert(skillPath, {
   targetPlatform: 'codex',
   outputDir: './output',
   compressionStrategy: 'balanced',
-  verbose: true  // Enable detailed logs
+  verbose: true // Enable detailed logs
 })
 
 console.log('Conversion successful:', result.success)
@@ -338,6 +346,7 @@ Options:
 ### Automatic Validation
 
 Pre-conversion Skill quality checks:
+
 - Validates required fields (name, description, body)
 - Verifies resource file existence
 - Detects common issues (empty links, TODO markers, etc.)
@@ -346,6 +355,7 @@ Pre-conversion Skill quality checks:
 ### Intelligent Compression
 
 Compresses descriptions while preserving key technical information:
+
 - Extracts technical keywords (version numbers, framework names, etc.)
 - Removes redundant example code
 - Simplifies verbose expressions
@@ -354,6 +364,7 @@ Compresses descriptions while preserving key technical information:
 ### Multi-File Support
 
 Complete support for complex Skill structures:
+
 - Recursively copies all resource files
 - Maintains directory structure and relative paths
 - Preserves script file permissions (755)

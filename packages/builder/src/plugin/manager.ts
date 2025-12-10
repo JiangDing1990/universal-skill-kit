@@ -3,14 +3,23 @@
  * 管理插件的注册和生命周期钩子执行
  */
 
+import { performance } from 'node:perf_hooks'
 import type {
   Plugin,
   PluginContext,
   PluginManagerOptions,
-  PluginHooks
+  PluginHooks,
+  PluginMetricSummary
 } from '../types/plugin'
 import type { BuildResult, PlatformBuildResult } from '../types/builder'
 import type { TemplateContext } from '../types/template'
+
+interface HookRuntimeMetric {
+  totalDuration: number
+  maxDuration: number
+  calls: number
+  failures: number
+}
 
 /**
  * 插件管理器
@@ -18,6 +27,7 @@ import type { TemplateContext } from '../types/template'
 export class PluginManager {
   private plugins: Plugin[] = []
   private options: Required<PluginManagerOptions>
+  private metrics: Map<string, Map<string, HookRuntimeMetric>> = new Map()
 
   constructor(options: PluginManagerOptions = {}) {
     this.options = {
@@ -68,6 +78,131 @@ export class PluginManager {
   }
 
   /**
+   * 记录钩子执行数据
+   */
+  private recordHookMetric(
+    plugin: Plugin,
+    hookName: keyof PluginHooks,
+    duration: number,
+    failed: boolean
+  ): void {
+    const pluginName = plugin.name || 'anonymous-plugin'
+    const hookKey = String(hookName)
+
+    if (!this.metrics.has(pluginName)) {
+      this.metrics.set(pluginName, new Map())
+    }
+
+    const pluginMetrics = this.metrics.get(pluginName)!
+
+    if (!pluginMetrics.has(hookKey)) {
+      pluginMetrics.set(hookKey, {
+        totalDuration: 0,
+        maxDuration: 0,
+        calls: 0,
+        failures: 0
+      })
+    }
+
+    const hookMetric = pluginMetrics.get(hookKey)!
+    hookMetric.totalDuration += duration
+    hookMetric.calls += 1
+    hookMetric.maxDuration = Math.max(hookMetric.maxDuration, duration)
+    if (failed) {
+      hookMetric.failures += 1
+    }
+  }
+
+  /**
+   * 获取插件指标
+   */
+  getMetrics(): PluginMetricSummary[] {
+    const summaries: PluginMetricSummary[] = []
+
+    for (const [pluginName, hookMetrics] of this.metrics.entries()) {
+      let totalDuration = 0
+      const hooks = Array.from(hookMetrics.entries()).map(
+        ([hookName, metric]) => {
+          totalDuration += metric.totalDuration
+          return {
+            hook: hookName as keyof PluginHooks,
+            calls: metric.calls,
+            totalDuration: metric.totalDuration,
+            averageDuration:
+              metric.calls > 0 ? metric.totalDuration / metric.calls : 0,
+            maxDuration: metric.maxDuration,
+            failures: metric.failures
+          }
+        }
+      )
+
+      hooks.sort((a, b) => b.totalDuration - a.totalDuration)
+
+      summaries.push({
+        name: pluginName,
+        totalDuration,
+        hooks
+      })
+    }
+
+    summaries.sort((a, b) => b.totalDuration - a.totalDuration)
+
+    return summaries
+  }
+
+  /**
+   * 重置指标
+   */
+  resetMetrics(): void {
+    this.metrics.clear()
+  }
+
+  /**
+   * 执行单个钩子并记录耗时
+   */
+  private async invokeHook<T>(
+    plugin: Plugin,
+    hookName: keyof PluginHooks,
+    handler: () => Promise<T> | T
+  ): Promise<T | undefined> {
+    const start = performance.now()
+    let failed = false
+    let timeoutId: NodeJS.Timeout | undefined
+    const timeoutMessage = `Plugin ${plugin.name} hook ${String(hookName)} timeout`
+
+    try {
+      if (this.options.allowAsync) {
+        const timeoutPromise = new Promise<T>((_, reject) => {
+          timeoutId = setTimeout(
+            () => reject(new Error(timeoutMessage)),
+            this.options.timeout
+          )
+        })
+        const result = await Promise.race([
+          Promise.resolve(handler()),
+          timeoutPromise
+        ])
+        return result
+      }
+
+      return await Promise.resolve(handler())
+    } catch (error) {
+      failed = true
+      console.error(
+        `Error in plugin ${plugin.name} hook ${String(hookName)}:`,
+        error
+      )
+      return undefined
+    } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
+      const duration = performance.now() - start
+      this.recordHookMetric(plugin, hookName, duration, failed)
+    }
+  }
+
+  /**
    * 执行钩子
    */
   private async runHook<K extends keyof PluginHooks>(
@@ -78,24 +213,10 @@ export class PluginManager {
       const hook = plugin[hookName]
       if (!hook) continue
 
-      try {
-        if (this.options.allowAsync) {
-          // 异步执行，带超时
-          await Promise.race([
-            // @ts-ignore - 类型系统无法正确推断
-            hook.apply(plugin, args),
-            new Promise((_, reject) =>
-              setTimeout(() => reject(new Error(`Plugin ${plugin.name} hook ${hookName} timeout`)), this.options.timeout)
-            )
-          ])
-        } else {
-          // @ts-ignore - 类型系统无法正确推断
-          await hook.apply(plugin, args)
-        }
-      } catch (error) {
-        console.error(`Error in plugin ${plugin.name} hook ${hookName}:`, error)
-        // 继续执行其他插件
-      }
+      await this.invokeHook(plugin, hookName, () =>
+        // @ts-expect-error - 类型系统无法正确推断
+        hook.apply(plugin, args)
+      )
     }
   }
 
@@ -113,14 +234,13 @@ export class PluginManager {
       const hook = plugin[hookName]
       if (!hook) continue
 
-      try {
-        // @ts-ignore - 类型系统无法正确推断
-        const result = await hook.call(plugin, context, value)
-        if (result !== undefined && result !== null) {
-          value = result
-        }
-      } catch (error) {
-        console.error(`Error in plugin ${plugin.name} hook ${hookName}:`, error)
+      const result = await this.invokeHook(plugin, hookName, () =>
+        // @ts-expect-error - 类型系统无法正确推断
+        hook.call(plugin, context, value)
+      )
+
+      if (result !== undefined && result !== null) {
+        value = result as T
       }
     }
 
@@ -151,29 +271,51 @@ export class PluginManager {
   /**
    * 平台构建结束
    */
-  async onPlatformBuildEnd(context: PluginContext, result: PlatformBuildResult): Promise<void> {
+  async onPlatformBuildEnd(
+    context: PluginContext,
+    result: PlatformBuildResult
+  ): Promise<void> {
     await this.runHook('onPlatformBuildEnd', context, result)
   }
 
   /**
    * 模板渲染前
    */
-  async onTemplateRender(context: PluginContext, templateContext: TemplateContext): Promise<TemplateContext> {
-    return this.runTransformHook('onTemplateRender', context, templateContext) as Promise<TemplateContext>
+  async onTemplateRender(
+    context: PluginContext,
+    templateContext: TemplateContext
+  ): Promise<TemplateContext> {
+    return this.runTransformHook(
+      'onTemplateRender',
+      context,
+      templateContext
+    ) as Promise<TemplateContext>
   }
 
   /**
    * 模板渲染后
    */
-  async onTemplateRendered(context: PluginContext, content: string): Promise<string> {
-    return this.runTransformHook('onTemplateRendered', context, content) as Promise<string>
+  async onTemplateRendered(
+    context: PluginContext,
+    content: string
+  ): Promise<string> {
+    return this.runTransformHook(
+      'onTemplateRendered',
+      context,
+      content
+    ) as Promise<string>
   }
 
   /**
    * 资源文件复制前
    */
-  async onResourceCopy(context: PluginContext, files: string[]): Promise<string[]> {
-    return this.runTransformHook('onResourceCopy', context, files) as Promise<string[]>
+  async onResourceCopy(
+    context: PluginContext,
+    files: string[]
+  ): Promise<string[]> {
+    return this.runTransformHook('onResourceCopy', context, files) as Promise<
+      string[]
+    >
   }
 
   /**
@@ -209,6 +351,8 @@ export class PluginManager {
 /**
  * 创建插件管理器
  */
-export function createPluginManager(options?: PluginManagerOptions): PluginManager {
+export function createPluginManager(
+  options?: PluginManagerOptions
+): PluginManager {
   return new PluginManager(options)
 }

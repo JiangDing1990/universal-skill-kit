@@ -30,7 +30,9 @@ export class SkillAnalyzer {
     const hasCodeExamples = this.detectCodeExamples(body)
 
     // Extract technical keywords
-    const technicalKeywords = this.extractTechnicalKeywords(description + ' ' + body)
+    const technicalKeywords = this.extractTechnicalKeywords(
+      description + ' ' + body
+    )
 
     // Calculate complexity
     const complexity = this.calculateComplexity(skill)
@@ -114,14 +116,14 @@ export class SkillAnalyzer {
     for (const pattern of techPatterns) {
       const matches = text.match(pattern)
       if (matches) {
-        matches.forEach((match) => keywords.add(match))
+        matches.forEach(match => keywords.add(match))
       }
     }
 
     // Extract version numbers
     const versions = text.match(versionPattern)
     if (versions) {
-      versions.forEach((v) => keywords.add(v))
+      versions.forEach(v => keywords.add(v))
     }
 
     return Array.from(keywords)
@@ -131,7 +133,9 @@ export class SkillAnalyzer {
    * Calculate skill complexity
    * 计算复杂度
    */
-  private calculateComplexity(skill: SkillDefinition): 'high' | 'medium' | 'low' {
+  private calculateComplexity(
+    skill: SkillDefinition
+  ): 'high' | 'medium' | 'low' {
     let score = 0
 
     // Description length factor
@@ -279,7 +283,10 @@ export class SkillAnalyzer {
    * Generate warnings based on analysis
    * 生成警告信息
    */
-  private generateWarnings(skill: SkillDefinition, descriptionLength: number): string[] {
+  private generateWarnings(
+    skill: SkillDefinition,
+    descriptionLength: number
+  ): string[] {
     const warnings: string[] = []
 
     // Description length warnings
@@ -304,7 +311,9 @@ export class SkillAnalyzer {
 
     // Body warnings
     if (skill.body.length < 100) {
-      warnings.push('Body content is very short. Consider adding more information.')
+      warnings.push(
+        'Body content is very short. Consider adding more information.'
+      )
     }
 
     // Code examples warning
@@ -363,7 +372,8 @@ export class SkillAnalyzer {
     if (hasCodeExamples && descriptionLength > 400) {
       suggestions.push({
         type: 'optimization',
-        message: 'Remove code examples from description to improve compression. Keep examples in body only.'
+        message:
+          'Remove code examples from description to improve compression. Keep examples in body only.'
       })
     }
 
@@ -371,7 +381,8 @@ export class SkillAnalyzer {
     if (!this.hasStructuredContent(skill.body)) {
       suggestions.push({
         type: 'info',
-        message: 'Consider adding markdown headers or lists to improve readability.'
+        message:
+          'Consider adding markdown headers or lists to improve readability.'
       })
     }
 
@@ -379,7 +390,8 @@ export class SkillAnalyzer {
     if (complexity === 'high') {
       suggestions.push({
         type: 'warning',
-        message: 'High complexity detected. Consider splitting into multiple smaller skills.'
+        message:
+          'High complexity detected. Consider splitting into multiple smaller skills.'
       })
     }
 

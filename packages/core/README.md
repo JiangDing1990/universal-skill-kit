@@ -11,7 +11,11 @@ npm install @jiangding/usk-core
 ## Usage
 
 ```typescript
-import { SkillConverter, SkillValidator, SkillAnalyzer } from '@jiangding/usk-core'
+import {
+  SkillConverter,
+  SkillValidator,
+  SkillAnalyzer
+} from '@jiangding/usk-core'
 
 // Validate Skill
 const validator = new SkillValidator()

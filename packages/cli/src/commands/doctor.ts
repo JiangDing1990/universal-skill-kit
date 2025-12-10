@@ -262,7 +262,8 @@ function printDiagnostics(result: DiagnosticResult, verbose: boolean): void {
   }
 
   // 总结
-  const total = result.pass.length + result.warnings.length + result.errors.length
+  const total =
+    result.pass.length + result.warnings.length + result.errors.length
   const passCount = result.pass.length
   const warnCount = result.warnings.length
   const errorCount = result.errors.length
@@ -286,7 +287,9 @@ function printDiagnostics(result: DiagnosticResult, verbose: boolean): void {
 /**
  * 诊断命令
  */
-export async function doctorCommand(options: DoctorOptions = {}): Promise<void> {
+export async function doctorCommand(
+  options: DoctorOptions = {}
+): Promise<void> {
   try {
     console.log(chalk.bold.cyan('\n🔍 Universal Skill Kit 项目诊断\n'))
 

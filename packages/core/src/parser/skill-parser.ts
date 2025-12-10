@@ -14,7 +14,10 @@ import type { SkillDefinition, SkillMetadata, SkillResources } from '../types'
  * Skill 解析失败的自定义错误
  */
 export class SkillParseError extends Error {
-  constructor(message: string, public readonly cause?: Error) {
+  constructor(
+    message: string,
+    public readonly cause?: Error
+  ) {
     super(message)
     this.name = 'SkillParseError'
   }
@@ -194,11 +197,7 @@ export class SkillParser {
       const filePath = pathInfo.replace(/^[{[]|[}\]]$/g, '').trim()
 
       // Skip if it doesn't look like a file path
-      if (
-        !filePath ||
-        filePath.includes(' ') ||
-        filePath.startsWith('http')
-      ) {
+      if (!filePath || filePath.includes(' ') || filePath.startsWith('http')) {
         continue
       }
 
@@ -209,9 +208,16 @@ export class SkillParser {
 
       // Categorize as script or reference based on language
       if (
-        ['javascript', 'js', 'typescript', 'ts', 'bash', 'sh', 'python', 'py'].includes(
-          language.toLowerCase()
-        )
+        [
+          'javascript',
+          'js',
+          'typescript',
+          'ts',
+          'bash',
+          'sh',
+          'python',
+          'py'
+        ].includes(language.toLowerCase())
       ) {
         if (!resources.scripts.includes(resolvedPath)) {
           resources.scripts.push(resolvedPath)

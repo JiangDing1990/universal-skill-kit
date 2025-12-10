@@ -3,6 +3,8 @@
  */
 
 import type { Platform } from './config'
+import type { CacheStats } from './cache'
+import type { PluginMetricSummary } from './plugin'
 
 /**
  * 构建选项
@@ -113,6 +115,11 @@ export interface BuildResult {
    * 警告列表
    */
   warnings?: string[]
+
+  /**
+   * 构建指标
+   */
+  metrics?: BuildMetrics
 }
 
 /**
@@ -158,4 +165,24 @@ export interface BuildStatistics {
    * 总输出大小（字节）
    */
   totalSize: number
+}
+
+/**
+ * 构建指标
+ */
+export interface BuildMetrics {
+  /**
+   * 统计信息
+   */
+  statistics: BuildStatistics
+
+  /**
+   * 缓存统计
+   */
+  cache?: CacheStats
+
+  /**
+   * 插件耗时统计
+   */
+  plugins?: PluginMetricSummary[]
 }

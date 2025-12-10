@@ -31,7 +31,7 @@ platform: claude
 自动生成带有完整功能的列表页：
 
 ```typescript
-import { createListPage } from '@/utils/page-generator';
+import { createListPage } from '@/utils/page-generator'
 
 const UserListPage = createListPage({
   entity: 'user',
@@ -43,12 +43,13 @@ const UserListPage = createListPage({
   ],
   actions: ['create', 'edit', 'delete'],
   filters: ['name', 'role']
-});
+})
 
-export default UserListPage;
+export default UserListPage
 ```
 
 **特性**：
+
 - ✅ 自动分页
 - ✅ 多条件筛选
 - ✅ 排序功能
@@ -74,6 +75,7 @@ import { FormDialog } from '@/components/FormDialog';
 ```
 
 **特性**：
+
 - ✅ 自动表单验证
 - ✅ 异步提交处理
 - ✅ 错误提示
@@ -93,8 +95,8 @@ export default {
 
   effects: {
     *fetchList({ payload }, { call, put }) {
-      const response = yield call(services.getUserList, payload);
-      yield put({ type: 'saveList', payload: response });
+      const response = yield call(services.getUserList, payload)
+      yield put({ type: 'saveList', payload: response })
     }
   },
 
@@ -104,43 +106,43 @@ export default {
         ...state,
         list: payload.data,
         pagination: payload.pagination
-      };
+      }
     }
   }
-};
+}
 ```
 
 ### 4. API服务层
 
 ```typescript
 // services/user.ts
-import request from '@/utils/request';
+import request from '@/utils/request'
 
 export async function getUserList(params) {
   return request('/api/users', {
     method: 'GET',
     params
-  });
+  })
 }
 
 export async function createUser(data) {
   return request('/api/users', {
     method: 'POST',
     data
-  });
+  })
 }
 
 export async function updateUser(id, data) {
   return request(`/api/users/${id}`, {
     method: 'PUT',
     data
-  });
+  })
 }
 
 export async function deleteUser(id) {
   return request(`/api/users/${id}`, {
     method: 'DELETE'
-  });
+  })
 }
 ```
 
@@ -190,7 +192,7 @@ export default [
     path: '/user/:id',
     component: './User/Detail'
   }
-];
+]
 ```
 
 ### 3. 创建页面
@@ -208,36 +210,32 @@ npm run generate:page User
 ```typescript
 // ✅ 好的实践
 interface UserListProps {
-  dispatch: Dispatch;
-  loading: boolean;
-  userList: UserItem[];
+  dispatch: Dispatch
+  loading: boolean
+  userList: UserItem[]
 }
 
-const UserList: React.FC<UserListProps> = ({
-  dispatch,
-  loading,
-  userList
-}) => {
+const UserList: React.FC<UserListProps> = ({ dispatch, loading, userList }) => {
   // 组件逻辑
-};
+}
 
 export default connect(({ user, loading }) => ({
   userList: user.list,
   loading: loading.effects['user/fetchList']
-}))(UserList);
+}))(UserList)
 ```
 
 ### 2. 状态管理
 
 ```typescript
 // ✅ 使用DVA管理复杂状态
-dispatch({ type: 'user/fetchList', payload: { page: 1 } });
+dispatch({ type: 'user/fetchList', payload: { page: 1 } })
 
 // ❌ 避免直接在组件中请求
 const fetchData = async () => {
-  const res = await api.getUsers();
-  setUsers(res.data);
-};
+  const res = await api.getUsers()
+  setUsers(res.data)
+}
 ```
 
 ### 3. 错误处理
@@ -300,12 +298,14 @@ export default connect(({ user }) => ({ user }))(Component);
 ## 📝 更新日志
 
 ### v2.1.0 (2024-12-05)
+
 - ✨ 新增批量操作功能
 - ✨ 支持自定义筛选器
 - 🐛 修复分页重置问题
 - 📝 完善文档和示例
 
 ### v2.0.0 (2024-11-01)
+
 - ✨ 完全重写，支持TypeScript
 - ✨ 新增表单弹窗组件
 - ✨ 优化API服务层

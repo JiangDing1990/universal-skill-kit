@@ -36,7 +36,9 @@ interface ValidationResult {
 /**
  * 验证命令
  */
-export async function validateCommand(options: ValidateOptions = {}): Promise<void> {
+export async function validateCommand(
+  options: ValidateOptions = {}
+): Promise<void> {
   try {
     const configPath = options.config || 'usk.config.json'
     const fullPath = resolve(process.cwd(), configPath)
@@ -103,23 +105,30 @@ export async function validateCommand(options: ValidateOptions = {}): Promise<vo
 
     // 检查描述长度（Codex限制）
     if (config.platforms.codex?.enabled) {
-      const description = typeof config.description === 'string'
-        ? config.description
-        : config.description.codex || config.description.common || ''
+      const description =
+        typeof config.description === 'string'
+          ? config.description
+          : config.description.codex || config.description.common || ''
 
       if (description.length > 500) {
-        errors.push(`Codex 描述过长: ${description.length} 字符（最大 500 字符）`)
+        errors.push(
+          `Codex 描述过长: ${description.length} 字符（最大 500 字符）`
+        )
       }
     }
 
     // 检查版本格式
     if (!/^\d+\.\d+\.\d+$/.test(config.version)) {
-      warnings.push(`版本号格式不规范: ${config.version}（建议使用语义化版本，如 1.0.0）`)
+      warnings.push(
+        `版本号格式不规范: ${config.version}（建议使用语义化版本，如 1.0.0）`
+      )
     }
 
     // 检查名称格式
     if (!/^[a-z0-9-]+$/.test(config.name)) {
-      errors.push(`项目名称格式无效: ${config.name}（只能包含小写字母、数字和连字符）`)
+      errors.push(
+        `项目名称格式无效: ${config.name}（只能包含小写字母、数字和连字符）`
+      )
     }
 
     // 输出结果
@@ -143,7 +152,10 @@ export async function validateCommand(options: ValidateOptions = {}): Promise<vo
       console.log(chalk.cyan('  项目名称:'), config.name)
       console.log(chalk.cyan('  版本:'), config.version)
       console.log(chalk.cyan('  入口文件:'), config.source.entry)
-      console.log(chalk.cyan('  启用平台:'), enabledPlatforms.join(', ') || chalk.gray('无'))
+      console.log(
+        chalk.cyan('  启用平台:'),
+        enabledPlatforms.join(', ') || chalk.gray('无')
+      )
       console.log()
 
       if (errors.length > 0) {

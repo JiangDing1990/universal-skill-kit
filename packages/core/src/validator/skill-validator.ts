@@ -123,7 +123,10 @@ export class SkillValidator {
     }
 
     // Check description
-    if (!skill.metadata.description || skill.metadata.description.trim() === '') {
+    if (
+      !skill.metadata.description ||
+      skill.metadata.description.trim() === ''
+    ) {
       errors.push({
         field: 'description',
         message: 'Skill description is required',
@@ -284,7 +287,11 @@ export class SkillValidator {
         continue
       }
 
-      if (!url.startsWith('http') && !url.startsWith('#') && url.includes(' ')) {
+      if (
+        !url.startsWith('http') &&
+        !url.startsWith('#') &&
+        url.includes(' ')
+      ) {
         warnings.push({
           field: 'body',
           message: `Local path contains spaces: ${url}`,

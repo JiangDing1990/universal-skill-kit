@@ -7,7 +7,12 @@ import { existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { dirname, resolve, extname } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import type { SkillConfig, ResolvedConfig, UserConfig, ConfigEnv } from '../types/config'
+import type {
+  SkillConfig,
+  ResolvedConfig,
+  UserConfig,
+  ConfigEnv
+} from '../types/config'
 import { ConfigValidator } from './validator'
 import { ConfigValidationError } from './schema'
 
@@ -60,26 +65,37 @@ export class ConfigLoader {
   /**
    * 加载配置文件
    */
-  async load(configPath?: string, env: ConfigEnv = { mode: 'development' }): Promise<ResolvedConfig> {
+  async load(
+    configPath?: string,
+    env: ConfigEnv = { mode: 'development' }
+  ): Promise<ResolvedConfig> {
     // 1. 查找配置文件
     const resolvedPath = await this.resolveConfigPath(configPath)
 
     if (!resolvedPath) {
-      throw new ConfigLoadError(`配置文件未找到。请在项目根目录创建以下文件之一:\n${CONFIG_FILES.map((f) => `  • ${f}`).join('\n')}`)
+      throw new ConfigLoadError(
+        `配置文件未找到。请在项目根目录创建以下文件之一:\n${CONFIG_FILES.map(f => `  • ${f}`).join('\n')}`
+      )
     }
 
     // 2. 加载配置
     const rawConfig = await this.loadConfigFile(resolvedPath, env)
 
     // 3. 处理继承
-    const mergedConfig = await this.processExtends(rawConfig, dirname(resolvedPath))
+    const mergedConfig = await this.processExtends(
+      rawConfig,
+      dirname(resolvedPath)
+    )
 
     // 4. 验证配置
-    const validationResult = this.validator.validate(mergedConfig, dirname(resolvedPath))
+    const validationResult = this.validator.validate(
+      mergedConfig,
+      dirname(resolvedPath)
+    )
 
     if (!validationResult.valid) {
       throw new ConfigValidationError(
-        validationResult.errors.map((err) => ({
+        validationResult.errors.map(err => ({
           code: 'custom',
           path: err.path.split('.'),
           message: err.message
@@ -88,7 +104,11 @@ export class ConfigLoader {
     }
 
     // 5. 解析为最终配置
-    const resolved = await this.resolve(mergedConfig as SkillConfig, resolvedPath, env)
+    const resolved = await this.resolve(
+      mergedConfig as SkillConfig,
+      resolvedPath,
+      env
+    )
 
     return resolved
   }
@@ -121,7 +141,10 @@ export class ConfigLoader {
   /**
    * 加载配置文件
    */
-  private async loadConfigFile(filePath: string, env: ConfigEnv): Promise<SkillConfig> {
+  private async loadConfigFile(
+    filePath: string,
+    env: ConfigEnv
+  ): Promise<SkillConfig> {
     const ext = extname(filePath)
 
     try {
@@ -158,7 +181,10 @@ export class ConfigLoader {
   /**
    * 加载ESM配置（使用tsx）
    */
-  private async loadEsmConfig(filePath: string, env: ConfigEnv): Promise<SkillConfig> {
+  private async loadEsmConfig(
+    filePath: string,
+    env: ConfigEnv
+  ): Promise<SkillConfig> {
     // 使用tsx注册TypeScript支持
     const { register } = await import('tsx/esm/api')
     const unregister = register()
@@ -171,7 +197,9 @@ export class ConfigLoader {
       const configExport = mod.default || mod.config
 
       if (!configExport) {
-        throw new ConfigLoadError(`配置文件必须导出default或config: ${filePath}`)
+        throw new ConfigLoadError(
+          `配置文件必须导出default或config: ${filePath}`
+        )
       }
 
       // 如果是函数，调用它
@@ -183,14 +211,17 @@ export class ConfigLoader {
       return configExport
     } finally {
       // 清理tsx注册
-      unregister()
+      await unregister()
     }
   }
 
   /**
    * 处理extends继承
    */
-  private async processExtends(config: SkillConfig, configDir: string): Promise<SkillConfig> {
+  private async processExtends(
+    config: SkillConfig,
+    configDir: string
+  ): Promise<SkillConfig> {
     if (!config.extends) {
       return config
     }
@@ -201,10 +232,15 @@ export class ConfigLoader {
       throw new ConfigLoadError(`继承的配置文件不存在: ${config.extends}`)
     }
 
-    const baseConfig = await this.loadConfigFile(baseConfigPath, { mode: 'development' })
+    const baseConfig = await this.loadConfigFile(baseConfigPath, {
+      mode: 'development'
+    })
 
     // 递归处理基础配置的extends
-    const resolvedBaseConfig = await this.processExtends(baseConfig, dirname(baseConfigPath))
+    const resolvedBaseConfig = await this.processExtends(
+      baseConfig,
+      dirname(baseConfigPath)
+    )
 
     // 合并配置
     return this.mergeConfig(resolvedBaseConfig, config)
@@ -242,7 +278,11 @@ export class ConfigLoader {
   /**
    * 解析为最终配置
    */
-  private async resolve(config: SkillConfig, configPath: string, env: ConfigEnv): Promise<ResolvedConfig> {
+  private async resolve(
+    config: SkillConfig,
+    configPath: string,
+    env: ConfigEnv
+  ): Promise<ResolvedConfig> {
     const configDir = dirname(configPath)
 
     // 应用环境特定配置

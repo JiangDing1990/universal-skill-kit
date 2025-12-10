@@ -25,11 +25,13 @@ tags:
 ## 平台支持
 
 {{#if platform.claude}}
+
 ### Claude Code
 
 此 Skill 支持 Claude Code 平台。
 
 **特性:**
+
 - 支持详细的文档说明
 - 无描述长度限制
 - 丰富的上下文支持
@@ -38,11 +40,13 @@ tags:
 {{/if}}
 
 {{#if platform.codex}}
+
 ### Codex
 
 此 Skill 支持 Codex 平台。
 
 **特性:**
+
 - 简洁的描述（≤500字符）
 - 高效执行
 - 快速响应
@@ -55,39 +59,51 @@ tags:
 ### 构建 Skill
 
 \`\`\`bash
+
 # 构建所有平台
+
 usk build
 
 # 构建并监听变化
+
 usk build --watch
 
 # 强制重新构建（忽略缓存）
+
 usk build --force
 
 # 详细输出
+
 usk build --verbose
 \`\`\`
 
 ### 验证配置
 
 \`\`\`bash
+
 # 验证配置文件
+
 usk validate
 
 # 严格模式验证
+
 usk validate --strict
 
 # JSON 格式输出
+
 usk validate --json
 \`\`\`
 
 ### 诊断项目
 
 \`\`\`bash
+
 # 诊断项目健康状态
+
 usk doctor
 
 # 显示详细信息
+
 usk doctor --verbose
 \`\`\`
 
@@ -96,21 +112,21 @@ usk doctor --verbose
 ### 变量
 
 \`\`\`handlebars
-{{name}}          <!-- 项目名称 -->
-{{version}}       <!-- 版本号 -->
-{{description}}   <!-- 描述 -->
-{{author}}        <!-- 作者 -->
+{{name}} <!-- 项目名称 -->
+{{version}} <!-- 版本号 -->
+{{description}} <!-- 描述 -->
+{{author}} <!-- 作者 -->
 \`\`\`
 
 ### 平台条件
 
 \`\`\`handlebars
 \{{#if platform.claude}}
-  这段内容只在 Claude 平台显示
+这段内容只在 Claude 平台显示
 \{{/if}}
 
 \{{#if platform.codex}}
-  这段内容只在 Codex 平台显示
+这段内容只在 Codex 平台显示
 \{{/if}}
 \`\`\`
 
@@ -118,9 +134,10 @@ usk doctor --verbose
 
 \`\`\`handlebars
 \{{#each tags}}
-  - \{{this}}
-\{{/each}}
-\`\`\`
+
+- \{{this}}
+  \{{/each}}
+  \`\`\`
 
 ## 配置说明
 

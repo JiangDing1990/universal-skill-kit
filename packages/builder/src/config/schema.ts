@@ -12,18 +12,24 @@ export const PlatformSchema = z.enum(['claude', 'codex'])
 /**
  * 压缩策略枚举
  */
-export const CompressionStrategySchema = z.enum(['conservative', 'balanced', 'aggressive'])
+export const CompressionStrategySchema = z.enum([
+  'conservative',
+  'balanced',
+  'aggressive'
+])
 
 /**
  * 描述配置schema
  */
 export const DescriptionConfigSchema = z.union([
   z.string().min(1, '描述不能为空'),
-  z.object({
-    common: z.string().min(1, '公共描述不能为空'),
-    claude: z.string().optional(),
-    codex: z.string().optional()
-  }).catchall(z.string())
+  z
+    .object({
+      common: z.string().min(1, '公共描述不能为空'),
+      claude: z.string().optional(),
+      codex: z.string().optional()
+    })
+    .catchall(z.string())
 ])
 
 /**
@@ -46,10 +52,10 @@ export const PlatformsConfigSchema = z
   })
   .catchall(PlatformConfigSchema)
   .refine(
-    (data) => {
+    data => {
       // 至少启用一个平台
       const platforms = Object.values(data)
-      return platforms.some((config) => config?.enabled)
+      return platforms.some(config => config?.enabled)
     },
     {
       message: '至少需要启用一个平台'
@@ -120,7 +126,9 @@ export const ConfigEnvSchema = z.object({
 /**
  * 验证配置
  */
-export function validateConfig(config: unknown): z.SafeParseReturnType<unknown, z.infer<typeof SkillConfigSchema>> {
+export function validateConfig(
+  config: unknown
+): z.SafeParseReturnType<unknown, z.infer<typeof SkillConfigSchema>> {
   return SkillConfigSchema.safeParse(config)
 }
 
@@ -129,7 +137,9 @@ export function validateConfig(config: unknown): z.SafeParseReturnType<unknown, 
  */
 export class ConfigValidationError extends Error {
   constructor(public errors: z.ZodIssue[]) {
-    const errorMessages = errors.map((err) => `  • ${err.path.join('.')}: ${err.message}`).join('\n')
+    const errorMessages = errors
+      .map(err => `  • ${err.path.join('.')}: ${err.message}`)
+      .join('\n')
 
     super(`配置验证失败:\n${errorMessages}`)
     this.name = 'ConfigValidationError'

@@ -74,7 +74,8 @@ describe('TemplateEngine', () => {
     })
 
     it('should support or helper', () => {
-      const template = '{{#if (or platform.claude platform.codex)}}Has platform{{/if}}'
+      const template =
+        '{{#if (or platform.claude platform.codex)}}Has platform{{/if}}'
       const result = engine.render(template, context)
 
       expect(result.content).toBe('Has platform')
@@ -90,7 +91,9 @@ describe('TemplateEngine', () => {
     it('should throw error for invalid template syntax', () => {
       const template = '{{#if unclosed'
 
-      expect(() => engine.render(template, context)).toThrow(TemplateEngineError)
+      expect(() => engine.render(template, context)).toThrow(
+        TemplateEngineError
+      )
     })
   })
 
@@ -150,13 +153,16 @@ describe('TemplateEngine', () => {
     })
 
     it('should use custom helper with block', () => {
-      engine.registerHelper('repeat', function (this: any, count: number, options: any) {
-        let result = ''
-        for (let i = 0; i < count; i++) {
-          result += options.fn(this)
+      engine.registerHelper(
+        'repeat',
+        function (this: any, count: number, options: any) {
+          let result = ''
+          for (let i = 0; i < count; i++) {
+            result += options.fn(this)
+          }
+          return result
         }
-        return result
-      })
+      )
 
       const template = '{{#repeat 3}}*{{/repeat}}'
       const result = engine.render(template, context)

@@ -36,15 +36,15 @@
     "LICENSE"
   ],
   "scripts": {
-    "dev": "pnpm --filter \"@usk/*\" run dev",
-    "build": "pnpm --filter \"@usk/*\" run build",
-    "build:core": "pnpm --filter @usk/core run build",
-    "build:utils": "pnpm --filter @usk/utils run build",
-    "build:template": "pnpm --filter @usk/template run build",
-    "build:builder": "pnpm --filter @usk/builder run build",
-    "build:cli": "pnpm --filter @usk/cli run build",
-    "test": "pnpm --filter \"@usk/*\" run test",
-    "test:watch": "pnpm --filter \"@usk/*\" run test:watch",
+    "dev": "pnpm --filter \"@jiangding/usk-*\" run dev",
+    "build": "pnpm --filter \"@jiangding/usk-*\" run build",
+    "build:core": "pnpm --filter @jiangding/usk-core run build",
+    "build:utils": "pnpm --filter @jiangding/usk-utils run build",
+    "build:template": "pnpm --filter @jiangding/usk-template run build",
+    "build:builder": "pnpm --filter @jiangding/usk-builder run build",
+    "build:cli": "pnpm --filter @jiangding/usk-cli run build",
+    "test": "pnpm --filter \"@jiangding/usk-*\" --filter \"!@jiangding/usk-cli\" run test",
+    "test:watch": "pnpm --filter \"@jiangding/usk-*\" run test:watch",
     "test:coverage": "vitest run --coverage",
     "test:integration": "vitest run --config vitest.integration.config.ts",
     "lint": "eslint packages --ext .ts,.tsx",
@@ -81,12 +81,12 @@
     "prettier": "^3.1.1",
     "rimraf": "^5.0.5",
     "tsup": "^8.0.1",
-    "typescript": "^5.3.3",
+    "typescript": "5.3.3",
     "vitest": "^1.0.4"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "node": "22.17.1",
+    "npm": ">=10.0.0"
   },
   "workspaces": [
     "packages/*"

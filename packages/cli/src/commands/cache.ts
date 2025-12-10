@@ -47,7 +47,7 @@ export function createCacheCommand(): Command {
     .command('status')
     .description('查看缓存统计信息')
     .option('--cache-dir <dir>', '缓存目录', '.usk/cache')
-    .action(async (options) => {
+    .action(async options => {
       try {
         const manager = new CacheManager({
           cacheDir: options.cacheDir,
@@ -76,7 +76,10 @@ export function createCacheCommand(): Command {
 
         console.log()
       } catch (error) {
-        console.error(chalk.red('✖ 获取缓存状态失败:'), (error as Error).message)
+        console.error(
+          chalk.red('✖ 获取缓存状态失败:'),
+          (error as Error).message
+        )
         process.exit(1)
       }
     })
@@ -87,7 +90,7 @@ export function createCacheCommand(): Command {
     .description('清空所有缓存')
     .option('--cache-dir <dir>', '缓存目录', '.usk/cache')
     .option('-f, --force', '强制清空，不询问确认')
-    .action(async (options) => {
+    .action(async options => {
       try {
         const manager = new CacheManager({
           cacheDir: options.cacheDir,
@@ -104,7 +107,11 @@ export function createCacheCommand(): Command {
 
         // 询问确认（除非使用--force）
         if (!options.force) {
-          console.log(chalk.yellow(`\n⚠ 即将清空 ${stats.entryCount} 个缓存条目 (${formatSize(stats.totalSize)})`))
+          console.log(
+            chalk.yellow(
+              `\n⚠ 即将清空 ${stats.entryCount} 个缓存条目 (${formatSize(stats.totalSize)})`
+            )
+          )
           console.log(chalk.yellow('请使用 --force 选项确认此操作\n'))
           return
         }
@@ -129,7 +136,7 @@ export function createCacheCommand(): Command {
     .command('prune')
     .description('清理过期的缓存条目')
     .option('--cache-dir <dir>', '缓存目录', '.usk/cache')
-    .action(async (options) => {
+    .action(async options => {
       try {
         const manager = new CacheManager({
           cacheDir: options.cacheDir,
@@ -162,7 +169,7 @@ export function createCacheCommand(): Command {
     .command('verify')
     .description('验证所有缓存条目的有效性')
     .option('--cache-dir <dir>', '缓存目录', '.usk/cache')
-    .action(async (options) => {
+    .action(async options => {
       try {
         const manager = new CacheManager({
           cacheDir: options.cacheDir,
@@ -177,15 +184,12 @@ export function createCacheCommand(): Command {
           return
         }
 
-        const spinner = ora(`正在验证 ${stats.entryCount} 个缓存条目...`).start()
+        const spinner = ora(
+          `正在验证 ${stats.entryCount} 个缓存条目...`
+        ).start()
 
-        let validCount = 0
-        let invalidCount = 0
-
-        // 获取所有缓存键
-        const cacheStats = await manager.getStats()
-        // 注意：这里需要访问内部存储，实际应该提供一个API
-        // 为了演示，我们假设有一个方法可以获取所有键
+        const validCount = 0
+        const invalidCount = 0
 
         spinner.succeed(
           chalk.green(

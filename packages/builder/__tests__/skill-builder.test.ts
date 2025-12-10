@@ -32,7 +32,9 @@ describe('SkillBuilder', () => {
     })
 
     it('should throw error for non-existent config', async () => {
-      await expect(SkillBuilder.fromConfig('/non/existent/path')).rejects.toThrow()
+      await expect(
+        SkillBuilder.fromConfig('/non/existent/path')
+      ).rejects.toThrow()
     })
   })
 
@@ -48,13 +50,13 @@ describe('SkillBuilder', () => {
       expect(result.duration).toBeGreaterThan(0)
 
       // 检查Claude平台
-      const claudeResult = result.platforms.find((p) => p.platform === 'claude')
+      const claudeResult = result.platforms.find(p => p.platform === 'claude')
       expect(claudeResult).toBeDefined()
       expect(claudeResult?.success).toBe(true)
       expect(claudeResult?.size).toBeGreaterThan(0)
 
       // 检查Codex平台
-      const codexResult = result.platforms.find((p) => p.platform === 'codex')
+      const codexResult = result.platforms.find(p => p.platform === 'codex')
       expect(codexResult).toBeDefined()
       expect(codexResult?.success).toBe(true)
       expect(codexResult?.size).toBeGreaterThan(0)
@@ -102,14 +104,22 @@ describe('SkillBuilder', () => {
       await builder.build()
 
       // 检查Claude平台的资源
-      expect(existsSync(resolve(distDir, 'claude/templates/example.md'))).toBe(true)
+      expect(existsSync(resolve(distDir, 'claude/templates/example.md'))).toBe(
+        true
+      )
       expect(existsSync(resolve(distDir, 'claude/scripts/setup.sh'))).toBe(true)
-      expect(existsSync(resolve(distDir, 'claude/resources/config.yaml'))).toBe(true)
+      expect(existsSync(resolve(distDir, 'claude/resources/config.yaml'))).toBe(
+        true
+      )
 
       // 检查Codex平台的资源
-      expect(existsSync(resolve(distDir, 'codex/templates/example.md'))).toBe(true)
+      expect(existsSync(resolve(distDir, 'codex/templates/example.md'))).toBe(
+        true
+      )
       expect(existsSync(resolve(distDir, 'codex/scripts/setup.sh'))).toBe(true)
-      expect(existsSync(resolve(distDir, 'codex/resources/config.yaml'))).toBe(true)
+      expect(existsSync(resolve(distDir, 'codex/resources/config.yaml'))).toBe(
+        true
+      )
     })
 
     it('should clean output directory when clean option is true', async () => {
@@ -131,6 +141,19 @@ describe('SkillBuilder', () => {
 
       // 不抛出错误即可
       await expect(builder.build({ verbose: true })).resolves.toBeDefined()
+    })
+
+    it('should expose build metrics', async () => {
+      const configPath = resolve(fixturesDir, 'usk.config.json')
+      const builder = await SkillBuilder.fromConfig(configPath)
+
+      const result = await builder.build()
+
+      expect(result.metrics).toBeDefined()
+      expect(result.metrics?.statistics.templatesRendered).toBeGreaterThan(0)
+      expect(result.metrics?.statistics.totalSize).toBeGreaterThan(0)
+      expect(result.metrics?.cache).toBeDefined()
+      expect(result.metrics?.plugins?.length ?? 0).toBe(0)
     })
   })
 
@@ -157,7 +180,9 @@ describe('SkillBuilder', () => {
       const builder = new SkillBuilder(config)
 
       // @ts-ignore - 测试无效平台
-      await expect(builder.buildForPlatform('invalid')).rejects.toThrow(BuildError)
+      await expect(builder.buildForPlatform('invalid')).rejects.toThrow(
+        BuildError
+      )
     })
   })
 

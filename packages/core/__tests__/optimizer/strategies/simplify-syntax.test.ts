@@ -106,7 +106,8 @@ describe('SimplifySyntaxStrategy', () => {
     })
 
     it('should handle multiple replacements in one text', () => {
-      const input = 'In order to improve performance, we make use of caching. The system is able to handle a large number of requests.'
+      const input =
+        'In order to improve performance, we make use of caching. The system is able to handle a large number of requests.'
       const result = strategy.compress(input)
       expect(result).toContain('to improve performance')
       expect(result).toContain('we use caching')

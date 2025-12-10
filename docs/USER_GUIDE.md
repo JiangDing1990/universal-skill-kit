@@ -12,12 +12,14 @@
 
 ### 安装
 
+> **环境要求**：Node.js 22.17.1。项目根目录附带 `.nvmrc`，可通过 `nvm use` 或 Volta 快速切换。
+
 ```bash
 # 使用npm
-npm install -g @usk/cli
+npm install -g @jiangding/usk-cli
 
 # 使用pnpm（推荐）
-pnpm add -g @usk/cli
+pnpm add -g @jiangding/usk-cli
 
 # 验证安装
 usk --version
@@ -59,6 +61,7 @@ usk analyze my-skill/
 ```
 
 输出示例：
+
 ```
 📊 Skill Analysis Report
 ═══════════════════════════════════════════════
@@ -136,6 +139,7 @@ Use --interactive to override validation errors.
 ```
 
 **解决方案1：修复错误**
+
 ```bash
 # 创建缺失的文件
 touch my-skill/templates/missing.txt
@@ -145,6 +149,7 @@ usk convert my-skill/ -t codex
 ```
 
 **解决方案2：强制转换（不推荐）**
+
 ```bash
 # 使用交互模式
 usk convert my-skill/ -t codex --interactive
@@ -183,6 +188,7 @@ usk convert my-skill/ -t codex -s aggressive
 ```
 
 **手动优化描述**：
+
 ```yaml
 # 优化前（888字符）
 description: "这是一个非常详细的Skill描述，包含了完整的技术栈信息和使用说明。本Skill基于React 16.14和DVA 2.x架构..."
@@ -204,6 +210,7 @@ usk convert my-skill/ -t codex --interactive
 ```
 
 会依次询问：
+
 1. 目标平台 (claude/codex)
 2. 压缩策略 (conservative/balanced/aggressive)
 3. 输出目录
@@ -269,11 +276,13 @@ console.log('Preserved keywords:', result.preservedKeywords)
 **A**: 支持以下结构：
 
 ✅ **单文件Skill**
+
 ```
 my-skill.md
 ```
 
 ✅ **目录Skill（推荐）**
+
 ```
 my-skill/
 ├── SKILL.md
@@ -283,6 +292,7 @@ my-skill/
 ```
 
 ✅ **嵌套子目录**
+
 ```
 my-skill/
 └── components/
@@ -302,11 +312,11 @@ my-skill/
 
 **压缩策略对比**：
 
-| 策略 | 原长度 | 压缩后 | 保留信息 | 适用场景 |
-|------|--------|--------|----------|---------|
-| Conservative | 888 | ~600 | 90% | 描述接近限制 |
-| Balanced | 888 | ~409 | 70% | 一般场景（推荐）|
-| Aggressive | 888 | ~280 | 50% | 描述极长 |
+| 策略         | 原长度 | 压缩后 | 保留信息 | 适用场景         |
+| ------------ | ------ | ------ | -------- | ---------------- |
+| Conservative | 888    | ~600   | 90%      | 描述接近限制     |
+| Balanced     | 888    | ~409   | 70%      | 一般场景（推荐） |
+| Aggressive   | 888    | ~280   | 50%      | 描述极长         |
 
 ---
 
@@ -334,12 +344,14 @@ Statistics:
 **常见错误及解决方案**：
 
 1. **SKILL.md not found**
+
    ```bash
    # 确保目录中有SKILL.md文件
    ls my-skill/SKILL.md
    ```
 
 2. **Referenced file not found**
+
    ```bash
    # 检查资源文件是否存在
    ls my-skill/templates/
@@ -360,6 +372,7 @@ Statistics:
 **A**: 使用以下检查流程：
 
 1. **转换前分析**
+
    ```bash
    usk analyze my-skill/
    ```
@@ -370,12 +383,14 @@ Statistics:
    - < 60分：低质量，建议优化
 
 3. **对比转换前后**
+
    ```bash
    # 查看统计信息
    # 检查保留/丢失的关键词
    ```
 
 4. **手动验证**
+
    ```bash
    # 查看转换后的文件
    cat output/my-skill/SKILL.md
@@ -391,6 +406,7 @@ Statistics:
 **A**: 当前版本（v0.3.0）暂不支持，但已在路线图中：
 
 **临时方案**：
+
 ```bash
 # 1. 先克隆仓库
 git clone https://github.com/user/awesome-skills.git
@@ -400,6 +416,7 @@ usk batch "awesome-skills/**/*.md" -t codex
 ```
 
 **计划支持**（v1.0.0）：
+
 ```bash
 # 直接从GitHub转换（未来功能）
 usk convert https://github.com/user/repo/tree/main/my-skill -t codex
@@ -414,16 +431,19 @@ usk convert https://github.com/user/repo/tree/main/my-skill -t codex
 #### 编写高质量的Description
 
 ✅ **好的做法**：
+
 ```yaml
-description: "React 16.14 + DVA 2.x Skill，快速生成CRUD页面和表单组件。支持数据验证、状态管理、路由配置。适合企业级应用开发。"
+description: 'React 16.14 + DVA 2.x Skill，快速生成CRUD页面和表单组件。支持数据验证、状态管理、路由配置。适合企业级应用开发。'
 ```
 
 ❌ **不好的做法**：
+
 ```yaml
-description: "这是一个非常厉害的Skill，可以帮助你做很多事情，包括但不限于创建组件、管理状态、配置路由等等等等..."
+description: '这是一个非常厉害的Skill，可以帮助你做很多事情，包括但不限于创建组件、管理状态、配置路由等等等等...'
 ```
 
 **原则**：
+
 - 开门见山，先说技术栈和版本
 - 列出核心功能（3-5个）
 - 说明适用场景
@@ -434,6 +454,7 @@ description: "这是一个非常厉害的Skill，可以帮助你做很多事情�
 #### 组织文件结构
 
 **推荐结构**：
+
 ```
 my-skill/
 ├── SKILL.md              # 主文档
@@ -448,6 +469,7 @@ my-skill/
 ```
 
 **命名规范**：
+
 - 模板文件：`*.template.md` 或 `*.template.json`
 - 脚本文件：`*.sh`, `*.js`, `*.ts`
 - 配置文件：`config.yaml`, `settings.json`
@@ -479,12 +501,12 @@ usk analyze my-skill/
 
 根据描述长度选择：
 
-| 描述长度 | 推荐策略 | 说明 |
-|---------|---------|------|
-| < 500 | 无需压缩 | 直接转换 |
-| 500-800 | Conservative | 轻度压缩 |
-| 800-1500 | Balanced | 适度压缩（推荐）|
-| > 1500 | Aggressive | 激进压缩 |
+| 描述长度 | 推荐策略     | 说明             |
+| -------- | ------------ | ---------------- |
+| < 500    | 无需压缩     | 直接转换         |
+| 500-800  | Conservative | 轻度压缩         |
+| 800-1500 | Balanced     | 适度压缩（推荐） |
+| > 1500   | Aggressive   | 激进压缩         |
 
 ```bash
 # 根据分析结果选择策略
@@ -526,6 +548,7 @@ Failed: 1
 ```
 
 **处理策略**：
+
 1. 记录失败的Skills
 2. 单独分析失败原因
 3. 修复后重新转换
@@ -679,6 +702,29 @@ try {
 }
 ```
 
+### 构建器指标（`usk build`）
+
+`usk build` 命令在完成构建后会打印每个平台的模板渲染指标，示例：
+
+```bash
+$ usk build
+✔ Build completed in 1.42s
+┌─ claude
+│  duration: 48ms
+│  usedPartials: header, body, footer
+│  cache: hit (template:claude#d41d8cd9)
+└─ codex
+   duration: 52ms
+   usedPartials: header, body
+   cache: miss
+```
+
+- `duration`：模板渲染耗时（毫秒），用于评估模板复杂度。
+- `usedPartials`：本次构建实际引用的 partial 名称，有助于清理未使用的模板片段。
+- `cache`：命中状态与缓存键，便于排查缓存策略是否生效。
+
+如果你通过编程方式调用 `SkillBuilder`，同样可以在 `BuildResult.metrics` 中读取上述字段，并在自定义插件或 CI 报告中进一步处理。
+
 ---
 
 ## 常见问题
@@ -688,6 +734,7 @@ try {
 #### Q: 如何知道工具是否正常工作？
 
 A: 运行测试命令：
+
 ```bash
 # 转换示例Skill
 usk convert examples/simple-skill/ -t codex -o /tmp/test
@@ -698,6 +745,7 @@ usk convert examples/simple-skill/ -t codex -o /tmp/test
 #### Q: 转换速度慢怎么办？
 
 A: 优化建议：
+
 ```bash
 # 1. 使用并行模式（批量转换）
 usk batch "skills/*/" -t codex --parallel
@@ -714,6 +762,7 @@ usk convert my-skill/ -s conservative
 #### Q: 如何跳过验证？
 
 A: 当前版本验证是强制的，但可以：
+
 ```bash
 # 交互模式下选择继续
 usk convert my-skill/ --interactive
@@ -729,6 +778,7 @@ usk convert my-skill/ --interactive
 #### Q: 路径没有正确转换？
 
 A: 确认路径格式：
+
 ```yaml
 # ✅ 支持的路径格式
 ~/.claude/skills/my-skill
@@ -744,14 +794,17 @@ A: 确认路径格式：
 #### Q: 资源文件没有复制？
 
 A: 检查资源引用格式：
+
 ```markdown
 # ✅ 正确的引用格式
+
 [Template](templates/example.md)
 [Script](scripts/setup.sh)
 
 # ❌ 错误的引用格式
-[Template](../other-skill/template.md)  # 外部引用
-[Script](http://example.com/script.sh)  # 远程URL
+
+[Template](../other-skill/template.md) # 外部引用
+[Script](http://example.com/script.sh) # 远程URL
 ```
 
 ---
@@ -759,6 +812,7 @@ A: 检查资源引用格式：
 #### Q: 权限问题（Windows）？
 
 A: Windows上脚本权限处理：
+
 ```bash
 # USK会尝试设置可执行权限
 # 但Windows可能忽略chmod
@@ -774,11 +828,13 @@ chmod +x output/my-skill/scripts/*.sh
 ### ✅ 推荐做法
 
 1. **转换前先分析**
+
    ```bash
    usk analyze my-skill/
    ```
 
 2. **使用目录结构**
+
    ```
    my-skill/
    └── SKILL.md  # 而不是单个.md文件
@@ -790,10 +846,11 @@ chmod +x output/my-skill/scripts/*.sh
    - 说明适用场景
 
 4. **添加完整metadata**
+
    ```yaml
    name: my-skill
    version: 1.0.0
-   description: "..."
+   description: '...'
    author: Your Name
    tags: [react, typescript]
    ```
@@ -810,6 +867,7 @@ chmod +x output/my-skill/scripts/*.sh
    - 验证可以发现90%的问题
 
 2. **不要使用绝对路径**
+
    ```markdown
    ❌ [Template](/Users/me/template.md)
    ✅ [Template](templates/template.md)

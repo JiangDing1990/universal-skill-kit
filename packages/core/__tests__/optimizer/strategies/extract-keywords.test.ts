@@ -83,8 +83,10 @@ Provides middleware and plugin support.
       const result = strategy.compress(input)
       // Should extract sentences containing technical terms
       const hasTechnicalTerms =
-        result.includes('component') || result.includes('hook') ||
-        result.includes('middleware') || result.includes('plugin')
+        result.includes('component') ||
+        result.includes('hook') ||
+        result.includes('middleware') ||
+        result.includes('plugin')
       expect(hasTechnicalTerms).toBe(true)
       // Should not contain generic descriptions
       expect(result).not.toContain('Some description')

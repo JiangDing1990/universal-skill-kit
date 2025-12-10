@@ -18,14 +18,14 @@
 
 对比以下优秀项目的设计：
 
-| 项目 | 领域 | 学习要点 |
-|------|------|----------|
-| **Vite** | 构建工具 | 配置系统、插件架构、性能优化 |
-| **Next.js** | 框架 | 约定优于配置、开发体验 |
-| **Rollup** | 打包工具 | 插件系统、模块化设计 |
-| **Turborepo** | Monorepo | 缓存机制、增量构建 |
-| **pnpm** | 包管理 | CLI设计、错误处理 |
-| **Handlebars** | 模板引擎 | 语法设计、安全性 |
+| 项目           | 领域     | 学习要点                     |
+| -------------- | -------- | ---------------------------- |
+| **Vite**       | 构建工具 | 配置系统、插件架构、性能优化 |
+| **Next.js**    | 框架     | 约定优于配置、开发体验       |
+| **Rollup**     | 打包工具 | 插件系统、模块化设计         |
+| **Turborepo**  | Monorepo | 缓存机制、增量构建           |
+| **pnpm**       | 包管理   | CLI设计、错误处理            |
+| **Handlebars** | 模板引擎 | 语法设计、安全性             |
 
 ### 评估维度
 
@@ -47,6 +47,7 @@
 #### 1. 模板引擎重新造轮子
 
 **当前设计**：
+
 ```typescript
 // 自定义实现模板引擎
 export class TemplateEngine {
@@ -56,6 +57,7 @@ export class TemplateEngine {
 ```
 
 **问题**：
+
 - ❌ **高维护成本** - 需要处理大量边界情况
 - ❌ **测试困难** - 需要覆盖所有语法组合
 - ❌ **功能不完整** - 缺少过滤器、helper等
@@ -63,11 +65,13 @@ export class TemplateEngine {
 - ❌ **性能未知** - 没有经过生产环境验证
 
 **业内做法**：
+
 - **Vite**: 使用 Rollup 而不是自己实现打包
 - **Next.js**: 使用 Webpack/Turbopack
 - **Eleventy**: 支持多种模板引擎（Nunjucks, Handlebars等）
 
 **改进建议** ⭐：
+
 ```typescript
 // 使用成熟的模板引擎，但限制功能
 import Handlebars from 'handlebars'
@@ -93,6 +97,7 @@ handlebars.compile(template, {
 #### 2. 缺少插件系统
 
 **当前设计**：
+
 ```typescript
 // 固定的构建流程，无法扩展
 export class SkillBuilder {
@@ -105,6 +110,7 @@ export class SkillBuilder {
 ```
 
 **问题**：
+
 - ❌ **不可扩展** - 用户无法自定义转换逻辑
 - ❌ **功能固化** - 难以添加新平台支持
 - ❌ **代码耦合** - 所有逻辑写在核心代码中
@@ -112,6 +118,7 @@ export class SkillBuilder {
 **业内做法**：
 
 **Vite 插件系统**：
+
 ```typescript
 export interface Plugin {
   name: string
@@ -131,18 +138,20 @@ const myPlugin: Plugin = {
 ```
 
 **Rollup 的 hooks**：
+
 ```typescript
 const plugin = {
   name: 'my-plugin',
-  buildStart() { },
-  resolveId(source) { },
-  load(id) { },
-  transform(code, id) { },
-  buildEnd() { }
+  buildStart() {},
+  resolveId(source) {},
+  load(id) {},
+  transform(code, id) {},
+  buildEnd() {}
 }
 ```
 
 **改进建议** ⭐：
+
 ```typescript
 // 定义插件接口
 export interface USKPlugin {
@@ -181,6 +190,7 @@ export default defineConfig({
 #### 3. 缺少缓存机制
 
 **当前设计**：
+
 ```typescript
 // 每次都重新构建所有内容
 async build() {
@@ -191,6 +201,7 @@ async build() {
 ```
 
 **问题**：
+
 - ❌ **性能差** - 大型项目构建慢
 - ❌ **资源浪费** - 重复编译未改变的文件
 - ❌ **开发体验差** - watch 模式响应慢
@@ -198,13 +209,10 @@ async build() {
 **业内做法**：
 
 **Turborepo 缓存**：
+
 ```typescript
 // 基于文件哈希的缓存
-const hash = computeHash([
-  config,
-  sourceFiles,
-  dependencies
-])
+const hash = computeHash([config, sourceFiles, dependencies])
 
 const cached = await cache.get(hash)
 if (cached) {
@@ -213,16 +221,20 @@ if (cached) {
 ```
 
 **Vite 依赖预构建**：
+
 ```typescript
 // 缓存依赖构建结果
 const cacheDir = 'node_modules/.vite'
 const metadata = {
   hash: depsHash,
-  optimized: { /* ... */ }
+  optimized: {
+    /* ... */
+  }
 }
 ```
 
 **改进建议** ⭐：
+
 ```typescript
 // 实现构建缓存
 export class BuildCache {
@@ -274,14 +286,18 @@ async buildForPlatform(platform: Platform) {
 #### 4. 配置系统不够灵活
 
 **当前设计**：
+
 ```typescript
 export default defineConfig({
   name: 'my-skill',
-  platforms: { /* ... */ }
+  platforms: {
+    /* ... */
+  }
 })
 ```
 
 **问题**：
+
 - ⚠️ 缺少配置继承（extends）
 - ⚠️ 缺少环境特定配置
 - ⚠️ 缺少配置合并策略
@@ -289,27 +305,32 @@ export default defineConfig({
 **业内做法**：
 
 **TypeScript extends**：
+
 ```json
 {
   "extends": "./tsconfig.base.json",
-  "compilerOptions": { /* 覆盖 */ }
+  "compilerOptions": {
+    /* 覆盖 */
+  }
 }
 ```
 
 **Next.js 环境配置**：
+
 ```javascript
 module.exports = {
   env: {
-    customKey: 'value',
-  },
+    customKey: 'value'
+  }
 }
 ```
 
 **改进建议** ⭐：
+
 ```typescript
 // 支持配置继承
 export default defineConfig({
-  extends: './usk.base.config.ts',  // 继承基础配置
+  extends: './usk.base.config.ts', // 继承基础配置
 
   // 环境特定配置
   environments: {
@@ -326,7 +347,7 @@ export default defineConfig({
     codex: {
       enabled: true,
       output: 'dist/codex',
-      compressionStrategy: 'aggressive'  // 覆盖
+      compressionStrategy: 'aggressive' // 覆盖
     }
   }
 })
@@ -349,9 +370,9 @@ class ConfigLoader {
     return deepMerge(base, override, {
       // 自定义合并策略
       customMerge: {
-        platforms: 'merge',      // 平台配置合并
-        plugins: 'concat',       // 插件数组拼接
-        tags: 'override'         // 标签直接覆盖
+        platforms: 'merge', // 平台配置合并
+        plugins: 'concat', // 插件数组拼接
+        tags: 'override' // 标签直接覆盖
       }
     })
   }
@@ -363,6 +384,7 @@ class ConfigLoader {
 #### 5. CLI 命令不完整
 
 **当前设计**：
+
 ```bash
 usk init
 usk build
@@ -370,6 +392,7 @@ usk watch
 ```
 
 **问题**：
+
 - ⚠️ 缺少验证命令
 - ⚠️ 缺少诊断工具
 - ⚠️ 缺少缓存管理
@@ -377,6 +400,7 @@ usk watch
 **业内做法**：
 
 **pnpm 命令**：
+
 ```bash
 pnpm install
 pnpm store status    # 缓存状态
@@ -385,6 +409,7 @@ pnpm why <package>   # 依赖分析
 ```
 
 **Next.js 命令**：
+
 ```bash
 next dev
 next build
@@ -394,6 +419,7 @@ next info      # 环境信息
 ```
 
 **改进建议** ⭐：
+
 ```bash
 # 基础命令
 usk init [name]              # 初始化项目
@@ -417,6 +443,7 @@ usk preview <platform>       # 预览构建结果
 ```
 
 实现示例：
+
 ```typescript
 // packages/cli/src/commands/doctor.ts
 export async function doctorCommand() {
@@ -454,34 +481,37 @@ export async function doctorCommand() {
 #### 6. 并行构建缺失
 
 **当前设计**：
+
 ```typescript
 // 串行构建
 for (const platform of platforms) {
-  await buildForPlatform(platform)  // 等待完成
+  await buildForPlatform(platform) // 等待完成
 }
 ```
 
 **问题**：
+
 - ⚠️ 构建慢 - 多平台串行
 - ⚠️ 资源未充分利用
 
 **业内做法**：
 
 **Turborepo 并行执行**：
+
 ```typescript
 // 自动并行化任务
 turbo run build --parallel
 ```
 
 **Vite 并行优化**：
+
 ```typescript
 // 并行处理依赖
-const deps = await Promise.all(
-  depIds.map(id => optimizeDep(id))
-)
+const deps = await Promise.all(depIds.map(id => optimizeDep(id)))
 ```
 
 **改进建议** ⭐：
+
 ```typescript
 // 并行构建所有平台
 async build(): Promise<BuildResult> {
@@ -527,6 +557,7 @@ const results = await Promise.all(
 #### 7. 错误处理不够友好
 
 **改进建议**：
+
 ```typescript
 // 定义错误类型
 export class USKError extends Error {
@@ -572,6 +603,7 @@ try {
 #### 8. 类型提示优化
 
 **改进建议**：
+
 ```typescript
 // 导出配置类型供用户使用
 export type { SkillConfig, PlatformConfig, BuildConfig }
@@ -587,11 +619,11 @@ export function defineConfig<T extends SkillConfig>(
 
 // 用户使用时有完整类型提示
 export default defineConfig({
-  name: 'my-skill',  // 自动补全和验证
+  name: 'my-skill', // 自动补全和验证
   platforms: {
     claude: {
-      enabled: true,  // 类型检查
-      output: 'dist'  // 路径提示
+      enabled: true, // 类型检查
+      output: 'dist' // 路径提示
     }
   }
 })
@@ -606,24 +638,23 @@ export default defineConfig({
 **我们可以学习**：
 
 1. **插件优先设计**
+
 ```typescript
 // Vite 的插件系统非常强大
 export default defineConfig({
-  plugins: [
-    react(),
-    legacy(),
-    customPlugin()
-  ]
+  plugins: [react(), legacy(), customPlugin()]
 })
 ```
 
 2. **快速的开发服务器**
+
 ```typescript
 // Vite 的 HMR 非常快
 // 我们可以实现类似的 watch 模式优化
 ```
 
 3. **依赖预构建**
+
 ```typescript
 // Vite 会预构建依赖并缓存
 // 我们可以缓存模板编译结果
@@ -643,6 +674,7 @@ const hash = createHash({
 ```
 
 我们应该：
+
 ```typescript
 // USK 缓存键计算
 const cacheKey = computeCacheKey({
@@ -663,6 +695,7 @@ buildStart → resolveId → load → transform → buildEnd
 ```
 
 我们应该：
+
 ```typescript
 // USK 构建生命周期
 configResolved → buildStart →
@@ -679,17 +712,20 @@ copyResources → buildEnd
 **目标**：修复严重问题，保持原有架构
 
 **改动**：
+
 1. ✅ 使用 Handlebars 替代自定义模板引擎
 2. ✅ 添加基础插件系统
 3. ✅ 实现文件级缓存
 4. ✅ 并行构建多平台
 
 **优点**：
+
 - 实现成本低（2-3周）
 - 风险小
 - 向后兼容
 
 **缺点**：
+
 - 架构不够优雅
 - 扩展性有限
 
@@ -700,6 +736,7 @@ copyResources → buildEnd
 **目标**：参考 Vite/Rollup 设计插件化架构
 
 **新架构**：
+
 ```
 @jiangding/usk-core
   ├─→ plugin system (新)
@@ -714,11 +751,13 @@ copyResources → buildEnd
 ```
 
 **优点**：
+
 - 架构清晰
 - 高度可扩展
 - 易于维护
 
 **缺点**：
+
 - 实现成本高（6-8周）
 - 需要大量重构
 - 有破坏性更改风险
@@ -730,21 +769,25 @@ copyResources → buildEnd
 **目标**：分阶段实现，每个阶段可独立发布
 
 **Phase 2.1** - 基础功能（Week 1-3）
+
 - ✅ 配置系统（基础）
 - ✅ Handlebars 模板
 - ✅ 简单构建流程
 
 **Phase 2.2** - 优化（Week 4-5）
+
 - ✅ 文件缓存
 - ✅ 并行构建
 - ✅ 错误处理优化
 
 **Phase 2.3** - 扩展（Week 6-8）
+
 - ✅ 插件系统
 - ✅ 更多 CLI 命令
 - ✅ 完善文档
 
 **优点**：
+
 - 分阶段交付
 - 风险可控
 - 可快速获得反馈
@@ -756,17 +799,20 @@ copyResources → buildEnd
 ### 决策1：模板引擎选择 ⭐⭐⭐
 
 **选项A：自定义实现**
+
 - ❌ 维护成本高
 - ❌ 功能不完整
 - ❌ Bug 风险大
 
 **选项B：使用 Handlebars**（推荐）
+
 - ✅ 成熟稳定
 - ✅ 功能完整
 - ✅ 社区支持好
 - ⚠️ 稍重（~100KB）
 
 **选项C：使用 Mustache**
+
 - ✅ 轻量（~20KB）
 - ⚠️ 功能简单
 - ⚠️ 缺少 helper
@@ -774,12 +820,14 @@ copyResources → buildEnd
 **最终决策**：**选择 Handlebars**
 
 理由：
+
 1. 功能完整，满足所有需求
 2. 已有大量生产环境验证
 3. 可以通过限制 helpers 简化
 4. 100KB 对CLI工具可接受
 
 实现：
+
 ```typescript
 import Handlebars from 'handlebars'
 
@@ -793,9 +841,7 @@ engine.registerHelper('each', Handlebars.helpers.each)
 
 // 自定义 helper
 engine.registerHelper('eq', (a, b) => a === b)
-engine.registerHelper('platform', (name) =>
-  context.platform.name === name
-)
+engine.registerHelper('platform', name => context.platform.name === name)
 
 export class TemplateEngine {
   render(template: string, context: TemplateContext): string {
@@ -813,11 +859,13 @@ export class TemplateEngine {
 ### 决策2：插件系统实现 ⭐⭐
 
 **选项A：完整插件系统（Rollup风格）**
+
 - ✅ 高度灵活
 - ❌ 实现复杂
 - ❌ 学习曲线陡
 
 **选项B：简化插件（钩子函数）**（推荐）
+
 - ✅ 实现简单
 - ✅ 易于理解
 - ⚠️ 扩展性有限
@@ -825,6 +873,7 @@ export class TemplateEngine {
 **最终决策**：**Phase 2.1 不实现插件，Phase 2.3 添加简化插件**
 
 理由：
+
 1. 先完成核心功能
 2. 根据实际需求设计插件
 3. 避免过度设计
@@ -834,11 +883,13 @@ export class TemplateEngine {
 ### 决策3：缓存策略 ⭐
 
 **选项A：文件级缓存**（推荐Phase 2.1）
+
 - ✅ 实现简单
 - ✅ 效果明显
 - ⚠️ 粒度粗
 
 **选项B：AST级缓存**
+
 - ✅ 粒度细
 - ❌ 实现复杂
 - ❌ 收益不高
@@ -849,13 +900,13 @@ export class TemplateEngine {
 
 ### 决策4：技术选型调整
 
-| 原方案 | 新方案 | 理由 |
-|--------|--------|------|
-| 自定义模板 | **Handlebars** | 成熟稳定，功能完整 |
-| jiti | **tsx** | 更活跃，社区更大 |
-| 无缓存 | **文件缓存** | 性能提升明显 |
-| 串行构建 | **并行构建** | 充分利用资源 |
-| 无插件 | **Phase 2.3添加** | 分阶段实现 |
+| 原方案     | 新方案            | 理由               |
+| ---------- | ----------------- | ------------------ |
+| 自定义模板 | **Handlebars**    | 成熟稳定，功能完整 |
+| jiti       | **tsx**           | 更活跃，社区更大   |
+| 无缓存     | **文件缓存**      | 性能提升明显       |
+| 串行构建   | **并行构建**      | 充分利用资源       |
+| 无插件     | **Phase 2.3添加** | 分阶段实现         |
 
 ---
 
@@ -864,18 +915,21 @@ export class TemplateEngine {
 ### 里程碑 2.1：核心功能（Week 1-3）
 
 **Week 1：配置系统**
+
 - [ ] SkillConfig 类型定义
 - [ ] ConfigLoader（使用 tsx）
 - [ ] ConfigValidator（Zod）
 - [ ] `usk init` 命令
 
 **Week 2：模板渲染**
+
 - [ ] 集成 Handlebars
 - [ ] 注册必要的 helpers
 - [ ] 模板上下文管理
 - [ ] 测试用例
 
 **Week 3：基础构建**
+
 - [ ] SkillBuilder 实现
 - [ ] 平台构建逻辑
 - [ ] 资源文件处理
@@ -886,12 +940,14 @@ export class TemplateEngine {
 ### 里程碑 2.2：性能优化（Week 4-5）
 
 **Week 4：缓存机制**
+
 - [ ] 文件哈希计算
 - [ ] 缓存存储和读取
 - [ ] 缓存失效策略
 - [ ] `usk cache` 命令
 
 **Week 5：并行构建**
+
 - [ ] Promise.all 并行化
 - [ ] 并发控制（p-limit）
 - [ ] 错误处理优化
@@ -902,18 +958,21 @@ export class TemplateEngine {
 ### 里程碑 2.3：完善和扩展（Week 6-8）
 
 **Week 6：CLI 完善**
+
 - [ ] `usk watch` 命令
 - [ ] `usk doctor` 命令
 - [ ] `usk validate` 命令
 - [ ] 错误提示优化
 
 **Week 7：插件系统（简化版）**
+
 - [ ] Plugin 接口定义
 - [ ] 生命周期钩子
 - [ ] 插件注册和执行
 - [ ] 示例插件
 
 **Week 8：文档和发布**
+
 - [ ] 用户文档
 - [ ] API 文档
 - [ ] 迁移指南

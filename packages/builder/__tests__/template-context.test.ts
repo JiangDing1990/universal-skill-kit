@@ -63,8 +63,14 @@ describe('TemplateContextManager', () => {
         }
       }
 
-      const claudeContext = manager.createContext(configWithPlatformDesc, 'claude')
-      const codexContext = manager.createContext(configWithPlatformDesc, 'codex')
+      const claudeContext = manager.createContext(
+        configWithPlatformDesc,
+        'claude'
+      )
+      const codexContext = manager.createContext(
+        configWithPlatformDesc,
+        'codex'
+      )
 
       expect(claudeContext.description).toBe('Claude-specific description')
       expect(codexContext.description).toBe('Codex-specific description')
