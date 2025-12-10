@@ -1,6 +1,6 @@
 {
   "name": "@jiangding/usk-core",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Core conversion engine for Universal Skill Kit",
   "type": "module",
   "main": "./dist/index.cjs",

@@ -17,7 +17,11 @@
 ## ✨ Features
 
 - 🔄 **Smart Conversion** - Bidirectional Claude ↔ Codex conversion with key information preservation
-- 📁 **Multi-File Support** - Full support for directory structures, templates, scripts, and resource files
+- 📁 **Complete Directory Copy** - 🆕 Automatically copy entire Skill directories with all files and folders
+  - Recursive scanning of all subdirectories (templates/, scripts/, resources/, docs/, etc.)
+  - Smart file filtering (excludes node_modules, .git, build files, etc.)
+  - Preserves directory structure and file permissions
+  - No need to explicitly reference files in SKILL.md
 - ✅ **Automatic Validation** - Pre-conversion quality and completeness checks
 - 📦 **Intelligent Compression** - 4 compression strategies, auto-adapting to Codex 500-character limit
 - 🎯 **Batch Processing** - Convert multiple Skills at once with parallel processing

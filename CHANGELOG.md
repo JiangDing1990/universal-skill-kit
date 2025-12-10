@@ -14,7 +14,99 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Advanced caching strategies
 - Multi-language skill support
 
-## [0.3.0] - 2025-12-09
+## [0.3.0] - 2024-12-10
+
+### Added - Complete Directory Copy Support
+
+**Core Engine Enhancement** (`@jiangding/usk-core@0.2.0`)
+
+- **完整目录复制功能**: 转换 Skill 时现在默认自动复制整个目录的所有文件和文件夹
+  - 递归扫描整个 Skill 目录
+  - 自动复制所有子目录和文件（templates/, scripts/, resources/, docs/ 等）
+  - 保持完整的目录结构
+  - 保留脚本文件的执行权限（.sh, .py 等自动设置为 755）
+
+- **智能文件过滤**: 自动排除不需要的文件和目录
+  - 排除 `node_modules`, `.git`, `.gitignore`
+  - 排除 `.DS_Store`, `dist`, `build`
+  - 排除缓存目录 `.usk-cache`, `.cache`, `coverage`
+  - 排除 IDE 配置 `.vscode`, `.idea`
+  - 排除日志文件 `*.log`
+  - 排除环境变量文件 `.env`, `.env.local`
+  - 支持通配符模式匹配
+
+- **用户体验改进**:
+  - 无需在 SKILL.md 中明确引用资源文件
+  - 一键转换即可完整复制所有相关文件
+  - 适用于 `usk convert` 和 `usk batch` 命令
+
+**Build System** (`@jiangding/usk-builder@0.2.0`)
+
+- 更新依赖到最新版本的 core 包
+- 继承完整目录复制功能
+
+**CLI** (`@jiangding/usk-cli@0.3.0`)
+
+- 更新依赖到最新版本
+- 支持完整目录批量转换
+
+### Changed
+
+- **重要变更**: 资源文件复制逻辑从"基于引用"改为"完整扫描"
+  - 之前：只复制 SKILL.md 中明确引用的文件
+  - 现在：自动扫描并复制整个目录（除排除列表）
+- 修复了 workspace 依赖问题
+  - 开发时使用 `workspace:*` 引用本地包
+  - 发布时使用具体版本号引用 NPM 包
+
+### Technical Details
+
+**新增代码**:
+- `collectSkillFiles()` 方法完全重写
+- 新增 `scanDirectory()` 递归扫描函数
+- 新增智能排除模式匹配逻辑
+
+**测试**:
+- 创建完整测试 Skill 项目验证功能
+- 验证文件数量：源 6 个文件 = 目标 6 个文件 ✅
+- 验证目录结构保持完整
+- 验证脚本执行权限保留
+
+### Migration Guide
+
+对于已有的 Skill 项目，无需任何修改即可享受新功能：
+
+**之前** (v0.2.0):
+```bash
+# 只转换 SKILL.md 中引用的文件
+usk convert ~/.claude/skills/my-skill --target codex
+```
+
+**现在** (v0.3.0):
+```bash
+# 自动转换整个目录的所有文件！
+usk convert ~/.claude/skills/my-skill --target codex
+# ✅ SKILL.md
+# ✅ templates/ 目录
+# ✅ scripts/ 目录
+# ✅ resources/ 目录
+# ✅ docs/ 目录
+# ✅ 所有其他文件
+```
+
+**批量转换所有 Claude Skills**:
+```bash
+usk batch "$HOME/.claude/skills/**/SKILL.md" \
+  --target codex \
+  --output "$HOME/.codex/skills" \
+  --strategy balanced
+```
+
+### Breaking Changes
+
+无破坏性变更。所有现有功能保持兼容。
+
+## [0.2.0] - 2024-12-09
 
 ### Added - Phase 2 Enhancement (Week 6-8)
 

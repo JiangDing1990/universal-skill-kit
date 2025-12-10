@@ -248,38 +248,97 @@ export class SkillConverter {
    * 收集Skill相关的所有文件
    *
    * @param skillDir - Skill directory
-   * @param skill - Parsed skill definition
+   * @param _skill - Parsed skill definition (not used in new implementation)
    * @returns List of resource file paths
    */
   private async collectSkillFiles(
     skillDir: string,
-    skill: SkillDefinition
+    _skill: SkillDefinition
   ): Promise<string[]> {
-    const files: string[] = []
-
-    // Collect all resource paths from skill definition
-    const resourcePaths = [
-      ...(skill.resources.templates || []),
-      ...(skill.resources.scripts || []),
-      ...(skill.resources.references || [])
+    // Files and directories to exclude
+    const excludePatterns = [
+      'node_modules',
+      '.git',
+      '.gitignore',
+      '.DS_Store',
+      'dist',
+      'build',
+      '.usk-cache',
+      '.cache',
+      'coverage',
+      '.vscode',
+      '.idea',
+      '*.log',
+      '.env',
+      '.env.local'
     ]
 
-    for (const resourcePath of resourcePaths) {
-      // Resolve to absolute path
-      const fullPath = path.isAbsolute(resourcePath)
-        ? resourcePath
-        : path.join(skillDir, resourcePath)
+    // Capture 'this' context for use in nested function
+    const logger = this.logger
 
-      // Check if file exists
+    /**
+     * Recursively scan directory for all files
+     * 递归扫描目录获取所有文件
+     */
+    async function scanDirectory(dir: string): Promise<string[]> {
+      const foundFiles: string[] = []
+
       try {
-        await fs.access(fullPath)
-        files.push(fullPath)
-      } catch {
-        console.warn(`Warning: Referenced file not found: ${resourcePath}`)
+        const entries = await fs.readdir(dir, { withFileTypes: true })
+
+        for (const entry of entries) {
+          const fullPath = path.join(dir, entry.name)
+          const relativePath = path.relative(skillDir, fullPath)
+
+          // Skip if matches exclude patterns
+          const shouldExclude = excludePatterns.some((pattern) => {
+            if (pattern.includes('*')) {
+              // Handle wildcard patterns
+              const regex = new RegExp(
+                '^' + pattern.replace(/\*/g, '.*').replace(/\./g, '\\.') + '$'
+              )
+              return regex.test(entry.name)
+            }
+            // Exact match or directory match
+            return (
+              entry.name === pattern ||
+              relativePath === pattern ||
+              relativePath.startsWith(pattern + path.sep)
+            )
+          })
+
+          if (shouldExclude) {
+            continue
+          }
+
+          // Skip SKILL.md (main file, handled separately)
+          if (entry.name === 'SKILL.md' && dir === skillDir) {
+            continue
+          }
+
+          if (entry.isDirectory()) {
+            // Recursively scan subdirectory
+            const subFiles = await scanDirectory(fullPath)
+            foundFiles.push(...subFiles)
+          } else if (entry.isFile()) {
+            foundFiles.push(fullPath)
+          }
+        }
+      } catch (error) {
+        logger.warn(
+          `Failed to scan directory ${dir}: ${error instanceof Error ? error.message : String(error)}`
+        )
       }
+
+      return foundFiles
     }
 
-    return files
+    // Scan the entire skill directory
+    this.logger.debug(`扫描目录: ${skillDir}`)
+    const allFiles = await scanDirectory(skillDir)
+    this.logger.debug(`找到 ${allFiles.length} 个文件`)
+
+    return allFiles
   }
 
   /**

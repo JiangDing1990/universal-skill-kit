@@ -1,6 +1,6 @@
 {
   "name": "@jiangding/usk-builder",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Build system for Universal Skill Kit",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -33,7 +33,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@jiangding/usk-core": "^0.1.3",
+    "@jiangding/usk-core": "^0.2.0",
     "@jiangding/usk-template": "^0.1.0",
     "@jiangding/usk-utils": "^0.1.0",
     "chokidar": "^3.5.3",
